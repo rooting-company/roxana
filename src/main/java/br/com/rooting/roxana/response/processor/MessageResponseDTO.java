@@ -1,0 +1,42 @@
+package br.com.rooting.roxana.response.processor;
+
+import java.util.List;
+
+import br.com.rooting.roxana.message.MessageMapper;
+import br.com.rooting.roxana.message.MessageSeverity;
+import br.com.rooting.roxana.parameter.Parameter;
+
+public final class MessageResponseDTO implements MessageMapper {
+
+	private MessageSeverity severity;
+	
+	private String messageKey;
+	
+	private List<Parameter> parameters;
+	
+	public MessageSeverity getSeverity() {
+		return severity;
+	}
+	
+	public String getMessageKey() {
+		return messageKey;
+	}
+	
+	public void setSeverity(MessageSeverity severity) {
+		this.severity = severity;
+	}
+
+	public void setMessageKey(String messageKey) {
+		this.messageKey = messageKey;
+	}
+
+	public List<Parameter> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(List<Parameter> parameters) {
+		this.parameters = parameters;
+	}
+	
+	
+}
