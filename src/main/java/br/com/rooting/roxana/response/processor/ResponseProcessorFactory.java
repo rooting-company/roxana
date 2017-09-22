@@ -31,7 +31,6 @@ public class ResponseProcessorFactory {
 			if(AnnotationUtils.findAnnotation(e.getClass(), BusinessConstraintValidator.class) != null) {
 				return this.getBusinessConstraintValidatorResponseProcessor();
 			}
-			
 			return this.getConstraintValidatorResponseProcessor();
 		}
 		
@@ -42,8 +41,21 @@ public class ResponseProcessorFactory {
 		return this.getBusinessExceptionResponseProcessor();
 	}
 
-	public ResponseEntity<GenericResponse<?>> getProcessedResponse(final Exception e) throws Exception {
+	public ResponseEntity<GenericResponse<?>> getProcessedResponse(Exception e) throws Exception {
+		e = this.getRealException(e);
 		return this.getResponseProcessor(e).process(e);
+	}
+	
+	private Exception getRealException(final Exception e) {
+		// Frameworks como hibernate utilizam de mascaramento de checked exception.
+		// Lambda não suporta checked exceptions, portanto mascamento de checked 
+		// exceptions também é bastante usado.
+		if (e instanceof RuntimeException && e.getCause() != null) {
+			if (e.getCause() instanceof Exception) {
+				return (Exception) e.getCause();
+			}
+		}
+		return e;
 	}
 
 	private BusinessExceptionResponseProcessor getBusinessExceptionResponseProcessor() {
