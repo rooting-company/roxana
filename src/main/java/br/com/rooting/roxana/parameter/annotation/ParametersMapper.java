@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target(FIELD)
 @Retention(RUNTIME)
-public @interface DateParameters {
+public @interface ParametersMapper {
 	
-	DateParameter[] value();
+	ParameterMapper[] value();
 }

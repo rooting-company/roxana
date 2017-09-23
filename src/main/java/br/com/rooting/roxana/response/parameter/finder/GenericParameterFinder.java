@@ -32,15 +32,18 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 			try {
 				if(f.isAnnotationPresent(br.com.rooting.roxana.parameter.annotation.Parameter.class)) {
 					br.com.rooting.roxana.parameter.annotation.Parameter mp = f.getDeclaredAnnotation(br.com.rooting.roxana.parameter.annotation.Parameter.class);
-					parameters.add(Parameter.create(mp.value(), f.get(this.getObject())));
+					String name = mp.value().equals(br.com.rooting.roxana.parameter.annotation.Parameter.DEFAULT_VALUE) ? f.getName() : mp.value();
+					parameters.add(Parameter.create(name, f.get(this.getObject())));
 					
 				} else if(f.isAnnotationPresent(DateParameter.class)) {
 					DateParameter dmp = f.getDeclaredAnnotation(DateParameter.class);
-					parameters.add(Parameter.createDateParameter(dmp.value(), f.get(this.getObject()), dmp.pattern()));
+					String name = dmp.value().equals(DateParameter.DEFAULT_VALUE) ? f.getName() : dmp.value();
+					parameters.add(Parameter.createDateParameter(name, f.get(this.getObject()), dmp.pattern()));
 					
 				} else if(f.isAnnotationPresent(CurrencyParameter.class)) {
 					CurrencyParameter mmp = f.getDeclaredAnnotation(CurrencyParameter.class);
-					parameters.add(Parameter.createCurrencyParameter(mmp.value(), f.get(this.getObject())));
+					String name = mmp.value().equals(CurrencyParameter.DEFAULT_VALUE) ? f.getName() : mmp.value();
+					parameters.add(Parameter.createCurrencyParameter(name, f.get(this.getObject())));
 				}
 				
 			} catch (IllegalArgumentException | IllegalAccessException e) {
