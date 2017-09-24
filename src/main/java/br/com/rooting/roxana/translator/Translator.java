@@ -80,16 +80,24 @@ public class Translator {
 	
 	private Locale getRootingLocale(@Nullable String languadeTag) {
 		return Optional.ofNullable(languadeTag)
-					.map(s -> Locale.forLanguageTag(s))
-						.filter(l -> !StringUtils.isEmpty(l.getCountry()) && !StringUtils.isEmpty(l.getLanguage()))
+						.map(Locale::forLanguageTag)
+						.filter(this::isAValidLocale)
 						.orElseGet(Locale::getDefault);
 	}
 	
+	private boolean isAValidLocale(final Locale l) {
+		// O locale é valido se tiver setado o country e language corretamente.
+		if(!StringUtils.isEmpty(l.getCountry()) 
+				&& !StringUtils.isEmpty(l.getLanguage())) {
+			return true;
+		}
+		return false;
+	}
+	
 	// TODO Ver possibilidade de fazer um cache disso (guardar isso como cash em um hash map por exemplo).
-	// TODO Ver lambda para tratar exception.
 	private ResourceBundle getValidResourceBundle(Locale locale) {
-		String bundlePath = Optional.of(this.getResourceBundlePath())
-				.orElseThrow(MessageBundlePathNotDefined::new);
+		String bundlePath = Optional.ofNullable(this.getResourceBundlePath())
+									.orElseThrow(MessageBundlePathNotDefined::new);
 
 		try {
 			return ResourceBundle.getBundle(bundlePath, locale);
@@ -106,32 +114,46 @@ public class Translator {
 	private String interpolateKey(ResourceBundle resourceBundle, Locale locale, String key, Collection<Parameter> parameters) {
 		return Arrays.stream(key.split(INTERPOLATION_REGEX))
 						.distinct()
-						.filter(s -> !s.isEmpty())
-						.reduce(key, (k, s) -> k.replaceAll(this.getInterpolationReplaceRegex(s), 
-														 	Matcher.quoteReplacement(this.interpolateParameters(resourceBundle, locale, s, parameters))
-															)
-								);
+						.filter(message -> !message.isEmpty())
+						.reduce(key, (k, message) -> {
+							String replaceRegex = this.getInterpolationReplaceRegex(message);
+							String messageInterpolated = this.interpolateMessage(resourceBundle, locale, message, parameters);
+							messageInterpolated = Matcher.quoteReplacement(messageInterpolated);
+							return k.replaceAll(replaceRegex, messageInterpolated);
+						});
 	}
 
-	//TODO Retirar try e catch e colocar lambda
-	private String interpolateParameters(ResourceBundle resourceBundle, Locale locale, String key, Collection<Parameter> parameters) {
-		return Optional.of(key).map(s -> {
-			try {
-				return resourceBundle.getString(s);
-			} catch (Exception e) {
-				if (!this.getSuppressFailToTranslateException()) {
-					throw new FailToTranslateException(key, e);
-				}
-				LOG.error(ERROR_FAIL_TO_TRANSLATE_A_MESSAGE + key, e);
-				return null;
+	private String interpolateMessage(ResourceBundle resourceBundle, Locale locale, String message, Collection<Parameter> parameters) {
+		try {
+			String translation = resourceBundle.getString(message);
+			translation = this.interpolateParameters(locale, translation, parameters);
+			return translation;
+		} catch (Exception e) {
+			if (!this.getSuppressFailToTranslateException()) {
+				throw new FailToTranslateException(message, e);
 			}
-		}).map(s -> parameters.stream()
-				.reduce(s, (s1, s2) -> s1.replaceAll(this.getInterpolationReplaceRegex(s2.getName()), 
-														Matcher.quoteReplacement(s2.getFormattedValue(locale))
-													  ), 
-							(s1, s2) -> null
-						)
-				).orElse(this.getNotFoundInterpolationValue(key));
+			LOG.error(ERROR_FAIL_TO_TRANSLATE_A_MESSAGE + message, e);
+			return this.getNotFoundInterpolationValue(message);
+		}
+	}
+	
+	private String interpolateParameters(final Locale locale, final String message, final Collection<Parameter> parameters) {
+//		O codigo deste metodo tem o mesmo efeito do seguinte codigo:
+//		String interpolated = messsage;
+//		for (Parameter p : parameters) {
+//			interpolated = this.interpolateParameter(locale, message, p);
+//		}
+//		return interpolated;
+		
+		return parameters.stream()
+						 .reduce(message, (s, p) -> this.interpolateParameter(locale, s, p), (s1, s2) -> null);
+	}
+	
+	private String interpolateParameter(final Locale locale, final String message, final Parameter parameter) {
+		String replaceRegex = this.getInterpolationReplaceRegex(parameter.getName());
+		String formattedValue = parameter.getFormattedValue(locale);
+		formattedValue = Matcher.quoteReplacement(formattedValue);
+		return message.replaceAll(replaceRegex, formattedValue);
 	}
 	
 	private String getNotFoundInterpolationValue(String keyNotFound) {
