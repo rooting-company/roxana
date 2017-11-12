@@ -94,10 +94,8 @@ public final class RoxanaProperties {
 		
 		public static final String MESSAGE_BUNDLE_PATH_PROPERTY = "roxana.message-bundle.path";
 
-		// TODO ver se da para colocar um default
 		private String path = DEFAULT_MESSAGE_BUNDLE_PATH;
 
-		// TODO botar esse o locale do sistema.
 		private String locale;
 
 		private Boolean suppressFailToTranslateException = true;
