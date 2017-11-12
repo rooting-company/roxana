@@ -13,7 +13,7 @@ In progress...
 
 ## Installing
 
-Add Roxana as dependency of your project:
+#### Add Roxana as dependency of your project:
 
 For Maven users: 
 
@@ -28,7 +28,7 @@ For Maven users:
 ```
 **Obs:** Roxana is not in the maven central yet, so you have to **clone the project** and deploy it in you local maven repository, with the command **"mvn clean install"**.
 
-Enable Roxana framework on your Spring rest project with **@EnableRoxana** annotation:
+#### Enable Roxana framework on your Spring rest project with @EnableRoxana annotation:
 
 ```java
 @EnableRoxana
@@ -37,7 +37,6 @@ public class YourStringRestApplication {
   ...
 }
 ```
-    
 ## How to use it:
 
 Create your own business exception with @BusinessException annotation:
@@ -61,7 +60,7 @@ public class InsufficientFundsException extends Exception {
 
 }
 ```
-Put the business exception in your i18n files, by add the folow line:
+#### Put the business exception in your i18n files, by add the folow line:
 
 ```properties
 br.com.roxana.example.InsufficientFundsException = Saldo Insufficiente: {funds}.
@@ -71,7 +70,7 @@ br.com.roxana.example.InsufficientFundsException = Saldo Insufficiente: {funds}.
 
 **Obs:** Roxana uses "messages" as default path for i18n file, as well as, Spring framework.
 
-Throw your business exception in some point of your code and let Roxana handled it:
+#### Throw your business exception in some point of your code and let Roxana handled it:
 
 ```java 
 ...
@@ -100,7 +99,7 @@ public @ResponseBody GenericResponse<Message> buyACar(@PathVariable("id") Long i
 ...
 ```
 
-When the code above throw the InsufficientFundsException, the body of the rest response will be like this:
+#### When the code above throw the InsufficientFundsException, the body of the rest response will be like this:
 ```json
 {
   "messages": [
@@ -131,53 +130,53 @@ Roxana have some configurations that changes the application behavior. The confi
 
 - **roxana.business.response-estrategy:** Defines how the user's massage will be formated in the rest responses. There is four options that you can use:
 
-  - **INTERNATIONALIZED:** This is the default option. It Basically return the translated message and everything used to compose it, such like the language, the parameters and key. 
-   
-   This is very useful to debug how the messages are composes in development environment or when you wish that the consumer    of the api make them own internacionalization based on yours.
+  * **INTERNATIONALIZED:** This is the default option. It Basically return the translated message and everything used to compose it, such like the language, the parameters and key. 
+    
+    This is very useful to debug how the messages are composes in development environment or when you wish that the consumer     of the api make them own internacionalization based on yours.
 
-```json  
-{
-  "messages": [
-    {
-      "severity": "ERROR",
-      "key": "{br.com.roxana.example.InsufficientFundsException}",
-      "parameters": [
+  ```json  
+  {
+    "messages": [
       {
-          "funds": 3000.00
-        }
-      ],
-      "language": "pt-BR",
-      "translation": "Saldo Insufficiente: R$ 3000,00."
-    }
-  ]
-}
-```
+        "severity": "ERROR",
+        "key": "{br.com.roxana.example.InsufficientFundsException}",
+        "parameters": [
+        {
+            "funds": 3000.00
+          }
+        ],
+        "language": "pt-BR",
+        "translation": "Saldo Insufficiente: R$ 3000,00."
+      }
+    ]
+  }
+  ```
   
-  - **TRANSLATED:** Translate the messages and return as a simple phrases.
+  * **TRANSLATED:** Translate the messages and return as a simple phrases.
  
-```json 
-{
-  "messages": [
-    {
-      "severity": "ERROR",
-      "translation": "Saldo Insufficiente: R$ 3000,00."
-    }
-  ]
-}
-```
+  ```json 
+  {
+    "messages": [
+      {
+        "severity": "ERROR",
+        "translation": "Saldo Insufficiente: R$ 3000,00."
+      }
+    ]
+  }
+  ```
   
-  - **UNCHANGED:** The simpler format, only the severity and the internationalization keys are returned.
+  * **UNCHANGED:** The simpler format, only the severity and the internationalization keys are returned.
   
-```json 
-{
-  "messages": [
-    {
-      "severity": "ERROR",
-      "key": "{br.com.roxana.example.InsufficientFundsException}"
-    }
-  ]
-}
-```
+  ```json 
+  {
+    "messages": [
+      {
+        "severity": "ERROR",
+        "key": "{br.com.roxana.example.InsufficientFundsException}"
+      }
+    ]
+  }
+  ```
 
 - **roxana.business.exception-handler.suppress-others-exceptions:** Defines if **no** BusinessException like Null Pointer Exception, will be suppressed by a Intern Error user's friendly message. 
 
