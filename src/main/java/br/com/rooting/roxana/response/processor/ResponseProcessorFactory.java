@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.annotation.BusinessConstraintValidator;
 import br.com.rooting.roxana.annotation.MultiBusinessException;
-import br.com.rooting.roxana.response.GenericResponse;
+import br.com.rooting.roxana.response.Response;
 
 @Component
 public class ResponseProcessorFactory {
@@ -41,7 +41,7 @@ public class ResponseProcessorFactory {
 		return this.getBusinessExceptionResponseProcessor();
 	}
 
-	public ResponseEntity<GenericResponse<?>> getProcessedResponse(Exception e) throws Exception {
+	public ResponseEntity<Response<?>> getProcessedResponse(Exception e) throws Exception {
 		e = this.getRealException(e);
 		return this.getResponseProcessor(e).process(e);
 	}

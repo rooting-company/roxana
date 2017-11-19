@@ -70,7 +70,7 @@ public final class RoxanaProperties {
 		}
 		
 		public enum ResponseEstrategy {
-			INTERNATIONALIZED, TRANSLATED, UNCHANGED
+			FULLY, TRANSLATED, UNCHANGED
 		}
 		
 		public static class ExceptionHandler {

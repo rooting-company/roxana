@@ -6,11 +6,11 @@ import org.springframework.lang.Nullable;
 
 import br.com.rooting.roxana.message.Message;
 
-public class GenericFilledResponse<Z, T extends Message> extends GenericResponse<T> {
+public class FilledResponse<Z, T extends Message> extends Response<T> {
 
 	private final Z object;
 	
-	public GenericFilledResponse(@Nullable final Z object, @Nullable final Collection<T> collection) {
+	public FilledResponse(@Nullable final Z object, @Nullable final Collection<T> collection) {
 		super(collection);
 		this.object = object;
 	}

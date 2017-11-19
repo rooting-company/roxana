@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import br.com.rooting.roxana.parameter.Parameter;
 
-public final class MessageInternatiolized implements Message {
+public final class MessageFully implements Message {
 	
 	private final MessageSeverity severity;
 
@@ -17,7 +17,7 @@ public final class MessageInternatiolized implements Message {
 
 	private final String translation;
 
-	public MessageInternatiolized(final String key, 
+	public MessageFully(final String key, 
 			final MessageSeverity severity, 
 			final String language, 
 			final String translation, 

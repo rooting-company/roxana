@@ -79,7 +79,7 @@ br.com.roxana.example.InsufficientFundsException = Saldo Insufficiente: {funds}.
 @RequestMapping(method = POST, path = "/{id}/cars/")
 // Roxana provide a wrapper object that all reste responses should use.
 // This make the api more standardized.
-public @ResponseBody GenericResponse<Message> buyACar(@PathVariable("id") Long idPerson, 
+public @ResponseBody Response<Message> buyACar(@PathVariable("id") Long idPerson, 
               @RequestBody Car car) throws InsufficientFundsException {
 
     // The code below is not in a service layer because it for demo proporse.
@@ -130,7 +130,7 @@ Roxana have some configurations that changes the application behavior. The confi
 
 - **roxana.business.response-estrategy:** Defines how the user's massage will be formated in the rest responses. There is four options that you can use:
 
-  * **INTERNATIONALIZED:** This is the default option. It Basically return the translated message and everything used to compose it, such like the language, the parameters and key. 
+  * **FULLY:** It Basically return the translated message and everything used to compose it, such like the language, the parameters and key. 
     
     This is very useful to debug how the messages are composes in development environment or when you wish that the consumer     of the api make them own internacionalization based on yours.
 
@@ -152,7 +152,7 @@ Roxana have some configurations that changes the application behavior. The confi
   }
   ```
   
-  * **TRANSLATED:** Translate the messages and return as a simple phrases.
+  * **TRANSLATED:** This is the default option. Translate the messages and return as a simple phrase.
  
   ```json 
   {
@@ -199,8 +199,6 @@ In progress...
 In progress...
 
 ## Contributors
-
-In progress...
 
 * [Bruno Costa](https://github.com/brunoLNCosta)
 

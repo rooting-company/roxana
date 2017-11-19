@@ -11,7 +11,7 @@ public class MessageCreatorFactory {
 	
 	private final ResponseEstrategy responseEstrategy;
 	
-	private final MessageCreatorInternatiolized internatiolizedCreator;
+	private final MessageCreatorFully fullyCreator;
 	
 	private final MessageCreatorTranslated translatedCreator;
 	
@@ -19,19 +19,19 @@ public class MessageCreatorFactory {
 	
 	@Autowired
 	public MessageCreatorFactory(final RoxanaProperties roxanaProperties,
-										  final MessageCreatorInternatiolized internatiolizedCreator,
+										  final MessageCreatorFully fullyCreator,
 										  final MessageCreatorTranslated translatedCreator,
 										  final MessageCreatorUnchaged unchagedCreator) {
 		this.responseEstrategy = roxanaProperties.getBusinessResponseEstrategy();
-		this.internatiolizedCreator = internatiolizedCreator;
+		this.fullyCreator = fullyCreator;
 		this.translatedCreator = translatedCreator;
 		this.unchagedCreator = unchagedCreator;
 	}
 
 	public MessageCreator getMessageCreator() {
 		switch (this.getResponseEstrategy()) {
-		case INTERNATIONALIZED:
-			return this.getInternatiolizedCreator();
+		case FULLY:
+			return this.getFullyCreator();
 		
 		case TRANSLATED:
 			return this.getTranslatedCreator();
@@ -48,8 +48,8 @@ public class MessageCreatorFactory {
 		return responseEstrategy;
 	}
 
-	private MessageCreatorInternatiolized getInternatiolizedCreator() {
-		return internatiolizedCreator;
+	private MessageCreatorFully getFullyCreator() {
+		return fullyCreator;
 	}
 
 	private MessageCreatorTranslated getTranslatedCreator() {

@@ -9,11 +9,11 @@ import org.springframework.lang.Nullable;
 
 import br.com.rooting.roxana.message.Message;
 
-public class GenericResponse<T extends Message> {
+public class Response<T extends Message> {
 
 	private final List<T> messages = new ArrayList<>();
 	
-	public GenericResponse(@Nullable final Collection<T> collection) {
+	public Response(@Nullable final Collection<T> collection) {
 		super();
 		this.messages.addAll(collection);
 	}

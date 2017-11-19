@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 
 import br.com.rooting.roxana.RoxanaProperties;
 import br.com.rooting.roxana.business.exception.UnexpectedException;
-import br.com.rooting.roxana.response.GenericResponse;
-import br.com.rooting.roxana.response.GenericResponseBuilder;
+import br.com.rooting.roxana.response.Response;
+import br.com.rooting.roxana.response.ResponseBuilder;
 import br.com.rooting.roxana.response.creator.MessageCreator;
 import br.com.rooting.roxana.response.creator.MessageCreatorFactory;
 
@@ -47,7 +47,7 @@ public abstract class ResponseProcessor {
 	
 	protected abstract List<MessageResponseDTO> getMessagesResponseDTO(Exception e);
 	
-	public ResponseEntity<GenericResponse<?>> process(Exception e) throws Exception {
+	public ResponseEntity<Response<?>> process(Exception e) throws Exception {
 		if(!this.isAUnexpectedException(e)) {
 			return this.formatResponse(this.getResponseCode(e), this.getMessagesResponseDTO(e));
 		} else if (!this.getSuppressOthersExceptions()) {
@@ -59,11 +59,11 @@ public abstract class ResponseProcessor {
 		return this.getFactory().getProcessedResponse(new UnexpectedException());
 	}
 	
-	private ResponseEntity<GenericResponse<?>> formatResponse(HttpStatus responseCode, List<MessageResponseDTO> messagesResponseDTO) {
+	private ResponseEntity<Response<?>> formatResponse(HttpStatus responseCode, List<MessageResponseDTO> messagesResponseDTO) {
 		MessageCreator messageCreator = this.getMessageFactory().getMessageCreator();
 		return ResponseEntity
 				.status(responseCode)
-				.body(GenericResponseBuilder.buildWith(messagesResponseDTO
+				.body(ResponseBuilder.buildWith(messagesResponseDTO
 														.stream()
 														.map(m -> messageCreator.create(m, m.getParameters()))
 														.collect(Collectors.toList())
