@@ -26,7 +26,7 @@ For Maven users:
   </dependency>
 </dependencies> 
 ```
-**Obs:** Roxana is not in the maven central yet, so you have to **clone the project** and deploy it in you local maven repository, with the command **"mvn clean install"**.
+**Obs:** Roxana is not in the maven central yet, so you have to **clone the project** and deploy it in you local maven repository, with the command **"mvn clean install"**. You must to use 3.3.9 or superior maven version to build Roxana.
 
 #### Enable Roxana framework on your Spring rest project with @EnableRoxana annotation:
 
@@ -120,7 +120,7 @@ public @ResponseBody Response<Message> buyACar(@PathVariable("id") Long idPerson
 
 **Obs:** There is others models of response that you can configure. See more in the **Main settings** section.
 
-#### Roxana framework has a lot more features than what it is exposed here, so, if you are interesting check the example application or the documentation guide for more details.
+#### Roxana framework has a lot more features than what it is exposed here, so, if you are interesting check the example application [Amazing Book Store](https://github.com/rooting-company/amazing-book-store) or the documentation guide for more details.
 
 ## Main settings
 
@@ -184,13 +184,15 @@ Roxana have some configurations that changes the application behavior. The confi
 
 - **roxana.message-bundle.supresss-fail-to-translate-exception:** Defines if when the application fail to translate a message, it will raise an exception or assume the pattern **???{messageKey}???** as translation. 
 
-  This is usefull when you want to avoid to compromise operations in product enviroment just because the programer forgot to   add a simple key in the i18n files. In the development enviromentm, the programer will notice missing keys more easily if   the application rises exceptions. The default value is **"true"**.
+  This is usefull when you want to avoid to compromise operations in production enviroment just because the programer forgot to   add a simple key in the i18n files. In the development enviroment, the programer will notice missing keys more easily if   the application rises exceptions. The default value is **"true"**.
 
 - **roxana.message-bundle.path:** Define a custom path to the i18n file. The default value is **"message"**, as well as, Spring framework.
 
 - **roxana.message-bundle.locale:** Define a custom locale that will be used to find the correct i18n file to translate the messages. When not defined, Roxana will look to **the locale of the system**.
 
 ## Documentation
+
+Roxana's demo project ["Amazing Book Store"](https://github.com/rooting-company/amazing-book-store).
 
 In progress...
 
