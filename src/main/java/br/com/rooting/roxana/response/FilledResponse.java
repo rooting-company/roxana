@@ -20,4 +20,3 @@ public class FilledResponse<Z, T extends Message> extends Response<T> {
 	}
 	
 }
-	

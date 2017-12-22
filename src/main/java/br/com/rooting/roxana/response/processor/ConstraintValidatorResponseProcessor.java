@@ -21,10 +21,10 @@ public class ConstraintValidatorResponseProcessor extends ResponseProcessor {
 
 	@Autowired
 	ConstraintValidatorResponseProcessor(final RoxanaProperties roxanaProperties,
-										 final MessageCreatorFactory responseAbstractFactory, 
-									   	 final ResponseProcessorFactory factory) {
+										 final MessageCreatorFactory messageFactory, 
+									   	 final ResponseProcessorFactory responseFactory) {
 		
-		super(roxanaProperties, responseAbstractFactory, factory);
+		super(roxanaProperties, messageFactory, responseFactory);
 	}
 
 	@Override

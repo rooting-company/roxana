@@ -28,17 +28,17 @@ public abstract class ResponseProcessor {
 	
 	private final MessageCreatorFactory messageFactory;
 
-	private final ResponseProcessorFactory factory;
+	private final ResponseProcessorFactory responseFactory;
 	
 	protected ResponseProcessor(final RoxanaProperties roxanaProperties,
 								final MessageCreatorFactory messageFactory,
-								final ResponseProcessorFactory factory) {
+								final ResponseProcessorFactory responsefactory) {
 		
 		this.log = LoggerFactory.getLogger(this.getClass());
 		this.errorInternHandledMessage = MessageFormat.format(ERROR_INTERN_EXCEPTION_HANDLED, this.getClass().getCanonicalName());
 		this.suppressOthersExceptions = roxanaProperties.getBusinessExceptionHandlerSuppressOthersExceptions();
 		this.messageFactory = messageFactory;
-		this.factory = factory;
+		this.responseFactory = responsefactory;
 	}
 	
 	protected abstract Boolean isAUnexpectedException(Exception e);
@@ -56,7 +56,7 @@ public abstract class ResponseProcessor {
 		
 		// Se não tem, loga o erro real e retorna um erro generico.
 		this.getLog().error(this.getErrorInternHandledMessage(), e);
-		return this.getFactory().getProcessedResponse(new UnexpectedException());
+		return this.getResponseFactory().getProcessedResponse(new UnexpectedException());
 	}
 	
 	private ResponseEntity<Response<?>> formatResponse(HttpStatus responseCode, List<MessageResponseDTO> messagesResponseDTO) {
@@ -87,8 +87,8 @@ public abstract class ResponseProcessor {
 		return this.messageFactory;
 	}
 	
-	private ResponseProcessorFactory getFactory() {
-		return this.factory;
+	private ResponseProcessorFactory getResponseFactory() {
+		return this.responseFactory;
 	}
 	
 }

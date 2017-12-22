@@ -20,9 +20,9 @@ public class MultiBusinessExceptionResponseProcessor extends BusinessExceptionRe
 	
 	@Autowired
 	MultiBusinessExceptionResponseProcessor(final RoxanaProperties roxanaProperties,
-											final MessageCreatorFactory responseAbstractFactory, 
-											final ResponseProcessorFactory factory) {
-		super(roxanaProperties, responseAbstractFactory, factory);
+											final MessageCreatorFactory messageFactory, 
+											final ResponseProcessorFactory responseFactory) {
+		super(roxanaProperties, messageFactory, responseFactory);
 	}
 
 	@Override

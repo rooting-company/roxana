@@ -22,10 +22,10 @@ public class BusinessExceptionResponseProcessor extends ResponseProcessor {
 
 	@Autowired
 	BusinessExceptionResponseProcessor(final RoxanaProperties roxanaProperties, 
-									   final MessageCreatorFactory responseAbstractFactory, 
-									   final ResponseProcessorFactory factory) {
+									   final MessageCreatorFactory messageFactory, 
+									   final ResponseProcessorFactory responseFactory) {
 
-				super(roxanaProperties, responseAbstractFactory, factory);
+				super(roxanaProperties, messageFactory, responseFactory);
 	}
 
 	@Override
