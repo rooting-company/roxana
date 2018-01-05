@@ -18,12 +18,12 @@ import br.com.rooting.roxana.response.parameter.finder.ParameterFinderStrategy;
 import br.com.rooting.roxana.translator.Translator;
 
 @Component
-public class BusinessExceptionResponseProcessor extends ResponseProcessor {
+class BusinessExceptionResponseProcessor extends ResponseProcessor {
 
 	@Autowired
 	BusinessExceptionResponseProcessor(final RoxanaProperties roxanaProperties, 
 									   final MessageCreatorFactory messageFactory, 
-									   final ResponseProcessorFactory responseFactory) {
+									   final ResponseProcessorManager responseFactory) {
 
 				super(roxanaProperties, messageFactory, responseFactory);
 	}

@@ -6,7 +6,7 @@ import br.com.rooting.roxana.message.MessageMapper;
 import br.com.rooting.roxana.message.MessageSeverity;
 import br.com.rooting.roxana.parameter.Parameter;
 
-public final class MessageResponseDTO implements MessageMapper {
+final class MessageResponseDTO implements MessageMapper {
 
 	private MessageSeverity severity;
 	

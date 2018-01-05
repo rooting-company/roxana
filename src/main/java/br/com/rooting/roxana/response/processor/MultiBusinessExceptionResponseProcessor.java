@@ -16,12 +16,12 @@ import br.com.rooting.roxana.annotation.MultiBusinessException;
 import br.com.rooting.roxana.response.creator.MessageCreatorFactory;
 
 @Component
-public class MultiBusinessExceptionResponseProcessor extends BusinessExceptionResponseProcessor {
+class MultiBusinessExceptionResponseProcessor extends BusinessExceptionResponseProcessor {
 	
 	@Autowired
 	MultiBusinessExceptionResponseProcessor(final RoxanaProperties roxanaProperties,
 											final MessageCreatorFactory messageFactory, 
-											final ResponseProcessorFactory responseFactory) {
+											final ResponseProcessorManager responseFactory) {
 		super(roxanaProperties, messageFactory, responseFactory);
 	}
 
@@ -34,7 +34,8 @@ public class MultiBusinessExceptionResponseProcessor extends BusinessExceptionRe
 	protected HttpStatus getResponseCode(Exception e) {
 		return AnnotationUtils.findAnnotation(e.getClass(), MultiBusinessException.class).responseCode();
 	}
-
+	
+	// TODO Simplificar
 	@Override
 	protected List<MessageResponseDTO> getMessagesResponseDTO(Exception e) {
 		return Stream.of(e.getSuppressed())

@@ -11,12 +11,12 @@ import br.com.rooting.roxana.response.parameter.finder.GenericParameterFinder;
 import br.com.rooting.roxana.response.parameter.finder.ParameterFinderStrategy;
 
 @Component
-public class BusinessConstraintValidatorResponseProcessor extends ConstraintValidatorResponseProcessor {
+class BusinessConstraintValidatorResponseProcessor extends ConstraintValidatorResponseProcessor {
 
 	@Autowired
 	BusinessConstraintValidatorResponseProcessor(final RoxanaProperties roxanaProperties,
 												 final MessageCreatorFactory messageFactory, 
-												 final ResponseProcessorFactory responseFactory) {
+												 final ResponseProcessorManager responseFactory) {
 		super(roxanaProperties, messageFactory, responseFactory);
 	}
 	

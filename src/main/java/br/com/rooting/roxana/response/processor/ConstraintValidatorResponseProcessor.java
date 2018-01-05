@@ -17,12 +17,12 @@ import br.com.rooting.roxana.response.parameter.finder.ConstraintValidationParam
 import br.com.rooting.roxana.response.parameter.finder.ParameterFinderStrategy;
 
 @Component
-public class ConstraintValidatorResponseProcessor extends ResponseProcessor {
+class ConstraintValidatorResponseProcessor extends ResponseProcessor {
 
 	@Autowired
 	ConstraintValidatorResponseProcessor(final RoxanaProperties roxanaProperties,
 										 final MessageCreatorFactory messageFactory, 
-									   	 final ResponseProcessorFactory responseFactory) {
+									   	 final ResponseProcessorManager responseFactory) {
 		
 		super(roxanaProperties, messageFactory, responseFactory);
 	}

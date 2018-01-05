@@ -16,7 +16,7 @@ import br.com.rooting.roxana.response.ResponseBuilder;
 import br.com.rooting.roxana.response.creator.MessageCreator;
 import br.com.rooting.roxana.response.creator.MessageCreatorFactory;
 
-public abstract class ResponseProcessor {
+abstract class ResponseProcessor {
 	
 	private static final String ERROR_INTERN_EXCEPTION_HANDLED = "Intern exception handled by {0}:";
 	
@@ -28,11 +28,11 @@ public abstract class ResponseProcessor {
 	
 	private final MessageCreatorFactory messageFactory;
 
-	private final ResponseProcessorFactory responseFactory;
+	private final ResponseProcessorManager responseFactory;
 	
-	protected ResponseProcessor(final RoxanaProperties roxanaProperties,
-								final MessageCreatorFactory messageFactory,
-								final ResponseProcessorFactory responsefactory) {
+	ResponseProcessor(final RoxanaProperties roxanaProperties,
+					  		  final MessageCreatorFactory messageFactory,
+					  		  final ResponseProcessorManager responsefactory) {
 		
 		this.log = LoggerFactory.getLogger(this.getClass());
 		this.errorInternHandledMessage = MessageFormat.format(ERROR_INTERN_EXCEPTION_HANDLED, this.getClass().getCanonicalName());
@@ -47,7 +47,7 @@ public abstract class ResponseProcessor {
 	
 	protected abstract List<MessageResponseDTO> getMessagesResponseDTO(Exception e);
 	
-	public ResponseEntity<Response<?>> process(Exception e) throws Exception {
+	ResponseEntity<Response<?>> process(Exception e) throws Exception {
 		if(!this.isAUnexpectedException(e)) {
 			return this.formatResponse(this.getResponseCode(e), this.getMessagesResponseDTO(e));
 		} else if (!this.getSuppressOthersExceptions()) {
@@ -59,6 +59,7 @@ public abstract class ResponseProcessor {
 		return this.getResponseFactory().getProcessedResponse(new UnexpectedException());
 	}
 	
+	// TODO Simplificar
 	private ResponseEntity<Response<?>> formatResponse(HttpStatus responseCode, List<MessageResponseDTO> messagesResponseDTO) {
 		MessageCreator messageCreator = this.getMessageFactory().getMessageCreator();
 		return ResponseEntity
@@ -87,7 +88,7 @@ public abstract class ResponseProcessor {
 		return this.messageFactory;
 	}
 	
-	private ResponseProcessorFactory getResponseFactory() {
+	private ResponseProcessorManager getResponseFactory() {
 		return this.responseFactory;
 	}
 	

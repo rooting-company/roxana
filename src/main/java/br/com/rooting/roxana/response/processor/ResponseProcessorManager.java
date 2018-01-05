@@ -12,41 +12,46 @@ import br.com.rooting.roxana.annotation.MultiBusinessException;
 import br.com.rooting.roxana.response.Response;
 
 @Component
-public class ResponseProcessorFactory {
+public class ResponseProcessorManager {
 
 	@Autowired
-	private BusinessExceptionResponseProcessor businessExceptionResponseProcessor;
+	private BusinessExceptionResponseProcessor businessExceptionRP;
 
 	@Autowired
-	private ConstraintValidatorResponseProcessor constraintValidatorResponseProcessor;
+	private ConstraintValidatorResponseProcessor constraintValidatorRP;
 
 	@Autowired
-	private MultiBusinessExceptionResponseProcessor multiBusinessExceptionResponseProcessor;
+	private MultiBusinessExceptionResponseProcessor multiBusinessExceptionRP;
 	
 	@Autowired
-	private BusinessConstraintValidatorResponseProcessor businessConstraintValidatorResponseProcessor;
+	private BusinessConstraintValidatorResponseProcessor businessConstraintValidatorRP;
 
-	public ResponseProcessor getResponseProcessor(final Exception e) {
+	// Internal Factory Method
+	private ResponseProcessor getResponseProcessor(final Exception e) {
+		
 		if (e instanceof ConstraintViolationException) {
 			if(AnnotationUtils.findAnnotation(e.getClass(), BusinessConstraintValidator.class) != null) {
-				return this.getBusinessConstraintValidatorResponseProcessor();
+				return this.getBusinessConstraintValidatorRP();
 			}
-			return this.getConstraintValidatorResponseProcessor();
+			
+			return this.getConstraintValidatorRP();
 		}
 		
 		if (AnnotationUtils.findAnnotation(e.getClass(), MultiBusinessException.class) != null) {
-			return this.getMultiBusinessExceptionResponseProcessor();
+			return this.getMultiBusinessExceptionRP();
 		}
 
-		return this.getBusinessExceptionResponseProcessor();
+		return this.getBusinessExceptionRP();
 	}
-
+	
+	// Unico metodo externo.
 	public ResponseEntity<Response<?>> getProcessedResponse(Exception e) throws Exception {
 		e = this.getRealException(e);
 		return this.getResponseProcessor(e).process(e);
 	}
 	
 	private Exception getRealException(final Exception e) {
+		
 		// Frameworks como hibernate utilizam de mascaramento de checked exception.
 		// Lambda não suporta checked exceptions, portanto mascamento de checked 
 		// exceptions também é bastante usado.
@@ -58,20 +63,20 @@ public class ResponseProcessorFactory {
 		return e;
 	}
 
-	private BusinessExceptionResponseProcessor getBusinessExceptionResponseProcessor() {
-		return this.businessExceptionResponseProcessor;
+	private BusinessExceptionResponseProcessor getBusinessExceptionRP() {
+		return this.businessExceptionRP;
 	}
 
-	private ConstraintValidatorResponseProcessor getConstraintValidatorResponseProcessor() {
-		return this.constraintValidatorResponseProcessor;
+	private ConstraintValidatorResponseProcessor getConstraintValidatorRP() {
+		return this.constraintValidatorRP;
 	}
 
-	private MultiBusinessExceptionResponseProcessor getMultiBusinessExceptionResponseProcessor() {
-		return this.multiBusinessExceptionResponseProcessor;
+	private MultiBusinessExceptionResponseProcessor getMultiBusinessExceptionRP() {
+		return this.multiBusinessExceptionRP;
 	}
 
-	private BusinessConstraintValidatorResponseProcessor getBusinessConstraintValidatorResponseProcessor() {
-		return this.businessConstraintValidatorResponseProcessor;
+	private BusinessConstraintValidatorResponseProcessor getBusinessConstraintValidatorRP() {
+		return this.businessConstraintValidatorRP;
 	}
 	
 }

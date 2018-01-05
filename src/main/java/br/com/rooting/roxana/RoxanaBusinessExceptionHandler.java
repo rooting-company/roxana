@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import br.com.rooting.roxana.response.Response;
-import br.com.rooting.roxana.response.processor.ResponseProcessorFactory;
+import br.com.rooting.roxana.response.processor.ResponseProcessorManager;
 
 /**
- * Convert no-treated exceptions in Roxana`s Framework standardized RESTful
+ * Convert no-treated exceptions in Roxana's Framework standardized RESTful
  * responses.
  * 
  * <p>
@@ -52,7 +52,7 @@ import br.com.rooting.roxana.response.processor.ResponseProcessorFactory;
 public class RoxanaBusinessExceptionHandler {
 
 	@Autowired
-	private ResponseProcessorFactory responseFactory;
+	private ResponseProcessorManager responseProcessorManager;
 	
 	/**
 	 * Method responsible to treat {@link Exception} that are thrown by an
@@ -66,7 +66,7 @@ public class RoxanaBusinessExceptionHandler {
 	 *            The no-treated {@link Exception} is redirected by
 	 *            <a href="https://spring.io/">The Spring framework</a>.
 	 * @return The standardized RESTful response is provided by the
-	 *         {@link ResponseProcessorFactory}.
+	 *         {@link ResponseProcessorManager}.
 	 * @throws Exception
 	 *             The process of treatment can throw exceptions depending on
 	 *             how Roxana Framework is configured. If the exception is
@@ -84,7 +84,7 @@ public class RoxanaBusinessExceptionHandler {
 			throw e;
 		}
 
-		return this.getResponseFactory().getProcessedResponse(e);
+		return this.getResponseProcessorManager().getProcessedResponse(e);
 	}
 	
 	/**
@@ -108,16 +108,16 @@ public class RoxanaBusinessExceptionHandler {
 	}
 
 	/**
-	 * Return the {@link Autowired} {@link ResponseProcessorFactory}.
+	 * Return the {@link Autowired} {@link ResponseProcessorManager}.
 	 * 
 	 * @return ResponseProcessorFactory Return the factory responsible to create
 	 *         the response Processors.
 	 * 
-	 * @see ResponseProcessorFactory
+	 * @see ResponseProcessorManager
 	 */
 	
-	protected ResponseProcessorFactory getResponseFactory() {
-		return this.responseFactory;
+	protected ResponseProcessorManager getResponseProcessorManager() {
+		return this.responseProcessorManager;
 	}
 
 }
