@@ -9,12 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import br.com.rooting.roxana.RoxanaProperties;
 import br.com.rooting.roxana.business.exception.UnexpectedException;
+import br.com.rooting.roxana.config.RoxanaProperties;
+import br.com.rooting.roxana.message.Message;
+import br.com.rooting.roxana.message.builder.MessageBuilder;
+import br.com.rooting.roxana.message.builder.MessageBuilderFactory;
 import br.com.rooting.roxana.response.Response;
 import br.com.rooting.roxana.response.ResponseBuilder;
-import br.com.rooting.roxana.response.creator.MessageCreator;
-import br.com.rooting.roxana.response.creator.MessageCreatorFactory;
 
 abstract class ResponseProcessor {
 	
@@ -26,19 +27,19 @@ abstract class ResponseProcessor {
 	
 	private final Boolean suppressOthersExceptions;
 	
-	private final MessageCreatorFactory messageFactory;
+	private final MessageBuilderFactory messageBuilderFactory;
 
-	private final ResponseProcessorManager responseFactory;
+	private final ResponseProcessorManager responseProcessorManager;
 	
 	ResponseProcessor(final RoxanaProperties roxanaProperties,
-					  		  final MessageCreatorFactory messageFactory,
-					  		  final ResponseProcessorManager responsefactory) {
+					  final MessageBuilderFactory messageBuilderFactory,
+					  final ResponseProcessorManager responseProcessorManager) {
 		
 		this.log = LoggerFactory.getLogger(this.getClass());
 		this.errorInternHandledMessage = MessageFormat.format(ERROR_INTERN_EXCEPTION_HANDLED, this.getClass().getCanonicalName());
 		this.suppressOthersExceptions = roxanaProperties.getBusinessExceptionHandlerSuppressOthersExceptions();
-		this.messageFactory = messageFactory;
-		this.responseFactory = responsefactory;
+		this.messageBuilderFactory = messageBuilderFactory;
+		this.responseProcessorManager = responseProcessorManager;
 	}
 	
 	protected abstract Boolean isAUnexpectedException(Exception e);
@@ -47,7 +48,7 @@ abstract class ResponseProcessor {
 	
 	protected abstract List<MessageResponseDTO> getMessagesResponseDTO(Exception e);
 	
-	ResponseEntity<Response<?>> process(Exception e) throws Exception {
+	ResponseEntity<Response<Message>> process(final Exception e) throws Exception {
 		if(!this.isAUnexpectedException(e)) {
 			return this.formatResponse(this.getResponseCode(e), this.getMessagesResponseDTO(e));
 		} else if (!this.getSuppressOthersExceptions()) {
@@ -56,22 +57,25 @@ abstract class ResponseProcessor {
 		
 		// Se não tem, loga o erro real e retorna um erro generico.
 		this.getLog().error(this.getErrorInternHandledMessage(), e);
-		return this.getResponseFactory().getProcessedResponse(new UnexpectedException());
+		return this.getResponseProcessorFactory().getProcessedResponse(new UnexpectedException());
 	}
 	
-	// TODO Simplificar
-	private ResponseEntity<Response<?>> formatResponse(HttpStatus responseCode, List<MessageResponseDTO> messagesResponseDTO) {
-		MessageCreator messageCreator = this.getMessageFactory().getMessageCreator();
-		return ResponseEntity
-				.status(responseCode)
-				.body(ResponseBuilder.buildWith(messagesResponseDTO
-														.stream()
-														.map(m -> messageCreator.create(m, m.getParameters()))
-														.collect(Collectors.toList())
-													 )
-												);
+	private ResponseEntity<Response<Message>> formatResponse(final HttpStatus responseCode,
+													   final List<MessageResponseDTO> messagesResponseDTO) {
+		
+		return ResponseEntity.status(responseCode).body(this.getResponse(messagesResponseDTO));
 	}
-
+	
+	private Response<Message> getResponse(final List<MessageResponseDTO> messagesResponseDTO) {
+		return ResponseBuilder.buildWith(this.transformIntoMessages(messagesResponseDTO));
+	}
+	
+	private List<Message> transformIntoMessages(final List<MessageResponseDTO> messagesResponseDTO) {
+		return messagesResponseDTO.stream()
+									.map(m -> this.getMessageBuilder().build(m, m.getParameters()))
+									.collect(Collectors.toList());
+	}
+	
 	protected Logger getLog() {
 		return this.log;
 	}
@@ -84,12 +88,16 @@ abstract class ResponseProcessor {
 		return this.suppressOthersExceptions;
 	}
 	
-	private MessageCreatorFactory getMessageFactory() {
-		return this.messageFactory;
+	private MessageBuilder getMessageBuilder() {
+		return this.getMessageBuilderFactory().getMessageBuilder();
 	}
 	
-	private ResponseProcessorManager getResponseFactory() {
-		return this.responseFactory;
+	private MessageBuilderFactory getMessageBuilderFactory() {
+		return this.messageBuilderFactory;
+	}
+	
+	private ResponseProcessorManager getResponseProcessorFactory() {
+		return this.responseProcessorManager;
 	}
 	
 }

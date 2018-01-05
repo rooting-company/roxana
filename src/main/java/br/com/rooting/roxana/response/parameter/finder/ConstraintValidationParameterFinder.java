@@ -15,6 +15,8 @@ import br.com.rooting.roxana.parameter.Parameter;
 
 public class ConstraintValidationParameterFinder implements ParameterFinderStrategy {
 	
+	private static final String EMPYT_VALUE = "";
+	
 	private static final String INVALID_VALUE_PARAMETER = "invalidValue";
 	private static final String PROPERTY_NAME_PARAMETER = "propertyName";
 	
@@ -36,11 +38,12 @@ public class ConstraintValidationParameterFinder implements ParameterFinderStrat
 		// TODO Criar annotation para customizar.
 		parameters.add(Parameter.create(PROPERTY_NAME_PARAMETER, propertyName));
 		
-		Object invalidValue = this.getViolation().getInvalidValue() == null ? "" : this.getViolation().getInvalidValue();
+		Object invalidValue = this.getViolation().getInvalidValue() == null ? EMPYT_VALUE : this.getViolation().getInvalidValue();
 		parameters.add(Parameter.create(INVALID_VALUE_PARAMETER, invalidValue));
 		
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.putAll(this.getViolation().getConstraintDescriptor().getAttributes());
+		
 		attributes.remove(REMOVED_PARAMETER_GROUP);
 		attributes.remove(REMOVED_PARAMETER_MESSAGE);
 		attributes.remove(REMOVED_PARAMETER_PAYLOAD);
@@ -53,7 +56,7 @@ public class ConstraintValidationParameterFinder implements ParameterFinderStrat
 		return parameters;
 	}
 	
-	public ConstraintViolation<?> getViolation() {
+	protected ConstraintViolation<?> getViolation() {
 		return this.violation;
 	}
 	
@@ -61,7 +64,7 @@ public class ConstraintValidationParameterFinder implements ParameterFinderStrat
 		return Stream.of(StringUtils.splitByCharacterTypeCamelCase(propertyName))
 								.map(s -> StringUtils.capitalize(s))
 								.reduce((s1,s2) -> s1.concat(" ").concat(s2))
-								.orElse("");
+								.orElse(EMPYT_VALUE);
 
 	}
 	

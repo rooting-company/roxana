@@ -1,22 +1,30 @@
-package br.com.rooting.roxana;
+package br.com.rooting.roxana.config;
 
-import static br.com.rooting.roxana.RoxanaProperties.ROOT_NAME;
-import static br.com.rooting.roxana.RoxanaProperties.Business.ResponseEstrategy.*;
+import static br.com.rooting.roxana.config.RoxanaProperties.ROOT_NAME;
+import static br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseEstrategy.TRANSLATED;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import br.com.rooting.roxana.RoxanaProperties.Business.ExceptionHandler;
-import br.com.rooting.roxana.RoxanaProperties.Business.ResponseEstrategy;
+import br.com.rooting.roxana.config.RoxanaProperties.Business.ExceptionHandler;
+import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseEstrategy;
 
+// TODO Fazer com as constraints validations funcionem
+// TODO Criar testes e exceptions para validar a classe.
 @Component
 @ConfigurationProperties(ROOT_NAME)
 public final class RoxanaProperties {
 	
 	public static final String ROOT_NAME = "roxana";
-
+	
+	@Valid
 	private Business business = new Business();
 
+	@Valid
 	private MessageBundle messageBundle = new MessageBundle();
 
 	public Business getBusiness() {
@@ -47,26 +55,34 @@ public final class RoxanaProperties {
 		return this.getMessageBundle().getLocale();
 	}
 	
-	public Boolean getMessageBundleSuppressFailToTranslateException() {
-		return this.getMessageBundle().getSuppressFailToTranslateException();
+	public Boolean getMessageBundleSuppressFailsTranslations() {
+		return this.getMessageBundle().getSuppressFailsTranslations();
 	}
 	
 	public static class Business {
 		
+		@Valid
+		@NotBlank
 		private ResponseEstrategy responseEstrategy = TRANSLATED;
 		
+		@Valid
+		@NotNull
 		private ExceptionHandler exceptionHandler = new ExceptionHandler();
-
-		public ResponseEstrategy getResponseEstrategy() {
-			return responseEstrategy;
+		
+		Business() {
+			super();
 		}
 
+		public ResponseEstrategy getResponseEstrategy() {
+			return this.responseEstrategy;
+		}
+		
 		public void setResponseEstrategy(ResponseEstrategy responseEstrategy) {
 			this.responseEstrategy = responseEstrategy;
 		}
 
 		public ExceptionHandler getExceptionHandler() {
-			return exceptionHandler;
+			return this.exceptionHandler;
 		}
 		
 		public enum ResponseEstrategy {
@@ -74,8 +90,12 @@ public final class RoxanaProperties {
 		}
 		
 		public static class ExceptionHandler {
-
-			private Boolean suppressOthersExceptions = true;
+			
+			private Boolean suppressOthersExceptions = Boolean.TRUE;
+			
+			ExceptionHandler() {
+				super();
+			}
 			
 			public Boolean getSuppressOthersExceptions() {
 				return suppressOthersExceptions;
@@ -84,7 +104,7 @@ public final class RoxanaProperties {
 			public void setSuppressOthersExceptions(Boolean suppressOthersExceptions) {
 				this.suppressOthersExceptions = suppressOthersExceptions;
 			}
-
+			
 		}
 	}
 	
@@ -93,15 +113,20 @@ public final class RoxanaProperties {
 		private static final String DEFAULT_MESSAGE_BUNDLE_PATH = "messages";
 		
 		public static final String MESSAGE_BUNDLE_PATH_PROPERTY = "roxana.message-bundle.path";
-
+		
+		@NotBlank
 		private String path = DEFAULT_MESSAGE_BUNDLE_PATH;
 
 		private String locale;
 
-		private Boolean suppressFailToTranslateException = true;
+		private Boolean suppressFailsTranslations = true;
+		
+		MessageBundle() {
+			super();
+		}
 
 		public String getPath() {
-			return path;
+			return this.path;
 		}
 
 		public void setPath(String path) {
@@ -109,20 +134,21 @@ public final class RoxanaProperties {
 		}
 
 		public String getLocale() {
-			return locale;
+			return this.locale;
 		}
 
 		public void setLocale(String locale) {
 			this.locale = locale;
 		}
 
-		public Boolean getSuppressFailToTranslateException() {
-			return suppressFailToTranslateException;
+		public Boolean getSuppressFailsTranslations() {
+			return this.suppressFailsTranslations;
 		}
 
-		public void setSuppressFailToTranslateException(Boolean suppressFailToTranslateException) {
-			this.suppressFailToTranslateException = suppressFailToTranslateException;
+		public void setSuppressFailsTranslations(Boolean suppressFailsTranslations) {
+			this.suppressFailsTranslations = suppressFailsTranslations;
 		}
+		
 	}
 
 }

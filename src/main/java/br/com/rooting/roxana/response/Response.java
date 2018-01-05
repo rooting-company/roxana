@@ -13,7 +13,7 @@ public class Response<T extends Message> {
 
 	private final List<T> messages = new ArrayList<>();
 	
-	public Response(@Nullable final Collection<T> collection) {
+	Response(@Nullable final Collection<T> collection) {
 		super();
 		this.messages.addAll(collection);
 	}

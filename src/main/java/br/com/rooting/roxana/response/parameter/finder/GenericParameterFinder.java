@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import br.com.rooting.roxana.business.parameter.CurrencyParameter;
+import br.com.rooting.roxana.business.parameter.DateParameter;
 import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.parameter.annotation.CurrencyParameter;
-import br.com.rooting.roxana.parameter.annotation.DateParameter;
 
 public class GenericParameterFinder implements ParameterFinderStrategy {
 
@@ -30,9 +30,9 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 			}
 			
 			try {
-				if(f.isAnnotationPresent(br.com.rooting.roxana.parameter.annotation.Parameter.class)) {
-					br.com.rooting.roxana.parameter.annotation.Parameter mp = f.getDeclaredAnnotation(br.com.rooting.roxana.parameter.annotation.Parameter.class);
-					String name = mp.value().equals(br.com.rooting.roxana.parameter.annotation.Parameter.DEFAULT_VALUE) ? f.getName() : mp.value();
+				if(f.isAnnotationPresent(br.com.rooting.roxana.business.parameter.Parameter.class)) {
+					br.com.rooting.roxana.business.parameter.Parameter mp = f.getDeclaredAnnotation(br.com.rooting.roxana.business.parameter.Parameter.class);
+					String name = mp.value().equals(br.com.rooting.roxana.business.parameter.Parameter.DEFAULT_VALUE) ? f.getName() : mp.value();
 					parameters.add(Parameter.create(name, f.get(this.getObject())));
 					
 				} else if(f.isAnnotationPresent(DateParameter.class)) {
@@ -53,7 +53,7 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 		return parameters;
 	}
 	
-	public Object getObject() {
+	protected Object getObject() {
 		return this.object;
 	}
 

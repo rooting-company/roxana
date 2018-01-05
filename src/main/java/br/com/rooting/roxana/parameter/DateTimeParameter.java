@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import org.springframework.lang.Nullable;
 
-public final class DateTimeParameter {
+final class DateTimeParameter {
 	
 	private final LocalDateTime localDateTime;
 	

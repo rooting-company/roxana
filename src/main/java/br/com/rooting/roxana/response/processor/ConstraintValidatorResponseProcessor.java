@@ -7,21 +7,23 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import br.com.rooting.roxana.RoxanaProperties;
+import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.message.MessageSeverity;
-import br.com.rooting.roxana.response.creator.MessageCreatorFactory;
+import br.com.rooting.roxana.message.builder.MessageBuilderFactory;
 import br.com.rooting.roxana.response.parameter.finder.ConstraintValidationParameterFinder;
 import br.com.rooting.roxana.response.parameter.finder.ParameterFinderStrategy;
 
+@Primary
 @Component
 class ConstraintValidatorResponseProcessor extends ResponseProcessor {
 
 	@Autowired
 	ConstraintValidatorResponseProcessor(final RoxanaProperties roxanaProperties,
-										 final MessageCreatorFactory messageFactory, 
+										 final MessageBuilderFactory messageFactory, 
 									   	 final ResponseProcessorManager responseFactory) {
 		
 		super(roxanaProperties, messageFactory, responseFactory);
@@ -47,7 +49,7 @@ class ConstraintValidatorResponseProcessor extends ResponseProcessor {
 	
 	protected MessageResponseDTO getMessageResponseDTO(ConstraintViolation<?> c) {
 		MessageResponseDTO dto = new MessageResponseDTO();
-		dto.setMessageKey(c.getMessageTemplate());
+		dto.setKey(c.getMessageTemplate());
 		dto.setSeverity(MessageSeverity.ERROR);
 		dto.setParameters(this.getParameterFinderStrategy(c).findParameters());
 		return dto;

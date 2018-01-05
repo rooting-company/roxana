@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.translator.exception;
+package br.com.rooting.roxana.translator;
 
 public class FailToTranslateException extends RuntimeException {
 
@@ -6,7 +6,7 @@ public class FailToTranslateException extends RuntimeException {
 	
 	private static final String MESSAGE = "Failed to translate the following message: ";
 
-	public FailToTranslateException(String key, Exception e) {
+	FailToTranslateException(String key, Exception e) {
 		super(MESSAGE + key, e);
 	}
 

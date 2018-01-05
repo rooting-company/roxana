@@ -1,6 +1,6 @@
-package br.com.rooting.roxana.translator.exception;
+package br.com.rooting.roxana.translator;
 
-import static br.com.rooting.roxana.RoxanaProperties.MessageBundle.MESSAGE_BUNDLE_PATH_PROPERTY;
+import static br.com.rooting.roxana.config.RoxanaProperties.MessageBundle.MESSAGE_BUNDLE_PATH_PROPERTY;
 
 public class MessageBundlePathInvalid extends RuntimeException {
 
@@ -10,7 +10,8 @@ public class MessageBundlePathInvalid extends RuntimeException {
 										+ "verify the property " + MESSAGE_BUNDLE_PATH_PROPERTY
 										+ " of your String property file.";
 
-	public MessageBundlePathInvalid(Exception e) {
+	MessageBundlePathInvalid(Exception e) {
 		super(MESSAGE, e);
 	}
+	
 }

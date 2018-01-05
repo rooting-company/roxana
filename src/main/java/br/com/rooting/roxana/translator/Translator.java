@@ -7,20 +7,15 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 
-import javax.management.RuntimeErrorException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import br.com.rooting.roxana.RoxanaProperties;
+import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.translator.exception.FailToTranslateException;
-import br.com.rooting.roxana.translator.exception.MessageBundlePathNotDefined;
 
 @Component
 public class Translator {
@@ -49,15 +44,16 @@ public class Translator {
 	private final Boolean suppressFailToTranslateException;
 	
 	private final Locale defaultLocale;
-	// Lazy load
-	private ResourceBundle resourceBundle;
+	
+	private final ResourceBundle resourceBundle;
 	
 	@Autowired
-	private Translator(final RoxanaProperties properties, final MessageSource messageSource) {
+	private Translator(final RoxanaProperties properties) {
 		super();
 		this.resourceBundlePath = properties.getMessageBundlePath();
-		this.suppressFailToTranslateException = properties.getMessageBundleSuppressFailToTranslateException();
+		this.suppressFailToTranslateException = properties.getMessageBundleSuppressFailsTranslations();
 		this.defaultLocale = this.getRootingLocale(properties.getMessageBundleLocale());
+		this.resourceBundle = this.getValidResourceBundle(this.getDefaultLocale());
 	}
 	
 	public String translate(final String key, final Collection<Parameter> parameters) {
@@ -86,7 +82,6 @@ public class Translator {
 	}
 	
 	private boolean isAValidLocale(final Locale l) {
-		// O locale é valido se tiver setado o country e language corretamente.
 		if(!StringUtils.isEmpty(l.getCountry()) 
 				&& !StringUtils.isEmpty(l.getLanguage())) {
 			return true;
@@ -94,14 +89,13 @@ public class Translator {
 		return false;
 	}
 	
-	// TODO Ver possibilidade de fazer um cache disso (guardar isso como cash em um hash map por exemplo).
 	private ResourceBundle getValidResourceBundle(Locale locale) {
 		String bundlePath = Optional.ofNullable(this.getResourceBundlePath())
 									.orElseThrow(MessageBundlePathNotDefined::new);
 
 		try {
 			return ResourceBundle.getBundle(bundlePath, locale);
-		} catch (RuntimeErrorException e) {
+		} catch (Exception e) {
 			throw new MessageBundlePathNotDefined();
 		}
 	}
@@ -110,7 +104,6 @@ public class Translator {
 		return INTERPOLATION_PREFIX_ESCAPED + s + INTERPOLATION_DELIMITATON_ESCAPED;
 	}
 	
-	// TODO Investigar por que roda em loop (debug).
 	private String interpolateKey(ResourceBundle resourceBundle, Locale locale, String key, Collection<Parameter> parameters) {
 		return Arrays.stream(key.split(INTERPOLATION_REGEX))
 						.distinct()
@@ -137,22 +130,21 @@ public class Translator {
 		}
 	}
 	
-	private String interpolateParameters(final Locale locale, final String message, final Collection<Parameter> parameters) {
+	private String interpolateParameters(final Locale locale, String message, final Collection<Parameter> parameters) {
 //		O codigo deste metodo tem o mesmo efeito do seguinte codigo:
-//		String interpolated = messsage;
-//		for (Parameter p : parameters) {
-//			interpolated = this.interpolateParameter(locale, message, p);
-//		}
-//		return interpolated;
 		
-		return parameters.stream()
-						 .reduce(message, (s, p) -> this.interpolateParameter(locale, s, p), (s1, s2) -> null);
+//		return parameters.stream()
+//				 .reduce(message, (s, p) -> this.interpolateParameter(locale, s, p), (s1, s2) -> null);
+		
+		for (Parameter p : parameters) {
+			message = this.interpolateParameter(locale, message, p);
+		}
+		return message;
 	}
 	
 	private String interpolateParameter(final Locale locale, final String message, final Parameter parameter) {
 		String replaceRegex = this.getInterpolationReplaceRegex(parameter.getName());
-		String formattedValue = parameter.getFormattedValue(locale);
-		formattedValue = Matcher.quoteReplacement(formattedValue);
+		String formattedValue =  Matcher.quoteReplacement(parameter.getFormattedValue(locale));
 		return message.replaceAll(replaceRegex, formattedValue);
 	}
 	
@@ -164,10 +156,8 @@ public class Translator {
 		return this.defaultLocale;
 	}
 	
-	// Lazy load.
 	public ResourceBundle getResourceBundle() {
-		return Optional.ofNullable(this.resourceBundle)
-				.orElse(this.getValidResourceBundle(this.getDefaultLocale()));
+		return this.resourceBundle;
 	}
 	
 	public String getResourceBundlePath() {

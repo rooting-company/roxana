@@ -7,8 +7,9 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import br.com.rooting.roxana.annotation.BusinessConstraintValidator;
-import br.com.rooting.roxana.annotation.MultiBusinessException;
+import br.com.rooting.roxana.business.BusinessConstraintValidator;
+import br.com.rooting.roxana.business.MultiBusinessException;
+import br.com.rooting.roxana.message.Message;
 import br.com.rooting.roxana.response.Response;
 
 @Component
@@ -25,7 +26,17 @@ public class ResponseProcessorManager {
 	
 	@Autowired
 	private BusinessConstraintValidatorResponseProcessor businessConstraintValidatorRP;
+	
+	// Classe deve sempre ser injetada, pois pode causar injeção ciclica com a classe ResponseProcessor.
+	private ResponseProcessorManager() {
+		super();
+	}
 
+	public ResponseEntity<Response<Message>> getProcessedResponse(Exception e) throws Exception {
+		e = this.getRealException(e);
+		return this.getResponseProcessor(e).process(e);
+	}
+	
 	// Internal Factory Method
 	private ResponseProcessor getResponseProcessor(final Exception e) {
 		
@@ -42,12 +53,6 @@ public class ResponseProcessorManager {
 		}
 
 		return this.getBusinessExceptionRP();
-	}
-	
-	// Unico metodo externo.
-	public ResponseEntity<Response<?>> getProcessedResponse(Exception e) throws Exception {
-		e = this.getRealException(e);
-		return this.getResponseProcessor(e).process(e);
 	}
 	
 	private Exception getRealException(final Exception e) {

@@ -182,7 +182,7 @@ Roxana have some configurations that changes the application behavior. The confi
 
   It is useful when you want to hide not expected exception in production environment, in orther hands, you can allow the     developer see the stacktrace more easily in development environment. The default value is **"true"**.
 
-- **roxana.message-bundle.supresss-fail-to-translate-exception:** Defines if when the application fail to translate a message, it will raise an exception or assume the pattern **???{messageKey}???** as translation. 
+- **roxana.message-bundle.suppress-fails-translations:** Defines if when the application fail to translate a message, it will raise an exception or assume the pattern **???{messageKey}???** as translation. 
 
   This is usefull when you want to avoid to compromise operations in production enviroment just because the programer forgot to   add a simple key in the i18n files. In the development enviroment, the programer will notice missing keys more easily if   the application rises exceptions. The default value is **"true"**.
 
@@ -202,7 +202,7 @@ In progress...
 
 ## Contributors
 
-* [Bruno Costa](https://github.com/brunoLNCosta)
+* [Bruno Costa](https://github.com/brunoLNCosta) - brunoluisncosta@gmail.com
 
 ## License
 

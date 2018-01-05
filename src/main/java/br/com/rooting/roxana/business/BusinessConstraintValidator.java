@@ -1,16 +1,17 @@
-package br.com.rooting.roxana.parameter.annotation;
+package br.com.rooting.roxana.business;
 
-import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+@Inherited
 @Documented
-@Target(FIELD)
+@Target(TYPE)
 @Retention(RUNTIME)
-public @interface ParametersMapper {
+public @interface BusinessConstraintValidator {
 	
-	ParameterMapper[] value();
 }

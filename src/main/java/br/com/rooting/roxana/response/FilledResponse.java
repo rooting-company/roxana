@@ -10,7 +10,7 @@ public class FilledResponse<Z, T extends Message> extends Response<T> {
 
 	private final Z object;
 	
-	public FilledResponse(@Nullable final Z object, @Nullable final Collection<T> collection) {
+	FilledResponse(@Nullable final Z object, @Nullable final Collection<T> collection) {
 		super(collection);
 		this.object = object;
 	}

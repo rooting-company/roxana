@@ -18,10 +18,10 @@ public final class MessageFully implements Message {
 	private final String translation;
 
 	public MessageFully(final String key, 
-			final MessageSeverity severity, 
-			final String language, 
-			final String translation, 
-			final Collection<Parameter> parameters) {
+						final MessageSeverity severity, 
+						final String language, 
+						final String translation, 
+						final Collection<Parameter> parameters) {
 		
 		super();
 		

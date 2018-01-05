@@ -1,6 +1,6 @@
-package br.com.rooting.roxana.translator.exception;
+package br.com.rooting.roxana.translator;
 
-import static br.com.rooting.roxana.RoxanaProperties.MessageBundle.MESSAGE_BUNDLE_PATH_PROPERTY;
+import static br.com.rooting.roxana.config.RoxanaProperties.MessageBundle.MESSAGE_BUNDLE_PATH_PROPERTY;
 
 public class MessageBundlePathNotDefined extends RuntimeException {
 
@@ -12,7 +12,8 @@ public class MessageBundlePathNotDefined extends RuntimeException {
 										+ "editing the application.yml or "
 										+ "application.properties files.";
 
-	public MessageBundlePathNotDefined() {
+	MessageBundlePathNotDefined() {
 		super(MESSAGE);
 	}
+	
 }

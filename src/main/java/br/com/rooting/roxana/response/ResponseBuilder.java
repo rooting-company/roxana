@@ -32,6 +32,14 @@ public class ResponseBuilder<T extends Message> {
 		return new ResponseBuilder<T>().appendMessages(Arrays.asList(messages)).buildFilled(responseObject);
 	}
 	
+	public Response<T> build() {
+		return new Response<T>(this.getMessages());
+	}
+	
+	public <Z> FilledResponse<Z, T> buildFilled(Z responseObject) {
+		return new FilledResponse<Z, T>(responseObject, this.getMessages());
+	}
+	
 	public ResponseBuilder<T> appendMessage(T t) {
 		this.getMessages().add(t);
 		return this;
@@ -40,14 +48,6 @@ public class ResponseBuilder<T extends Message> {
 	public ResponseBuilder<T> appendMessages(Collection<T> messages) {
 		this.getMessages().addAll(messages);
 		return this;
-	}
-	
-	public Response<T> build() {
-		return new Response<T>(this.getMessages());
-	}
-	
-	public <Z> FilledResponse<Z, T> buildFilled(Z responseObject) {
-		return new FilledResponse<Z, T>(responseObject, this.getMessages());
 	}
 	
 	protected Collection<T> getMessages() {
