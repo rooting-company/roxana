@@ -112,7 +112,7 @@ public @ResponseBody Response<Message> buyACar(@PathVariable("id") Long idPerson
        }
       ],
       "language": "pt-BR",
-      "translation": "Saldo Insufficiente: R$ 3000,00."
+      "translation": "Saldo Insuficiente: R$ 3000,00."
     }
   ]
 }
@@ -146,7 +146,7 @@ Roxana have some configurations that changes the application behavior. The confi
           }
         ],
         "language": "pt-BR",
-        "translation": "Saldo Insufficiente: R$ 3000,00."
+        "translation": "Saldo Insuficiente: R$ 3000,00."
       }
     ]
   }
