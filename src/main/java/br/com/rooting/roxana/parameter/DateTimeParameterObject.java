@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import org.springframework.lang.Nullable;
 
-final class DateTimeParameter {
+final class DateTimeParameterObject {
 	
 	private final LocalDateTime localDateTime;
 	
@@ -32,7 +32,7 @@ final class DateTimeParameter {
 	
 	private final Long instant;
 	
-	DateTimeParameter(final LocalDateTime localDateTime, @Nullable final String pattern) {
+	DateTimeParameterObject(final LocalDateTime localDateTime, @Nullable final String pattern) {
 		this.localDateTime = localDateTime;
 		this.pattern = Optional.ofNullable(pattern);
 		this.dayOfMonth = localDateTime.getDayOfMonth();
@@ -50,23 +50,23 @@ final class DateTimeParameter {
 				.orElse(this.getLocalDateTime().format(DateTimeFormatter.ISO_DATE.withLocale(locale)));
 	}
 	
-	static DateTimeParameter create(final Date date, @Nullable final String pattern) {
+	static DateTimeParameterObject create(final Date date, @Nullable final String pattern) {
 		final LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		return new DateTimeParameter(localDateTime, pattern);
+		return new DateTimeParameterObject(localDateTime, pattern);
 	}
 	
-	static DateTimeParameter create(final Calendar calendar, @Nullable final String pattern) {
+	static DateTimeParameterObject create(final Calendar calendar, @Nullable final String pattern) {
 		final LocalDateTime localDateTime = calendar.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		return new DateTimeParameter(localDateTime, pattern);
+		return new DateTimeParameterObject(localDateTime, pattern);
 	}
 	
-	static DateTimeParameter create(final LocalDate localDate, @Nullable final String pattern) {
+	static DateTimeParameterObject create(final LocalDate localDate, @Nullable final String pattern) {
 		final LocalDateTime localDateTime = localDate.atTime(LocalTime.MIN);
-		return new DateTimeParameter(localDateTime, pattern);
+		return new DateTimeParameterObject(localDateTime, pattern);
 	}
 
-	static DateTimeParameter create(final LocalDateTime localDateTime, @Nullable final String pattern) {
-		return new DateTimeParameter(localDateTime, pattern);
+	static DateTimeParameterObject create(final LocalDateTime localDateTime, @Nullable final String pattern) {
+		return new DateTimeParameterObject(localDateTime, pattern);
 	}
 
 	private LocalDateTime getLocalDateTime() {

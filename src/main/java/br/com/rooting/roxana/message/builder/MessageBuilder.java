@@ -8,8 +8,8 @@ import br.com.rooting.roxana.message.Message;
 import br.com.rooting.roxana.message.mapper.MessageMapper;
 import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
 import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.response.parameter.finder.MessageMapperEnumParameterFinder;
-import br.com.rooting.roxana.response.parameter.finder.ParameterFinderStrategy;
+import br.com.rooting.roxana.response.parameterFinder.MessageMapperEnumParameterFinder;
+import br.com.rooting.roxana.response.parameterFinder.ParameterFinderStrategy;
 
 public abstract class MessageBuilder {
 	

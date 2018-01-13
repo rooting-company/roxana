@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.response.parameter.finder;
+package br.com.rooting.roxana.response.parameterFinder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

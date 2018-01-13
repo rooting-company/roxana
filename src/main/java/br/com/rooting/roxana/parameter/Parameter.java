@@ -50,35 +50,35 @@ public final class Parameter {
 	}
 	
 	public static Parameter createDateParameter(final String name, final Date date) {
-		return new Parameter(DATE, name, DateTimeParameter.create(date, null));
+		return new Parameter(DATE, name, DateTimeParameterObject.create(date, null));
 	}
 	
 	public static Parameter createDateParameter(final String name, final Date date, final String pattern) {
-		return new Parameter(DATE, name, DateTimeParameter.create(date, pattern));
+		return new Parameter(DATE, name, DateTimeParameterObject.create(date, pattern));
 	}
 	
 	public static Parameter createDateParameter(final String name, final Calendar calendar) {
-		return new Parameter(DATE, name, DateTimeParameter.create(calendar, null));
+		return new Parameter(DATE, name, DateTimeParameterObject.create(calendar, null));
 	}
 	
 	public static Parameter createDateParameter(final String name, final Calendar calendar, final String pattern) {
-		return new Parameter(DATE, name, DateTimeParameter.create(calendar, pattern));
+		return new Parameter(DATE, name, DateTimeParameterObject.create(calendar, pattern));
 	}
 	
 	public static Parameter createDateParameter(final String name, final LocalDate localDate) {
-		return new Parameter(DATE, name, DateTimeParameter.create(localDate, null));
+		return new Parameter(DATE, name, DateTimeParameterObject.create(localDate, null));
 	}
 	
 	public static Parameter createDateParameter(final String name, final LocalDate localDate, final String pattern) {
-		return new Parameter(DATE, name, DateTimeParameter.create(localDate, pattern));
+		return new Parameter(DATE, name, DateTimeParameterObject.create(localDate, pattern));
 	}
 	
 	public static Parameter createDateParameter(final String name, final LocalDateTime localDateTime) {
-		return new Parameter(DATE, name, DateTimeParameter.create(localDateTime, null));
+		return new Parameter(DATE, name, DateTimeParameterObject.create(localDateTime, null));
 	}
 	
 	public static Parameter createDateParameter(final String name, final LocalDateTime localDateTime, final String pattern) {
-		return new Parameter(DATE, name, DateTimeParameter.create(localDateTime, pattern));
+		return new Parameter(DATE, name, DateTimeParameterObject.create(localDateTime, pattern));
 	}
 	
 	// Verificar se tem como não deixa publico.
@@ -122,7 +122,7 @@ public final class Parameter {
 		}
 		
 		case DATE : {
-			return ((DateTimeParameter) this.getValue()).getFormatterDate(locale);
+			return ((DateTimeParameterObject) this.getValue()).getFormatterDate(locale);
 		}
 		
 		case CURRENCY : {

@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.message.MessageSeverity;
 import br.com.rooting.roxana.message.builder.MessageBuilderFactory;
-import br.com.rooting.roxana.response.parameter.finder.ConstraintValidationParameterFinder;
-import br.com.rooting.roxana.response.parameter.finder.ParameterFinderStrategy;
+import br.com.rooting.roxana.response.parameterFinder.ConstraintValidationParameterFinder;
+import br.com.rooting.roxana.response.parameterFinder.ParameterFinderStrategy;
 
 @Primary
 @Component
