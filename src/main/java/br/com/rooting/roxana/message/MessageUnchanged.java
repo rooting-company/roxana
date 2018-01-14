@@ -1,12 +1,12 @@
 package br.com.rooting.roxana.message;
 
-public final class MessageUnchaged implements Message {
+public final class MessageUnchanged implements Message {
 	
 	private final MessageSeverity severity;
 	
 	private final String key;
 	
-	public MessageUnchaged(final MessageSeverity severity,
+	public MessageUnchanged(final MessageSeverity severity,
 					  final String key) {
 		this.severity = severity;
 		this.key = key;

@@ -15,13 +15,13 @@ public class MessageBuilderFactory {
 	
 	private final MessageTranslatedBuilder translatedBuilder;
 	
-	private final MessageUnchagedBuilder unchagedBuilder;
+	private final MessageUnchangedBuilder unchagedBuilder;
 	
 	@Autowired
 	public MessageBuilderFactory(final RoxanaProperties roxanaProperties,
 							     final MessageFullyBuilder fullyBuilder,
 							     final MessageTranslatedBuilder translatedBuilder,
-							     final MessageUnchagedBuilder unchagedBuilder) {
+							     final MessageUnchangedBuilder unchagedBuilder) {
 		
 		this.responseEstrategy = roxanaProperties.getBusinessResponseEstrategy();
 		this.fullyBuilder = fullyBuilder;
@@ -38,7 +38,7 @@ public class MessageBuilderFactory {
 			return this.getTranslatedBuilder();
 			
 		case UNCHANGED:
-			return this.getUnchagedBuilder();
+			return this.getUnchangedBuilder();
 
 		default:
 			return this.getTranslatedBuilder();
@@ -57,7 +57,7 @@ public class MessageBuilderFactory {
 		return this.translatedBuilder;
 	}
 
-	private MessageUnchagedBuilder getUnchagedBuilder() {
+	private MessageUnchangedBuilder getUnchangedBuilder() {
 		return this.unchagedBuilder;
 	}
 	
