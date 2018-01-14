@@ -1,10 +1,10 @@
 /**
  * This package provide classes that represent various types of parameters that
- * a {@link message} could have.
+ * a {@link br.com.rooting.roxana.message.Message} could have.
  * 
  * @author BrunoCosta
  * @since 1.0
- * @see Message
+ * @see br.com.rooting.roxana.message.Message
  * @see Parameter
  * @see ParameterType
  *
