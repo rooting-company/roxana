@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import br.com.rooting.roxana.business.parameter.mapper.CurrencyParameterMapper;
-import br.com.rooting.roxana.business.parameter.mapper.DateParameterMapper;
-import br.com.rooting.roxana.business.parameter.mapper.ParameterMapper;
 import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
+import br.com.rooting.roxana.message.mapper.parameter.CurrencyMessageParameter;
+import br.com.rooting.roxana.message.mapper.parameter.DateMessageParameter;
+import br.com.rooting.roxana.message.mapper.parameter.MessageParameter;
 import br.com.rooting.roxana.parameter.Parameter;
 
 public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy {
@@ -41,14 +41,14 @@ public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy
 		for(Object value : this.getValues()) {
 			if(paramIterator.hasNext()) {
 				Annotation a = paramIterator.next();
-				if(a instanceof ParameterMapper) {
-					ParameterMapper p = (ParameterMapper) a;
+				if(a instanceof MessageParameter) {
+					MessageParameter p = (MessageParameter) a;
 					parameters.add(Parameter.create(p.value(), value));
-				} else if(a instanceof DateParameterMapper) {
-					DateParameterMapper d = (DateParameterMapper) a;
+				} else if(a instanceof DateMessageParameter) {
+					DateMessageParameter d = (DateMessageParameter) a;
 					parameters.add(Parameter.createDateParameter(d.value(), value, d.pattern()));
-				} else if(a instanceof CurrencyParameterMapper) {
-					CurrencyParameterMapper c = (CurrencyParameterMapper) a;
+				} else if(a instanceof CurrencyMessageParameter) {
+					CurrencyMessageParameter c = (CurrencyMessageParameter) a;
 					parameters.add(Parameter.createCurrencyParameter(c.value(), value));
 				}
 			} else {

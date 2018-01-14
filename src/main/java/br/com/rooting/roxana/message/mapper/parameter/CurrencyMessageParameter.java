@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.business.parameter.mapper;
+package br.com.rooting.roxana.message.mapper.parameter;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -11,13 +11,9 @@ import java.lang.annotation.Target;
 @Documented
 @Target(FIELD)
 @Retention(RUNTIME)
-@Repeatable(DateParametersMapper.class)
-public @interface DateParameterMapper {
-	
-	public static final String DEFAULT_PATTNER = "yyyy-MM-dd";
-	
+@Repeatable(CurrencyMessageParameters.class)
+public @interface CurrencyMessageParameter {
+
 	public String value();
-	
-	public String pattern() default DEFAULT_PATTNER;
 	
 }
