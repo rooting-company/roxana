@@ -6,51 +6,51 @@ import java.util.Collection;
 
 import br.com.rooting.roxana.message.Message;
 
-public class ResponseBuilder<T extends Message> {
+public class ResponseBuilder {
 	
-	private Collection<T> messages;
+	private Collection<Message> messages;
 	
 	public ResponseBuilder() {
 		super();
 	}
 	
-	public static <T extends Message> Response<T> buildWith(Collection<T> messages) {
-		return new ResponseBuilder<T>().appendMessages(messages).build();
+	public static Response buildWith(Collection<Message> messages) {
+		return new ResponseBuilder().appendMessages(messages).build();
 	}
 	
 	@SafeVarargs
-	public static <T extends Message> Response<T> buildWith(T... messages) {
-		return new ResponseBuilder<T>().appendMessages(Arrays.asList(messages)).build();
+	public static Response buildWith(Message... messages) {
+		return new ResponseBuilder().appendMessages(Arrays.asList(messages)).build();
 	}
 	
-	public static <Z, T extends Message> FilledResponse<Z, T> buildFilledWith(Z responseObject, Collection<T> messages) {
-		return new ResponseBuilder<T>().appendMessages(messages).buildFilled(responseObject);
+	public static <Z> FilledResponse<Z> buildFilledWith(Z responseObject, Collection<Message> messages) {
+		return new ResponseBuilder().appendMessages(messages).buildFilled(responseObject);
 	}
 	
 	@SafeVarargs
-	public static <Z, T extends Message> FilledResponse<Z, T> buildFilledWith(Z responseObject, T...messages) {
-		return new ResponseBuilder<T>().appendMessages(Arrays.asList(messages)).buildFilled(responseObject);
+	public static <Z> FilledResponse<Z> buildFilledWith(Z responseObject, Message...messages) {
+		return new ResponseBuilder().appendMessages(Arrays.asList(messages)).buildFilled(responseObject);
 	}
 	
-	public Response<T> build() {
-		return new Response<T>(this.getMessages());
+	public Response build() {
+		return new Response(this.getMessages());
 	}
 	
-	public <Z> FilledResponse<Z, T> buildFilled(Z responseObject) {
-		return new FilledResponse<Z, T>(responseObject, this.getMessages());
+	public <Z> FilledResponse<Z> buildFilled(Z responseObject) {
+		return new FilledResponse<Z>(responseObject, this.getMessages());
 	}
 	
-	public ResponseBuilder<T> appendMessage(T t) {
-		this.getMessages().add(t);
+	public ResponseBuilder appendMessage(Message message) {
+		this.getMessages().add(message);
 		return this;
 	}
 	
-	public ResponseBuilder<T> appendMessages(Collection<T> messages) {
+	public ResponseBuilder appendMessages(Collection<Message> messages) {
 		this.getMessages().addAll(messages);
 		return this;
 	}
 	
-	protected Collection<T> getMessages() {
+	protected Collection<Message> getMessages() {
 		if(this.messages == null) {
 			this.messages = new ArrayList<>();
 		}

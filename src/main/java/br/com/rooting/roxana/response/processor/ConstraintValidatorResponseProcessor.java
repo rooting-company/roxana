@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.config.RoxanaProperties;
+import br.com.rooting.roxana.message.MessageCreatorFactory;
 import br.com.rooting.roxana.message.MessageSeverity;
-import br.com.rooting.roxana.message.builder.MessageBuilderFactory;
 import br.com.rooting.roxana.response.parameterFinder.ConstraintValidationParameterFinder;
 import br.com.rooting.roxana.response.parameterFinder.ParameterFinderStrategy;
 
@@ -23,10 +23,10 @@ class ConstraintValidatorResponseProcessor extends ResponseProcessor {
 
 	@Autowired
 	ConstraintValidatorResponseProcessor(final RoxanaProperties roxanaProperties,
-										 final MessageBuilderFactory messageFactory, 
-									   	 final ResponseProcessorManager responseFactory) {
+										 final MessageCreatorFactory messageCreatorFactory, 
+									   	 final ResponseProcessorManager responseCreatorFactory) {
 		
-		super(roxanaProperties, messageFactory, responseFactory);
+		super(roxanaProperties, messageCreatorFactory, responseCreatorFactory);
 	}
 
 	@Override

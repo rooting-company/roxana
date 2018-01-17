@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 import br.com.rooting.roxana.business.BusinessException;
 import br.com.rooting.roxana.business.MultiBusinessException;
 import br.com.rooting.roxana.config.RoxanaProperties;
-import br.com.rooting.roxana.message.builder.MessageBuilderFactory;
+import br.com.rooting.roxana.message.MessageCreatorFactory;
 
 @Component
 class MultiBusinessExceptionResponseProcessor extends BusinessExceptionResponseProcessor {
 	
 	@Autowired
 	MultiBusinessExceptionResponseProcessor(final RoxanaProperties roxanaProperties,
-											final MessageBuilderFactory messageFactory, 
-											final ResponseProcessorManager responseFactory) {
-		super(roxanaProperties, messageFactory, responseFactory);
+											final MessageCreatorFactory messageCreatorFactory, 
+											final ResponseProcessorManager responseCreatorFactory) {
+		super(roxanaProperties, messageCreatorFactory, responseCreatorFactory);
 	}
 
 	@Override

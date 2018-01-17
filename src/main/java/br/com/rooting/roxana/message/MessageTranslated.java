@@ -1,22 +1,20 @@
 package br.com.rooting.roxana.message;
 
-public final class MessageTranslated implements Message {
-	
-	private final MessageSeverity severity;
+public final class MessageTranslated extends Message {
 	
 	private final String translation;
 	
-	public MessageTranslated(final MessageSeverity severity,
+	MessageTranslated(final MessageSeverity severity,
 					  final String translation) {
-		this.severity = severity;
+		super(severity);
+		
+		if (translation == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		this.translation = translation;
 	}
 
-	@Override
-	public MessageSeverity getSeverity() {
-		return this.severity;
-	}
-	
 	public String getTranslation() {
 		return this.translation;
 	}

@@ -1,22 +1,20 @@
 package br.com.rooting.roxana.message;
 
-public final class MessageUnchanged implements Message {
-	
-	private final MessageSeverity severity;
+public final class MessageUnchanged extends Message {
 	
 	private final String key;
 	
-	public MessageUnchanged(final MessageSeverity severity,
-					  final String key) {
-		this.severity = severity;
+	MessageUnchanged(final MessageSeverity severity,
+					 final String key) {
+		super(severity);
+		
+		if (key == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		this.key = key;
 	}
 
-	@Override
-	public MessageSeverity getSeverity() {
-		return this.severity;
-	}
-	
 	public String getKey() {
 		return this.key;
 	}

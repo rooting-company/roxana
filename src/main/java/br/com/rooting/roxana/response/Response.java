@@ -9,16 +9,16 @@ import org.springframework.lang.Nullable;
 
 import br.com.rooting.roxana.message.Message;
 
-public class Response<T extends Message> {
+public class Response {
 
-	private final List<T> messages = new ArrayList<>();
+	private final List<Message> messages = new ArrayList<>();
 	
-	Response(@Nullable final Collection<T> collection) {
+	Response(@Nullable final Collection<Message> collection) {
 		super();
 		this.messages.addAll(collection);
 	}
 
-	public List<T> getMessages() {
+	public List<Message> getMessages() {
 		return Collections.unmodifiableList(messages);
 	}
 

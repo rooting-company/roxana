@@ -1,7 +1,7 @@
 package br.com.rooting.roxana.config;
 
 import static br.com.rooting.roxana.config.RoxanaProperties.ROOT_NAME;
-import static br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseEstrategy.TRANSLATED;
+import static br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy.TRANSLATED;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -11,7 +11,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.config.RoxanaProperties.Business.ExceptionHandler;
-import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseEstrategy;
+import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
+import br.com.rooting.roxana.message.MessageFully;
+import br.com.rooting.roxana.message.MessageTranslated;
+import br.com.rooting.roxana.message.MessageUnchanged;
 
 // TODO Fazer com as constraints validations funcionem
 // TODO Criar testes e exceptions para validar a classe.
@@ -43,8 +46,8 @@ public final class RoxanaProperties {
 		return this.getBusinessExceptionHandler().getSuppressOthersExceptions();
 	}
 	
-	public ResponseEstrategy getBusinessResponseEstrategy() {
-		return this.getBusiness().getResponseEstrategy();
+	public ResponseStrategy getBusinessResponseStrategy() {
+		return this.getBusiness().getResponseStrategy();
 	}
 	
 	public String getMessageBundlePath() {
@@ -63,7 +66,7 @@ public final class RoxanaProperties {
 		
 		@Valid
 		@NotBlank
-		private ResponseEstrategy responseEstrategy = TRANSLATED;
+		private ResponseStrategy responseStrategy = TRANSLATED;
 		
 		@Valid
 		@NotNull
@@ -73,20 +76,31 @@ public final class RoxanaProperties {
 			super();
 		}
 
-		public ResponseEstrategy getResponseEstrategy() {
-			return this.responseEstrategy;
+		public ResponseStrategy getResponseStrategy() {
+			return this.responseStrategy;
 		}
 		
-		public void setResponseEstrategy(ResponseEstrategy responseEstrategy) {
-			this.responseEstrategy = responseEstrategy;
+		public void setResponseStrategy(ResponseStrategy responseStrategy) {
+			this.responseStrategy = responseStrategy;
 		}
 
 		public ExceptionHandler getExceptionHandler() {
 			return this.exceptionHandler;
 		}
 		
-		public enum ResponseEstrategy {
-			FULLY, TRANSLATED, UNCHANGED
+		public enum ResponseStrategy {
+			
+			FULLY(MessageFully.class), TRANSLATED(MessageTranslated.class), UNCHANGED(MessageUnchanged.class);
+			
+			private final Class<?> concreteMessageClass;
+			
+			private ResponseStrategy(final Class<?> concreteClass) {
+				this.concreteMessageClass = concreteClass;
+			}
+			
+			public Class<?> getConcreteMessageClass() {
+				return this.concreteMessageClass;
+			}
 		}
 		
 		public static class ExceptionHandler {

@@ -1,7 +1,20 @@
 package br.com.rooting.roxana.message;
 
-public interface Message {
+public abstract class Message {
 	
-	public MessageSeverity getSeverity();
+	private final MessageSeverity severity;
+	
+	Message(final MessageSeverity severity) {
+		
+		if(severity == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		this.severity = severity;
+	}
+	
+	protected MessageSeverity getSeverity() {
+		return this.severity;
+	}
 	
 }

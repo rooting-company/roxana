@@ -128,7 +128,7 @@ Roxana have some configurations that changes the application behavior. The confi
 
 ### Properties:
 
-- **roxana.business.response-estrategy:** Defines how the user's massage will be formated in the rest responses. There is four options that you can use:
+- **roxana.business.response-strategy:** Defines how the user's massage will be formated in the rest responses. There is four options that you can use:
 
   * **FULLY:** It Basically return the translated message and everything used to compose it, such like the language, the parameters and key. 
     

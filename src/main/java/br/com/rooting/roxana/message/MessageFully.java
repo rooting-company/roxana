@@ -5,10 +5,8 @@ import java.util.Collections;
 
 import br.com.rooting.roxana.parameter.Parameter;
 
-public final class MessageFully implements Message {
+public final class MessageFully extends Message {
 	
-	private final MessageSeverity severity;
-
 	private final String key;
 
 	private final Collection<Parameter> parameters;
@@ -17,33 +15,23 @@ public final class MessageFully implements Message {
 
 	private final String translation;
 
-	public MessageFully(final String key, 
-						final MessageSeverity severity, 
-						final String language, 
-						final String translation, 
-						final Collection<Parameter> parameters) {
+	MessageFully(final String key, 
+				 final MessageSeverity severity, 
+				 final String language, 
+				 final String translation, 
+				 final Collection<Parameter> parameters) {
+		super(severity);
 		
-		super();
-		
-		if(key == null
-				|| severity == null
-				|| language == null
-				|| translation == null
-				|| parameters == null) {
+		if (key == null || language == null || translation == null || parameters == null) {
 			throw new IllegalArgumentException();
 		}
 		
 		this.key = key;
-		this.severity = severity;
 		this.parameters = parameters;
 		this.language = language;
 		this.translation = translation;
 	}
 
-	public MessageSeverity getSeverity() {
-		return this.severity;
-	}
-	
 	public String getKey() {
 		return this.key;
 	}

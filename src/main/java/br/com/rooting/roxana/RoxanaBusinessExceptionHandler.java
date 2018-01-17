@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import br.com.rooting.roxana.message.Message;
 import br.com.rooting.roxana.response.Response;
 import br.com.rooting.roxana.response.processor.ResponseProcessorManager;
 
@@ -78,7 +77,7 @@ public class RoxanaBusinessExceptionHandler {
 	 */
 	
 	@ExceptionHandler(Exception.class)
-	protected ResponseEntity<Response<Message>> processException(final Exception e) throws Exception {
+	protected ResponseEntity<Response> processException(final Exception e) throws Exception {
 
 		// Se tiver a annotation do spring deixa o framework spring tratar.
 		if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null) {

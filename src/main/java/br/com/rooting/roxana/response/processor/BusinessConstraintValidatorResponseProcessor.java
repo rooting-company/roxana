@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.config.RoxanaProperties;
-import br.com.rooting.roxana.message.builder.MessageBuilderFactory;
+import br.com.rooting.roxana.message.MessageCreatorFactory;
 import br.com.rooting.roxana.response.parameterFinder.GenericParameterFinder;
 import br.com.rooting.roxana.response.parameterFinder.ParameterFinderStrategy;
 
@@ -15,9 +15,9 @@ class BusinessConstraintValidatorResponseProcessor extends ConstraintValidatorRe
 
 	@Autowired
 	BusinessConstraintValidatorResponseProcessor(final RoxanaProperties roxanaProperties,
-												 final MessageBuilderFactory messageFactory, 
-												 final ResponseProcessorManager responseFactory) {
-		super(roxanaProperties, messageFactory, responseFactory);
+												 final MessageCreatorFactory messageCreatorFactory, 
+												 final ResponseProcessorManager responseProcessorFactory) {
+		super(roxanaProperties, messageCreatorFactory, responseProcessorFactory);
 	}
 	
 	@Override

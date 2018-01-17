@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.business.BusinessConstraintValidator;
 import br.com.rooting.roxana.business.MultiBusinessException;
-import br.com.rooting.roxana.message.Message;
 import br.com.rooting.roxana.response.Response;
 
 @Component
@@ -32,7 +31,7 @@ public class ResponseProcessorManager {
 		super();
 	}
 
-	public ResponseEntity<Response<Message>> getProcessedResponse(Exception e) throws Exception {
+	public ResponseEntity<Response> getProcessedResponse(Exception e) throws Exception {
 		e = this.getRealException(e);
 		return this.getResponseProcessor(e).process(e);
 	}

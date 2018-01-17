@@ -1,7 +1,7 @@
 /**
- * This package contain the annotations to map any field of a Roxana's {@link br.com.rooting.roxana.message.Message}
+ * This package contain the annotations to map any field of a Roxana's {@link br.com.rooting.roxana.message.mapper.MessageMapper}
  * as a {@link br.com.rooting.roxana.parameter.Parameter}, that will be used to compose standardize user friendly
- * messages.
+ * messages ({@link br.com.rooting.roxana.message.Message}).
  * 
  * @author BrunoCosta
  * @since 1.0
