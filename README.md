@@ -5,7 +5,7 @@ A [Spring projects](https://spring.io/projects) based framework created to guara
 Roxana provides a easy and organize way to create and keep your own **business exceptions**, it also ofers support to **Constraint Validation** on Spring Rest projects.
 
 Business exceptions and Constraint Validation are treated as **user's friendly messages**, always keeping the **rest responses standardized**. 
-All user's friendly messages could be **internationalized following the i18n pattner.**.
+All user's friendly messages could be **internationalized following the i18n pattern.**.
 
 ## Motivation
 
