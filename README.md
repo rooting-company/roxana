@@ -9,7 +9,13 @@ All user's friendly messages could be **internationalized following the i18n pat
 
 ## Motivation
 
-In progress...
+REST is a popular technology nowadays, much of it is due to the ease of implementation and its flexibility. 
+
+However, to make use this technology in long-term, it is crucial to keep a standard of URI nomenclature, request and response Json objects, HTTP methods and HTTP responses codes, not forgetting to always keep the source code cleaner and simplest as possible. All theses points could be used to measure the quality of a REST API.
+
+As a developer, I made a lot of effort to standardize my APIs and keep things like throws and treat business exceptions and internationalization painless.
+
+When working with Spring technologies for the first time, I saw the opportunity to solve these problems and create an open source framework to make my solutions reusable and shareable with developers all around the world.
 
 ## Installing
 
@@ -100,6 +106,7 @@ public @ResponseBody Response<Message> buyACar(@PathVariable("id") Long idPerson
 ```
 
 #### When the code above throw the InsufficientFundsException, the body of the rest response will be like this:
+
 ```json
 {
   "messages": [
@@ -159,7 +166,7 @@ Roxana have some configurations that changes the application behavior. The confi
     "messages": [
       {
         "severity": "ERROR",
-        "translation": "Saldo Insufficiente: R$ 3000,00."
+        "translation": "Saldo Insuficiente: R$ 3000,00."
       }
     ]
   }
