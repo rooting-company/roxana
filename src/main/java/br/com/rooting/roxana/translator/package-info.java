@@ -5,6 +5,7 @@
  * @author BrunoCosta
  * @since 1.0
  * @see Translator
+ * @see RoxanaTranslator
  *
  */
 package br.com.rooting.roxana.translator;

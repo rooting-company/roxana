@@ -45,9 +45,10 @@
     <spring-boot.version>2.0.0.M6</spring-boot.version>
     <springfox-version>2.8.0</springfox-version>
     <validation-api.version>2.0.0.Final</validation-api.version>
-    <slf4j-api.version>1.7.25</slf4j-api.version>
     <commons-lang.version>2.6</commons-lang.version>
+<!--     <junit-jupiter.version>5.1.0-M1</junit-jupiter.version> -->
     <junit.version>4.12</junit.version>
+    <mockito-core.version>2.13.0</mockito-core.version>
   </properties>
 
   <dependencies>
@@ -80,12 +81,6 @@
 	    <artifactId>validation-api</artifactId>
 	    <version>${validation-api.version}</version>
 	</dependency>
-	
-	<dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	    <version>${slf4j-api.version}</version>
-	</dependency>
   	
 	<dependency>
 	    <groupId>commons-lang</groupId>
@@ -93,12 +88,36 @@
 	    <version>${commons-lang.version}</version>
 	</dependency>
 	
+<!-- 	<dependency> -->
+<!-- 	    <groupId>org.junit.jupiter</groupId> -->
+<!-- 	    <artifactId>junit-jupiter-api</artifactId> -->
+<!-- 	    <version>${junit-jupiter.version}</version> -->
+<!-- 	    <scope>test</scope> -->
+<!-- 	</dependency> -->
+
+	<!-- Dependencias de Test -->
+
 	<dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
 	    <version>${junit.version}</version>
 	    <scope>test</scope>
 	</dependency>
+	
+	<dependency>
+	    <groupId>org.mockito</groupId>
+	    <artifactId>mockito-core</artifactId>
+	    <version>${mockito-core.version}</version>
+	    <scope>test</scope>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-log4j12</artifactId>
+	    <version>1.7.25</version>
+	    <scope>test</scope>
+	</dependency>
+	
   </dependencies>
   
   <build>

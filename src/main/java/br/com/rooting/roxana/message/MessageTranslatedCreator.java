@@ -23,7 +23,7 @@ public class MessageTranslatedCreator extends MessageCreator {
 	
 	@Override
 	public MessageTranslated create(MessageMapper mapper, Collection<Parameter> parameters) {
-		Locale locale = this.getTranslator().getDefaultLocale();
+		Locale locale = this.getTranslator().getLocale();
 		String translation = this.getTranslator().translate(mapper.getKey(), locale, parameters);
 		return new MessageTranslated(mapper.getSeverity(), translation);
 	}

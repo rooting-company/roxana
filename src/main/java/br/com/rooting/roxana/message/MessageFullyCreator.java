@@ -23,7 +23,7 @@ public class MessageFullyCreator extends MessageCreator {
 	
 	@Override
 	public MessageFully create(MessageMapper mapper, Collection<Parameter> parameters) {
-		Locale locale = this.getTranslator().getDefaultLocale();
+		Locale locale = this.getTranslator().getLocale();
 		String language = locale.toLanguageTag();
 		String translation = this.getTranslator().translate(mapper.getKey(), locale, parameters);
 		return new MessageFully(mapper.getKey(), mapper.getSeverity(), language, translation, parameters);

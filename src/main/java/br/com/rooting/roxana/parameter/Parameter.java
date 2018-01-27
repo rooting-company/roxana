@@ -100,14 +100,8 @@ public final class Parameter {
 	}
 	
 	// TODO Verificar se conversão é segura.
-	public static Parameter createCurrencyParameter(final String name, final Double doubleParam) {
+	public static Parameter createCurrencyParameter(final String name, final double doubleParam) {
 		Double moneyValue = Parameter.treatBigDecimal(new BigDecimal(doubleParam)).doubleValue();
-		return new Parameter(CURRENCY, name, moneyValue);
-	}
-	
-	// TODO Verificar se conversão é segura.
-	public static Parameter createCurrencyParameter(final String name, final Float floatParam) {
-		Double moneyValue = Parameter.treatBigDecimal(new BigDecimal(floatParam)).doubleValue();
 		return new Parameter(CURRENCY, name, moneyValue);
 	}
 	

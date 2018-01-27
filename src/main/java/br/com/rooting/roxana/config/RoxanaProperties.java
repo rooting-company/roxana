@@ -50,8 +50,8 @@ public final class RoxanaProperties {
 		return this.getBusiness().getResponseStrategy();
 	}
 	
-	public String getMessageBundlePath() {
-		return this.getMessageBundle().getPath();
+	public String getMessageBundleBaseName() {
+		return this.getMessageBundle().getBaseName();
 	}
 	
 	public String getMessageBundleLocale() {
@@ -124,12 +124,14 @@ public final class RoxanaProperties {
 	
 	public static class MessageBundle {
 		
-		private static final String DEFAULT_MESSAGE_BUNDLE_PATH = "messages";
+		private static final String DEFAULT_MESSAGE_BUNDLE_BASE_NAME = "messages";
 		
-		public static final String MESSAGE_BUNDLE_PATH_PROPERTY = "roxana.message-bundle.path";
+		public static final String MESSAGE_BUNDLE_BASE_NAME_PROPERTY = "roxana.message-bundle.base-name";
+		
+		public static final String MESSAGE_BUNDLE_LOCALE_PROPERTY = "roxana.message-bundle.locale";
 		
 		@NotBlank
-		private String path = DEFAULT_MESSAGE_BUNDLE_PATH;
+		private String baseName = DEFAULT_MESSAGE_BUNDLE_BASE_NAME;
 
 		private String locale;
 
@@ -139,12 +141,12 @@ public final class RoxanaProperties {
 			super();
 		}
 
-		public String getPath() {
-			return this.path;
+		public String getBaseName() {
+			return this.baseName;
 		}
 
-		public void setPath(String path) {
-			this.path = path;
+		public void setBaseName(String baseName) {
+			this.baseName = baseName;
 		}
 
 		public String getLocale() {
