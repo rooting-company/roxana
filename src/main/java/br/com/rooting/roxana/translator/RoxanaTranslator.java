@@ -1,7 +1,7 @@
 package br.com.rooting.roxana.translator;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -50,7 +50,7 @@ public class RoxanaTranslator implements Translator {
 	}
 	
 	@Override
-	public String translate(final String key, final Locale locale, final Collection<Parameter> parameters) {
+	public String translate(final String key, final Locale locale, final List<Parameter> parameters) {
 		return this.interpolateKey(this.getResourceBundle(), locale, key, parameters);
 	}
 
@@ -88,7 +88,7 @@ public class RoxanaTranslator implements Translator {
 		return INTERPOLATION_PREFIX_ESCAPED + s + INTERPOLATION_SUFIX_ESCAPED;
 	}
 	
-	protected String interpolateKey(ResourceBundle resourceBundle, Locale locale, String key, Collection<Parameter> parameters) {
+	protected String interpolateKey(ResourceBundle resourceBundle, Locale locale, String key, List<Parameter> parameters) {
 		return Arrays.stream(key.split(INTERPOLATION_REGEX))
 						.distinct()
 						.filter(message -> !message.isEmpty())
@@ -100,7 +100,7 @@ public class RoxanaTranslator implements Translator {
 						});
 	}
 
-	protected String interpolateMessage(ResourceBundle resourceBundle, Locale locale, String message, Collection<Parameter> parameters) {
+	protected String interpolateMessage(ResourceBundle resourceBundle, Locale locale, String message, List<Parameter> parameters) {
 		try {
 			String translation = resourceBundle.getString(message);
 			translation = this.interpolateParameters(locale, translation, parameters);
@@ -114,7 +114,7 @@ public class RoxanaTranslator implements Translator {
 		}
 	}
 	
-	protected String interpolateParameters(final Locale locale, String message, final Collection<Parameter> parameters) {
+	protected String interpolateParameters(final Locale locale, String message, final List<Parameter> parameters) {
 		for (Parameter p : parameters) {
 			message = this.interpolateParameter(locale, message, p);
 		}

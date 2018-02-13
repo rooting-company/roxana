@@ -7,8 +7,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-//TODO dar suporte a @AliasFor para @MessageParameter
-
 @Documented
 @Target(FIELD)
 @Retention(RUNTIME)

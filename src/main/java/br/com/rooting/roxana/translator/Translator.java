@@ -1,7 +1,7 @@
 package br.com.rooting.roxana.translator;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import br.com.rooting.roxana.parameter.Parameter;
@@ -18,13 +18,13 @@ public interface Translator {
 		return INTERPOLATION_PREFIX + key + INTERPOLATION_SUFIX;
 	}
 	
-	public String translate(final String key, final Locale locale, final Collection<Parameter> parameters);
+	public String translate(final String key, final Locale locale, final List<Parameter> parameters);
 	
 	public default String translate(final String key, final Locale locale, final Parameter...parameters) {
 		return this.translate(key, locale, Arrays.asList(parameters));
 	}
 	
-	public default String translate(final String key, final Collection<Parameter> parameters) {
+	public default String translate(final String key, final List<Parameter> parameters) {
 		return this.translate(key, this.getLocale(), parameters);
 	}
 	

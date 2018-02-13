@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.response.parameterFinder;
+package br.com.rooting.roxana.response.parameter_finder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +26,14 @@ public class ConstraintValidationParameterFinder implements ParameterFinderStrat
 	
 	private final ConstraintViolation<?> violation;
 	
-	public ConstraintValidationParameterFinder(final ConstraintViolation<?> violation) {
+	public ConstraintValidationParameterFinder(final ConstraintViolation<?> violation) throws IllegalArgumentException {
+		if (violation == null) {
+			throw new IllegalArgumentException();
+		}
+
 		this.violation = violation;
 	}
-	
+
 	@Override
 	public List<Parameter> findParameters() {
 		List<Parameter> parameters = new ArrayList<>();
@@ -56,7 +60,7 @@ public class ConstraintValidationParameterFinder implements ParameterFinderStrat
 		return parameters;
 	}
 	
-	protected ConstraintViolation<?> getViolation() {
+	private ConstraintViolation<?> getViolation() {
 		return this.violation;
 	}
 	
@@ -65,7 +69,6 @@ public class ConstraintValidationParameterFinder implements ParameterFinderStrat
 								.map(s -> StringUtils.capitalize(s))
 								.reduce((s1,s2) -> s1.concat(" ").concat(s2))
 								.orElse(EMPYT_VALUE);
-
 	}
 	
 }

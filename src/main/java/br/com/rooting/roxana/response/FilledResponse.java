@@ -1,6 +1,6 @@
 package br.com.rooting.roxana.response;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.lang.Nullable;
 
@@ -10,7 +10,7 @@ public class FilledResponse<Z> extends Response {
 
 	private final Z object;
 	
-	FilledResponse(@Nullable final Z object, @Nullable final Collection<Message> collection) {
+	FilledResponse(@Nullable final Z object, final List<Message> collection) {
 		super(collection);
 		this.object = object;
 	}

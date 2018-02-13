@@ -1,59 +1,76 @@
 package br.com.rooting.roxana.response;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+
+import org.springframework.lang.Nullable;
 
 import br.com.rooting.roxana.message.Message;
 
-public class ResponseBuilder {
+public final class ResponseBuilder {
 	
-	private Collection<Message> messages;
+	private final List<Message> messages = new ArrayList<>();
 	
 	public ResponseBuilder() {
 		super();
 	}
 	
-	public static Response buildWith(Collection<Message> messages) {
+	public static Response buildWith(List<Message> messages) {
 		return new ResponseBuilder().appendMessages(messages).build();
 	}
 	
 	@SafeVarargs
-	public static Response buildWith(Message... messages) {
-		return new ResponseBuilder().appendMessages(Arrays.asList(messages)).build();
+	public static Response buildWith(Message... messages) throws IllegalArgumentException {
+		return new ResponseBuilder().appendMessages(asList(messages)).build();
 	}
-	
-	public static <Z> FilledResponse<Z> buildFilledWith(Z responseObject, Collection<Message> messages) {
+
+	public static <Z> FilledResponse<Z> buildFilledWith(@Nullable Z responseObject, List<Message> messages)
+			throws IllegalArgumentException {
+		
 		return new ResponseBuilder().appendMessages(messages).buildFilled(responseObject);
 	}
-	
+
 	@SafeVarargs
-	public static <Z> FilledResponse<Z> buildFilledWith(Z responseObject, Message...messages) {
-		return new ResponseBuilder().appendMessages(Arrays.asList(messages)).buildFilled(responseObject);
+	public static <Z> FilledResponse<Z> buildFilledWith(@Nullable Z responseObject, Message... messages)
+			throws IllegalArgumentException {
+		
+		return new ResponseBuilder().appendMessages(asList(messages)).buildFilled(responseObject);
 	}
-	
+
 	public Response build() {
 		return new Response(this.getMessages());
 	}
 	
-	public <Z> FilledResponse<Z> buildFilled(Z responseObject) {
+	public <Z> FilledResponse<Z> buildFilled(@Nullable Z responseObject) {
 		return new FilledResponse<Z>(responseObject, this.getMessages());
 	}
 	
-	public ResponseBuilder appendMessage(Message message) {
+	public ResponseBuilder appendMessage(Message message) throws IllegalArgumentException {
+		if (message == null) {
+			throw new IllegalArgumentException();
+		}
+
 		this.getMessages().add(message);
 		return this;
 	}
 	
-	public ResponseBuilder appendMessages(Collection<Message> messages) {
-		this.getMessages().addAll(messages);
+	public ResponseBuilder appendMessages(List<Message> messages) throws IllegalArgumentException {
+		if (messages == null) {
+			throw new IllegalArgumentException();
+		}
+
+		messages.stream().forEach(m -> this.appendMessage(m));
 		return this;
 	}
 	
-	protected Collection<Message> getMessages() {
-		if(this.messages == null) {
-			this.messages = new ArrayList<>();
-		}
+	public ResponseBuilder appendMessages(Message...messages) throws IllegalArgumentException {
+		return this.appendMessages(asList(messages));
+	}
+	
+	private List<Message> getMessages() {
 		return this.messages;
 	}
+	
 }

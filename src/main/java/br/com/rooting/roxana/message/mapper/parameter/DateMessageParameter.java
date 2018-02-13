@@ -8,16 +8,21 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import br.com.rooting.roxana.business.parameter.DateParameter;
+import br.com.rooting.roxana.business.parameter.DateStyle;
+
 @Documented
 @Target(FIELD)
 @Retention(RUNTIME)
 @Repeatable(DateMessageParameters.class)
 public @interface DateMessageParameter {
 	
-	public static final String DEFAULT_PATTNER = "yyyy-MM-dd";
-	
 	public String value();
 	
-	public String pattern() default DEFAULT_PATTNER;
+	public String pattern() default DateParameter.NONE_PATTERN;
+	
+	public DateStyle style() default DateStyle.SHORT;
+	
+	public boolean considerTime() default false;
 	
 }

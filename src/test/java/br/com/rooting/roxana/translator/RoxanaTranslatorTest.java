@@ -1,8 +1,8 @@
 package br.com.rooting.roxana.translator;
 
 import static br.com.rooting.roxana.translator.LocaleTagEnum.PT_BR;
-import static br.com.rooting.roxana.translator.TranslationEnum.PARAMETROS_REPETIDOS;
-import static br.com.rooting.roxana.translator.TranslationEnum.PARAMETROS_STRING_DATA_MONETARIO;
+import static br.com.rooting.roxana.translator.TranslationEnum.TRANSLATION_REPEATED_PARAMS;
+import static br.com.rooting.roxana.translator.TranslationEnum.TRANSLATION_STRING_DATE_CURRENCY_PARAMS;
 import static br.com.rooting.roxana.translator.Translator.NOT_FOUND_DELIMITER;
 import static br.com.rooting.roxana.translator.Translator.getInterpoledKeyOf;
 import static org.junit.Assert.assertEquals;
@@ -16,67 +16,83 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 import org.junit.Test;
+import org.springframework.stereotype.Component;
 
+import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
 import br.com.rooting.roxana.parameter.Parameter;
-	
-public class RoxanaTranslatorTest {
 
-	private static final String INVALID_LOCALE_TAG = "INVALID_LOCALE_TAG";
-	private static final String INVALID_MESSAGE_BUNDLE_BASE_NAME = "INVALID_MESSAGE_BUNDLE_BASE_NAME";
-	private static final String NOT_DEFINED_KEY = "NOT.DEFINED.KEY";
-	private static final String NO_TRANSLATED_STRING = " ,esta parte é sempre fixa, ";
+public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
+
+	private static final String INVALID_LOCALE_TAG 							= "INVALID_LOCALE_TAG";
+	private static final String INVALID_MESSAGE_BUNDLE_BASE_NAME 			= "INVALID_MESSAGE_BUNDLE_BASE_NAME";
+	private static final String NOT_DEFINED_KEY 							= "NOT.DEFINED.KEY";
+	private static final String NO_TRANSLATED_STRING 						= " ,esta parte é sempre fixa, ";
 	
-	// Testa caracteristicas da classe.
-	public void RoxanaTranslatorClassTest() {
-		Class<RoxanaTranslator> clazz = RoxanaTranslator.class;
-		Constructor<?>[] constructors = clazz.getConstructors();
+	@Test
+	public void testClassIsPublicTest() {
+		assertTrue(Modifier.isPublic(this.getUnitTestClass().getModifiers()));
+	}
+	
+	@Test
+	public void testClassImplementsTranslatorTest() {
+		assertTrue(Translator.class.isAssignableFrom(this.getUnitTestClass()));
+	}
+	
+	@Test
+	public void testClassIsASpringComponentTest() {
+		assertTrue(this.getUnitTestClass().isAnnotationPresent(Component.class));
+	}
+	
+	@Test
+	public void testClassWasOnlyOneProtectedConstructorTest() {
+		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
 		assertTrue(constructors.length == 1);
 		// Não pode ser public, pois deve-se usar o @Autowired para criar.
 		// Precisa ser protected, por que usuários do framework podem extender
-		assertTrue(Modifier.PROTECTED == constructors[0].getModifiers());
+		assertTrue(Modifier.isProtected(constructors[0].getModifiers()));
 	}
-
+	
 	// Testa a traduçao em diversas mensagens em diversas linguagens.
 	@Test
 	public void translationTest() {
 		Stream.of(LocaleTagEnum.values()).forEach(locale -> {
-			RoxanaPropertiesMockBuilder roxPropMockBuilder = new RoxanaPropertiesMockBuilder();
-			roxPropMockBuilder.setLocale(locale.getTag());
+			RoxanaPropertiesMockBuilder propertiesBuilder = new RoxanaPropertiesMockBuilder();
+			propertiesBuilder.setLocale(locale.getTag());
 			
-			RoxanaTranslator translator = new RoxanaTranslator(roxPropMockBuilder.build());
+			RoxanaTranslator translator = new RoxanaTranslator(propertiesBuilder.build());
 			
 			Stream.of(TranslationEnum.values()).forEach(translation -> {
 				String key = getInterpoledKeyOf(translation.getKey());
 				assertEquals(translation.getTranslation(locale), translator.translate(key, translation.getParameters()));
-				assertEquals(translation.getTranslation(locale), translator.translate(key, translation.getParametersAsList()));
+				assertEquals(translation.getTranslation(locale), translator.translate(key, translation.getParameters()));
 			});
 		});
 	}
 	
-	// Teste a tradução de mensagens compostas por varias outras.
+	// Teste a tradução de mensagens compostas por outras.
 	@Test
 	public void compositeTranslationTest() {
 		Stream.of(LocaleTagEnum.values()).forEach(locale -> {
-			RoxanaPropertiesMockBuilder roxPropMockBuilder = new RoxanaPropertiesMockBuilder();
-			roxPropMockBuilder.setLocale(locale.getTag());
+			RoxanaPropertiesMockBuilder propertiesBuilder = new RoxanaPropertiesMockBuilder();
+			propertiesBuilder.setLocale(locale.getTag());
 			
-			RoxanaTranslator translator = new RoxanaTranslator(roxPropMockBuilder.build());
+			RoxanaTranslator translator = new RoxanaTranslator(propertiesBuilder.build());
 			
 			StringBuilder keyBuilder = new StringBuilder();
-			keyBuilder.append(getInterpoledKeyOf(PARAMETROS_STRING_DATA_MONETARIO.getKey()));
+			keyBuilder.append(getInterpoledKeyOf(TRANSLATION_STRING_DATE_CURRENCY_PARAMS.getKey()));
 			keyBuilder.append(NO_TRANSLATED_STRING);
-			keyBuilder.append(getInterpoledKeyOf(PARAMETROS_REPETIDOS.getKey()));
+			keyBuilder.append(getInterpoledKeyOf(TRANSLATION_REPEATED_PARAMS.getKey()));
 			String key = keyBuilder.toString();
 			
 			List<Parameter> parameters = new ArrayList<>();
-			parameters.addAll(PARAMETROS_STRING_DATA_MONETARIO.getParametersAsList());
-			parameters.addAll(PARAMETROS_REPETIDOS.getParametersAsList());
+			parameters.addAll(TRANSLATION_STRING_DATE_CURRENCY_PARAMS.getParameters());
+			parameters.addAll(TRANSLATION_REPEATED_PARAMS.getParameters());
 			
 			StringBuilder translationBuilder = new StringBuilder();
-			translationBuilder.append(PARAMETROS_STRING_DATA_MONETARIO.getTranslation(locale));
+			translationBuilder.append(TRANSLATION_STRING_DATE_CURRENCY_PARAMS.getTranslation(locale));
 			translationBuilder.append(NO_TRANSLATED_STRING);
-			translationBuilder.append(PARAMETROS_REPETIDOS.getTranslation(locale));
+			translationBuilder.append(TRANSLATION_REPEATED_PARAMS.getTranslation(locale));
 			String translation = translationBuilder.toString();
 			
 			assertEquals(translation, translator.translate(key, parameters));

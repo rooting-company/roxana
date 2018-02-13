@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.message.MessageCreatorFactory;
-import br.com.rooting.roxana.response.parameterFinder.GenericParameterFinder;
-import br.com.rooting.roxana.response.parameterFinder.ParameterFinderStrategy;
+import br.com.rooting.roxana.response.parameter_finder.GenericParameterFinder;
+import br.com.rooting.roxana.response.parameter_finder.ParameterFinderStrategy;
 
 @Component
 class BusinessConstraintValidatorResponseProcessor extends ConstraintValidatorResponseProcessor {

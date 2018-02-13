@@ -10,43 +10,55 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import br.com.rooting.roxana.business.parameter.DateParameter;
+import br.com.rooting.roxana.business.parameter.DateStyle;
 import br.com.rooting.roxana.parameter.Parameter;
 
 public enum TranslationEnum {
-	SEM_PARAMETROS("hello.world", new Parameter[0], 
+	TRANSLATION_NONE_PARAMS("hello.world", new Parameter[0], 
 						"Olá Mundo.", 
 						"Hello World.", 
 						"Hallo Welt.", 
 						"こんにちは世界。"),
-	// TODO Verificar nova api para money Java 9.
-	PARAMETRO_MONETARIO("saldo.atual", new Parameter[]{createCurrencyParameter("saldo", 10.12)}, 
+	TRANSLATION_CURRENCY_PARAM("saldo.atual", new Parameter[]{createCurrencyParameter("saldo", 10.12)}, 
 						"Meu Saldo é R$ 10,12.", 
 						"My balance is $10.12.", 
 						"Mein Guthaben beträgt 10,12 €.", 
 						"私の残高は￥10。"),
-	PARAMETRO_STRING("meu.nome", new Parameter[]{create("nome", "Bruno Costa")}, 
+	TRANSLATION_STRING_PARAM("meu.nome", new Parameter[]{create("nome", "Bruno Costa")}, 
 						"Meu nome é Bruno Costa.",
 						"My name is Bruno Costa.",
 						"Mein Name ist Bruno Costa.",
 						"私の名前はBruno Costaです。"),
-	// TODO os parametros de data deveriam ser formatado de acordo com a localidade.
-	PARAMETRO_DATA("data.nascimento", new Parameter[]{createDateParameter("dataNascimento", LocalDate.of(1992, DECEMBER, 11))}, 
-						"Eu nasci em 1992-12-11.",
-						"I was born on 1992-12-11.",
-						"Ich wurde am 1992-12-11 geboren.",
-						"私1992-12-11に生まれました。"),
-	PARAMETROS_REPETIDOS("viva.roxana", new Parameter[]{create("roxana", "Roxana")}, 
+	TRANSLATION_DATE_PARAM("data.nascimento", new Parameter[]{
+														createDateParameter("dataNascimento", 
+																			LocalDate.of(1992, DECEMBER, 11), 
+																			DateStyle.SHORT,
+																			false,
+																			DateParameter.NONE_PATTERN)
+													 }, 
+						"Eu nasci em 11/12/92.",
+						"I was born on 12/11/92.",
+						"Ich wurde am 11.12.92 geboren.",
+						"私92/12/11に生まれました。"),
+	TRANSLATION_REPEATED_PARAMS("viva.roxana", new Parameter[]{create("roxana", "Roxana")}, 
 						"Vida longa a Roxana! Vida longa a Roxana! Vida longa a Roxana!",
 						"Long live the Roxana! Long live the Roxana! Long live the Roxana!",
 						"Lang lebe der Roxana! Lang lebe der Roxana! Lang lebe der Roxana!",
 						"長い人生 Roxana！ 長い人生 Roxana！ 長い人生 Roxana！"),
-	PARAMETROS_STRING_DATA_MONETARIO("consulta.saldo", new Parameter[]{create("nome", "Bruno Costa"), 
-						createDateParameter("dataAgora", LocalDate.of(2018, JANUARY, 27)),
-						createCurrencyParameter("saldo", 3860.80)},
-						"Olá senhor Bruno Costa. Seu saldo é de R$ 3.860,80. Consulta realizada em 2018-01-27.",
-						"Hello Mr. Bruno Costa. His balance is $3,860.80. Consultation held on 2018-01-27.",
-						"Hallo Herr Bruno Costa. Sein Guthaben beträgt 3.860,80 €. Die Konsultation fand am 2018-01-27 statt.",
-						"こんにちはミスター Bruno Costa。 彼の残高は￥3,861。相談は2018-01-27で行われました。");
+	TRANSLATION_STRING_DATE_CURRENCY_PARAMS("consulta.saldo", new Parameter[]{
+																			create("nome", "Bruno Costa"), 
+																			createDateParameter("dataAgora", 
+																								LocalDate.of(2018, JANUARY, 27), 
+																								DateStyle.SHORT,
+																								false,
+																								DateParameter.NONE_PATTERN),
+																			createCurrencyParameter("saldo", 3860.80)
+																		},
+						"Olá senhor Bruno Costa. Seu saldo é de R$ 3.860,80. Consulta realizada em 27/01/18.",
+						"Hello Mr. Bruno Costa. His balance is $3,860.80. Consultation held on 1/27/18.",
+						"Hallo Herr Bruno Costa. Sein Guthaben beträgt 3.860,80 €. Die Konsultation fand am 27.01.18 statt.",
+						"こんにちはミスター Bruno Costa。 彼の残高は￥3,861。相談は18/01/27で行われました。");
 	
 	private final String key;
 	private final Parameter[] parameters;
@@ -70,12 +82,8 @@ public enum TranslationEnum {
 		return this.key;
 	}
 	
-	public Parameter[] getParameters() {
-		return this.parameters;
-	}
-	
-	public List<Parameter> getParametersAsList() {
-		return Arrays.asList(this.getParameters());
+	public List<Parameter> getParameters() {
+		return Arrays.asList(this.parameters);
 	}
 	
 	public String getTranslation(final LocaleTagEnum locale) {
