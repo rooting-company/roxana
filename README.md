@@ -1,8 +1,8 @@
 # <img src="src/docs/images/roxana-logo.png">
 
-A [Spring projects](https://spring.io/projects) based framework created to guarantee a standardized RESTful services responses.
+A [Spring](https://spring.io/projects) based project framework created to guarantee a standardized RESTful services responses.
 
-Roxana provides a easy and organize way to create and keep your own **business exceptions**, it also ofers support to **Constraint Validation** on Spring Rest projects.
+Roxana provides an easy and organized way to create and keep your own **business exceptions**. It also offers support to **Constraint Validation** on Spring Rest projects.
 
 Business exceptions and Constraint Validation are treated as **user's friendly messages**, always keeping the **rest responses standardized**. 
 All user's friendly messages could be **internationalized following the i18n pattern.**.
@@ -11,9 +11,9 @@ All user's friendly messages could be **internationalized following the i18n pat
 
 REST is a popular technology nowadays, much of it is due to the ease of implementation and its flexibility. 
 
-However, to make use this technology in long-term, it is crucial to keep a standard of URI nomenclature, request and response Json objects, HTTP methods and HTTP responses codes, not forgetting to always keep the source code cleaner and simplest as possible. All theses points could be used to measure the quality of a REST API.
+However, in a long-term usage of this technology, it is crucial to keep a standard of URI nomenclature, request and response Json objects, HTTP methods and HTTP responses codes, not forgetting to always keep the source code as clean and simple as possible (Rever este trecho). All theses points could be used to measure the quality of a REST API.
 
-As a developer, I made a lot of effort to standardize my APIs and keep things like throws and treat business exceptions and internationalization painless.
+As a developer, I spent(?) a lot of effort to standardize my APIs and keep things like throws and treat(deal?) business exceptions and internationalization painless.
 
 When working with Spring technologies for the first time, I saw the opportunity to solve these problems and create an open source framework to make my solutions reusable and shareable with developers all around the world.
 
@@ -51,7 +51,7 @@ Create your own business exception with @BusinessException annotation:
 package br.com.roxana.example;
 ...
 
-// Your can define the Http Response e intercionalization key if you don't want the default ones.
+// Your can define the Http Response e internationalization key if you don't want the default ones.
 @BusinessException
 public class InsufficientFundsException extends Exception {
 
@@ -69,7 +69,7 @@ public class InsufficientFundsException extends Exception {
 #### Put the business exception in your i18n files, by add the folow line:
 
 ```properties
-br.com.roxana.example.InsufficientFundsException = Saldo Insufficiente: {funds}.
+br.com.roxana.example.InsufficientFundsException = Saldo Insuficiente: {funds}.
 ```
 
 **Obs:** The translation above it is in brazilian portuguese.
@@ -83,12 +83,12 @@ br.com.roxana.example.InsufficientFundsException = Saldo Insufficiente: {funds}.
 
 @ResponseStatus(code = OK)
 @RequestMapping(method = POST, path = "/{id}/cars/")
-// Roxana provide a wrapper object that all reste responses should use.
+// Roxana provide a wrapper object that all rest responses should use.
 // This make the api more standardized.
 public @ResponseBody Response<Message> buyACar(@PathVariable("id") Long idPerson, 
               @RequestBody Car car) throws InsufficientFundsException {
 
-    // The code below is not in a service layer because it for demo proporse.
+    // The code below is not in a service layer because it is for a demo purpose.
 
     BigDecimal funds = Service.getFunds(idPerson);
     if(funs.compareTo(new BigDecimal(car.getPrice())) < 0) {
@@ -127,19 +127,19 @@ public @ResponseBody Response<Message> buyACar(@PathVariable("id") Long idPerson
 
 **Obs:** There is others models of response that you can configure. See more in the **Main settings** section.
 
-#### Roxana framework has a lot more features than what it is exposed here, so, if you are interesting check the example application [Amazing Book Store](https://github.com/rooting-company/amazing-book-store) or the documentation guide for more details.
+#### Roxana framework has a lot more features than what it is exposed here, so, if you are interested, check the example application [Amazing Book Store](https://github.com/rooting-company/amazing-book-store) or the documentation guide for more details.
 
 ## Main settings
 
-Roxana have some configurations that changes the application behavior. The configuration should be placed in the spring configuration yml or properties file.
+Roxana has some configurations that changes the application behavior. The configuration should be placed in the spring configuration yml or properties file.
 
 ### Properties:
 
-- **roxana.business.response-strategy:** Defines how the user's massage will be formated in the rest responses. There is four options that you can use:
+- **roxana.business.response-strategy:** Defines how the user's message will be formated in the rest responses. There are four options that you can use:
 
-  * **FULLY:** It Basically return the translated message and everything used to compose it, such like the language, the parameters and key. 
+  * **FULLY:** It basically returns the translated message and everything used to compose it, such as the language, the parameters and key. 
     
-    This is very useful to debug how the messages are composes in development environment or when you wish that the consumer     of the api make them own internacionalization based on yours.
+    This is very useful to debug how the messages are composed in development environment or when you wish that the consumer of the api make them own internationalization based on yours.
 
   ```json  
   {
@@ -187,11 +187,11 @@ Roxana have some configurations that changes the application behavior. The confi
 
 - **roxana.business.exception-handler.suppress-others-exceptions:** Defines if **no** BusinessException like Null Pointer Exception, will be suppressed by a Intern Error user's friendly message. 
 
-  It is useful when you want to hide not expected exception in production environment, in orther hands, you can allow the     developer see the stacktrace more easily in development environment. The default value is **"true"**.
+  It is useful when you want to hide unexpected exceptions in production environment. In other hands, you can allow the developer to see the stacktrace more easily in development environment. The default value is **"true"**.
 
-- **roxana.message-bundle.suppress-fails-translations:** Defines if when the application fail to translate a message, it will raise an exception or assume the pattern **???{messageKey}???** as translation. 
+- **roxana.message-bundle.suppress-fails-translations:** Defines when the application fails to translate a message, it will raise an exception or assume the pattern **???{messageKey}???** as translation. 
 
-  This is usefull when you want to avoid to compromise operations in production enviroment just because the programer forgot to   add a simple key in the i18n files. In the development enviroment, the programer will notice missing keys more easily if   the application rises exceptions. The default value is **"true"**.
+  This is useful when you want to avoid to compromise operations in production environment just because the programmer forgot to add a simple key in the i18n files. In the development environment, the programmer will notice missing keys more easily if the application rises exceptions. The default value is **"true"**.
 
 - **roxana.message-bundle.path:** Define a custom path to the i18n file. The default value is **"message"**, as well as, Spring framework.
 
