@@ -13,7 +13,7 @@ REST is a popular technology nowadays, much of it is due to the ease of implemen
 
 However, in a long-term usage of this technology, it is crucial to keep a standard of URI nomenclature, request and response Json objects, HTTP methods and HTTP responses codes, not forgetting to always keep the source code as clean and simple as possible (Rever este trecho). All theses points could be used to measure the quality of a REST API.
 
-As a developer, I spent(?) a lot of effort to standardize my APIs and keep things like throws and treat(deal?) business exceptions and internationalization painless.
+As a developer, I spent a lot of effort to standardize my APIs and keep things like throws and treat business exceptions and internationalization painless.
 
 When working with Spring technologies for the first time, I saw the opportunity to solve these problems and create an open source framework to make my solutions reusable and shareable with developers all around the world.
 
