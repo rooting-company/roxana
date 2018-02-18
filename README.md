@@ -1,6 +1,6 @@
 # <img src="src/docs/images/roxana-logo.png">
 
-A [Spring](https://spring.io/projects) based project framework created to guarantee a standardized RESTful services responses.
+A [Spring](https://spring.io/projects) based framework created to guarantee a standardized RESTful services responses.
 
 Roxana provides an easy and organized way to create and keep your own **business exceptions**. It also offers support to **Constraint Validation** on Spring Rest projects.
 
@@ -11,7 +11,7 @@ All user's friendly messages could be **internationalized following the i18n pat
 
 REST is a popular technology nowadays, much of it is due to the ease of implementation and its flexibility. 
 
-However, in a long-term usage of this technology, it is crucial to keep a standard of URI nomenclature, request and response Json objects, HTTP methods and HTTP responses codes, not forgetting to always keep the source code as clean and simple as possible (Rever este trecho). All theses points could be used to measure the quality of a REST API.
+However, in a long-term usage of this technology, it is crucial to keep a standard of URI nomenclature, request and response Json objects, HTTP methods and HTTP responses codes, not forgetting to always keep the source code as clean and simple as possible. All theses points could be used to measure the quality of a REST API.
 
 As a developer, I spent a lot of effort to standardize my APIs and keep things like throws and treat business exceptions and internationalization painless.
 
@@ -88,7 +88,7 @@ br.com.roxana.example.InsufficientFundsException = Saldo Insuficiente: {funds}.
 public @ResponseBody Response<Message> buyACar(@PathVariable("id") Long idPerson, 
               @RequestBody Car car) throws InsufficientFundsException {
 
-    // The code below is not in a service layer because it is for a demo purpose.
+    // The code below is not in a service layer because it is for demo purpose.
 
     BigDecimal funds = Service.getFunds(idPerson);
     if(funs.compareTo(new BigDecimal(car.getPrice())) < 0) {
@@ -137,7 +137,7 @@ Roxana has some configurations that changes the application behavior. The config
 
 - **roxana.business.response-strategy:** Defines how the user's message will be formated in the rest responses. There are four options that you can use:
 
-  * **FULLY:** It basically returns the translated message and everything used to compose it, such as the language, the parameters and key. 
+  * **FULLY:** It basically returns the translated message and everything used to compose it, such as language, parameters and key. 
     
     This is very useful to debug how the messages are composed in development environment or when you wish that the consumer of the api make them own internationalization based on yours.
 
