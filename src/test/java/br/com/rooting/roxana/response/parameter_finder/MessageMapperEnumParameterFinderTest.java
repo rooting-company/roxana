@@ -1,5 +1,6 @@
 package br.com.rooting.roxana.response.parameter_finder;
 
+import static br.com.rooting.roxana.business.parameter.DateStyle.MEDIUM;
 import static br.com.rooting.roxana.message.MessageSeverity.SUCCESS;
 import static br.com.rooting.roxana.parameter.ParameterType.CURRENCY;
 import static br.com.rooting.roxana.parameter.ParameterType.DATE;
@@ -12,10 +13,17 @@ import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 import org.junit.Test;
 
@@ -60,13 +68,23 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void enumMapperCanNotBeNull() {
+	public void enumMapperCanNotBeNullTest() {
 		new MessageMapperEnumParameterFinder(null, new ArrayList<Object>());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void valuesListCanNotBeNull() {
+	public void valuesListCanNotBeNullTest() {
 		new MessageMapperEnumParameterFinder(mock(MessageMapperEnum.class), null);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void enumMapperMustBeEnumTest() {
+		new MessageMapperEnumParameterFinder(mock(MessageMapperEnum.class), new ArrayList<Object>());
+	}
+	
+	@Test
+	public void invalidEnumMapperTest() {
+		
 	}
 	
 	@Test
@@ -204,84 +222,255 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateTest() {
+	public void findDateParameterAsLocalDateWithShortStyleTest() {
 		List<Object> parametersValues = new ArrayList<>();
-		LocalDate parameter_01 = LocalDate.of(2018, 02, 12);
-		parametersValues.add(parameter_01);
+		LocalDate parameter_01 = LocalDate.of(2018, Month.FEBRUARY, 12);
+		LocalDate parameter_02 = LocalDate.of(2009, Month.MAY, 1);
 		
-		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_PARAMETER, parametersValues);
+		parametersValues.add(parameter_01);
+		parametersValues.add(parameter_02);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.MULTI_DATE_SHORT_PARAMETER, parametersValues);
 		List<Parameter> parameters = finder.findParameters();
 		
-		Parameter stringParameter_01 = parameters.get(0);
-		assertEquals(DATE_PARAMETER_NAME_01, stringParameter_01.getName());
-		assertEquals("2/12/18", stringParameter_01.getFormattedValue(US));
-		assertEquals(DATE, stringParameter_01.getType());
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("2/12/18", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+		
+		Parameter dateParameter_02 = parameters.get(1);
+		assertEquals(DATE_PARAMETER_NAME_02, dateParameter_02.getName());
+		assertEquals("5/1/09 12:00 AM", dateParameter_02.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_02.getType());
+	}
+	
+	@Test
+	public void findDateParameterAsLocalDateWithMediumStyleTest() {
+		List<Object> parametersValues = new ArrayList<>();
+		LocalDate parameter_01 = LocalDate.of(1967, Month.DECEMBER, 3);
+		LocalDate parameter_02 = LocalDate.of(2016, Month.AUGUST, 7);
+		
+		parametersValues.add(parameter_01);
+		parametersValues.add(parameter_02);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_MEDIUM_PARAMETERS, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("Dec 3, 1967", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+		
+		Parameter dateParameter_02 = parameters.get(1);
+		assertEquals(DATE_PARAMETER_NAME_02, dateParameter_02.getName());
+		assertEquals("Aug 7, 2016 12:00:00 AM", dateParameter_02.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_02.getType());
 	}
 	
 	@Test
 	public void findDateParameterAsLocalDateWithPatternTest() {
 		List<Object> parametersValues = new ArrayList<>();
-		LocalDate parameter_01 = LocalDate.of(2003, 7, 30);
-		LocalDate parameter_02 = LocalDate.of(1988, 10, 13);
+		LocalDate parameter_01 = LocalDate.of(1945, Month.JANUARY, 1);
 		parametersValues.add(parameter_01);
-		parametersValues.add(parameter_02);
 		
-		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.MULTI_DATE_PARAMETER, parametersValues);
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_PATTERN_PARAMETER, parametersValues);
 		List<Parameter> parameters = finder.findParameters();
 		
-		Parameter stringParameter_01 = parameters.get(0);
-		assertEquals(DATE_PARAMETER_NAME_01, stringParameter_01.getName());
-		assertEquals("30/07/2003", stringParameter_01.getFormattedValue(US));
-		assertEquals(DATE, stringParameter_01.getType());
-		
-		Parameter stringParameter_02 = parameters.get(1);
-		assertEquals(DATE_PARAMETER_NAME_02, stringParameter_02.getName());
-		assertEquals("1988-10-13", stringParameter_02.getFormattedValue(US));
-		assertEquals(DATE, stringParameter_02.getType());
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("1945-01-01", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateTimeTest() {
+	public void findDateParameterAsLocalDateTimeWithShortStyleTest() {
 		List<Object> parametersValues = new ArrayList<>();
-		LocalDateTime parameter_01 = LocalDateTime.of(2000, 1, 1, 0, 0);
-		parametersValues.add(parameter_01);
+		LocalDateTime parameter_01 = LocalDateTime.of(2015, Month.OCTOBER, 28, 10, 30);
+		LocalDateTime parameter_02 = LocalDateTime.of(2009, Month.NOVEMBER, 11, 16, 30);
 		
-		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_PARAMETER, parametersValues);		
-		List<Parameter> parameters = finder.findParameters();
-
-		Parameter stringParameter_01 = parameters.get(0);
-		assertEquals(DATE_PARAMETER_NAME_01, stringParameter_01.getName());
-		assertEquals("1/1/00", stringParameter_01.getFormattedValue(US));
-		assertEquals(DATE, stringParameter_01.getType());
-	}
-	
-	@Test
-	public void findDateParameterAsLocalDateTimeWithPatternFormatTest() {
-		List<Object> parametersValues = new ArrayList<>();
-		LocalDateTime parameter_01 = LocalDateTime.of(1995, 9, 14, 20, 15);
-		LocalDateTime parameter_02 = LocalDateTime.of(2006, 5, 30, 1, 0);
 		parametersValues.add(parameter_01);
 		parametersValues.add(parameter_02);
 		
-		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_PARAMETERS, parametersValues);		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.MULTI_DATE_SHORT_PARAMETER, parametersValues);
 		List<Parameter> parameters = finder.findParameters();
 		
-		Parameter stringParameter_01 = parameters.get(0);
-		assertEquals(DATE_PARAMETER_NAME_01, stringParameter_01.getName());
-		assertEquals("14/09/1995 20:15", stringParameter_01.getFormattedValue(US));
-		assertEquals(DATE, stringParameter_01.getType());
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("10/28/15", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
 		
-		Parameter stringParameter_02 = parameters.get(1);
-		assertEquals(DATE_PARAMETER_NAME_02, stringParameter_02.getName());
-		assertEquals("2006-05-30 01-00", stringParameter_02.getFormattedValue(US));
-		assertEquals(DATE, stringParameter_02.getType());
+		Parameter dateParameter_02 = parameters.get(1);
+		assertEquals(DATE_PARAMETER_NAME_02, dateParameter_02.getName());
+		assertEquals("11/11/09 4:30 PM", dateParameter_02.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_02.getType());
 	}
 	
-//	@Test
-//	public void findDateParameterAsDateTest() throws ParseException {
-//		List<Object> parametersValues = new ArrayList<>();
-//		Date parameter_01 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("11/12/1992 13:00");
-//	}
+	@Test
+	public void findDateParameterAsLocalDateTimeWithMediumStyleTest() {
+		List<Object> parametersValues = new ArrayList<>();
+		LocalDateTime parameter_01 = LocalDateTime.of(2007, Month.MAY, 18, 18, 0);
+		LocalDateTime parameter_02 = LocalDateTime.of(1997, Month.JANUARY, 23, 14, 59);
+		
+		parametersValues.add(parameter_01);
+		parametersValues.add(parameter_02);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_MEDIUM_PARAMETERS, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("May 18, 2007", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+		
+		Parameter dateParameter_02 = parameters.get(1);
+		assertEquals(DATE_PARAMETER_NAME_02, dateParameter_02.getName());
+		assertEquals("Jan 23, 1997 2:59:00 PM", dateParameter_02.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_02.getType());
+	}
+	
+	@Test
+	public void findDateParameterAsLocalDateTimeWithPatternTest() {
+		List<Object> parametersValues = new ArrayList<>();
+		LocalDateTime parameter_01 = LocalDateTime.of(1937, Month.MARCH, 19, 10, 8);
+		parametersValues.add(parameter_01);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_PATTERN_PARAMETER, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("1937-03-19", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+	}
+	
+	@Test
+	public void findDateParameterAsDateWithShortStyleTest() throws ParseException {
+		List<Object> parametersValues = new ArrayList<>();
+		Date parameter_01 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("25/07/1978 04:20");
+		Date parameter_02 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("09/01/2010 23:01");
+		
+		parametersValues.add(parameter_01);
+		parametersValues.add(parameter_02);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.MULTI_DATE_SHORT_PARAMETER, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("7/25/78", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+		
+		Parameter dateParameter_02 = parameters.get(1);
+		assertEquals(DATE_PARAMETER_NAME_02, dateParameter_02.getName());
+		assertEquals("1/9/10 11:01 PM", dateParameter_02.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_02.getType());
+	}
+	
+	@Test
+	public void findDateParameterAsDateWithMediumStyleTest() throws ParseException {
+		List<Object> parametersValues = new ArrayList<>();
+		Date parameter_01 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("16/05/2006 08:29");
+		Date parameter_02 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("04/06/1999 10:12");
+		
+		parametersValues.add(parameter_01);
+		parametersValues.add(parameter_02);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_MEDIUM_PARAMETERS, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("May 16, 2006", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+		
+		Parameter dateParameter_02 = parameters.get(1);
+		assertEquals(DATE_PARAMETER_NAME_02, dateParameter_02.getName());
+		assertEquals("Jun 4, 1999 10:12:00 AM", dateParameter_02.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_02.getType());
+	}
+	
+	@Test
+	public void findDateParameterAsDateWithPatternTest() throws ParseException {
+		List<Object> parametersValues = new ArrayList<>();
+		Date parameter_01 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("31/10/2017 18:30");
+		parametersValues.add(parameter_01);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_PATTERN_PARAMETER, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("2017-10-31", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+	}
+	
+	@Test
+	public void findDateParameterAsCalendarWithShortStyleTest() {
+		List<Object> parametersValues = new ArrayList<>();
+		Calendar parameter_01 = Calendar.getInstance();
+		parameter_01.set(2003, Calendar.APRIL, 13, 23, 20, 0);
+		
+		Calendar parameter_02 = Calendar.getInstance();
+		parameter_02.set(2011, Calendar.MARCH, 26, 1, 9, 0);
+		
+		parametersValues.add(parameter_01);
+		parametersValues.add(parameter_02);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.MULTI_DATE_SHORT_PARAMETER, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("4/13/03", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+		
+		Parameter dateParameter_02 = parameters.get(1);
+		assertEquals(DATE_PARAMETER_NAME_02, dateParameter_02.getName());
+		assertEquals("3/26/11 1:09 AM", dateParameter_02.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_02.getType());
+	}
+	
+	@Test
+	public void findDateParameterAsCalendarWithMediumStyleTest() {
+		List<Object> parametersValues = new ArrayList<>();
+		Calendar parameter_01 = Calendar.getInstance();
+		parameter_01.set(1893, Calendar.JANUARY, 22, 20, 20, 0);
+		
+		Calendar parameter_02 = Calendar.getInstance();
+		parameter_02.set(2008, Calendar.DECEMBER, 11, 0, 0, 31);
+		
+		parametersValues.add(parameter_01);
+		parametersValues.add(parameter_02);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_MEDIUM_PARAMETERS, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("Jan 22, 1893", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+		
+		Parameter dateParameter_02 = parameters.get(1);
+		assertEquals(DATE_PARAMETER_NAME_02, dateParameter_02.getName());
+		assertEquals("Dec 11, 2008 12:00:31 AM", dateParameter_02.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_02.getType());
+	}
+	
+	@Test
+	public void findDateParameterAsCalendarWithPatternTest() throws ParseException {
+		List<Object> parametersValues = new ArrayList<>();
+		Calendar parameter_01 = Calendar.getInstance();
+		parameter_01.set(2017, Calendar.NOVEMBER, 30, 19, 48, 0);
+		parametersValues.add(parameter_01);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DATE_PATTERN_PARAMETER, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter dateParameter_01 = parameters.get(0);
+		assertEquals(DATE_PARAMETER_NAME_01, dateParameter_01.getName());
+		assertEquals("2017-11-30", dateParameter_01.getFormattedValue(US));
+		assertEquals(DATE, dateParameter_01.getType());
+	}
 	
 	@Test(expected = MissingParametersValuesException.class)
 	public void missingParametersValuesTest() {
@@ -298,6 +487,30 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 		
 		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.STRING_PARAMETER, parametersValues);
 		finder.findParameters();
+	}
+	
+	@Test
+	public void ignoresIfMessageMapperHasOtherAnnotation() {
+		List<Object> parametersValues = new ArrayList<>();
+		Object parameter_01 = new Object();
+		Object parameter_02 = new Object();
+		parametersValues.add(parameter_01);
+		parametersValues.add(parameter_02);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(OthersAnnotationsMassageMapperEnum.OTHER_ANNOTATION_MESSAGE_MAPPER_ENUM, 
+																					   parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		assertEquals(parameters.size(), 2);
+		
+		Parameter stringParameter_01 = parameters.get(0);
+		assertEquals(STRING_PARAMETER_NAME_01, stringParameter_01.getName());
+		assertEquals(parameter_01.toString(), stringParameter_01.getFormattedValue(US));
+		assertEquals(STRING, stringParameter_01.getType());
+			
+		Parameter stringParameter_02 = parameters.get(1);
+		assertEquals(STRING_PARAMETER_NAME_02, stringParameter_02.getName());
+		assertEquals(parameter_02.toString(), stringParameter_02.getFormattedValue(US));
+		assertEquals(STRING, stringParameter_02.getType());
 	}
 	
 	private enum MapperEnumTest implements MessageMapperEnum {
@@ -324,16 +537,16 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 											 @CurrencyMessageParameter(CURRENCY_PARAMETER_NAME_02) })
 		CURRENCY_PARAMETERS(SUCCESS),
 		
-		@DateMessageParameter(value = DATE_PARAMETER_NAME_01, considerTime = false)
-		DATE_PARAMETER(SUCCESS),
+		@DateMessageParameter(value = DATE_PARAMETER_NAME_01)
+		@DateMessageParameter(value = DATE_PARAMETER_NAME_02, considerTime = true)
+		MULTI_DATE_SHORT_PARAMETER(SUCCESS),
 		
-		@DateMessageParameter(value = DATE_PARAMETER_NAME_01, pattern = "dd/MM/yyyy")
-		@DateMessageParameter(value = DATE_PARAMETER_NAME_02, pattern = "yyyy-MM-dd")
-		MULTI_DATE_PARAMETER(SUCCESS),
+		@DateMessageParameters( value = { @DateMessageParameter(value = DATE_PARAMETER_NAME_01, style = MEDIUM),
+										  @DateMessageParameter(value = DATE_PARAMETER_NAME_02, style = MEDIUM, considerTime = true)})
+		DATE_MEDIUM_PARAMETERS(SUCCESS),
 		
-		@DateMessageParameters(value = { @DateMessageParameter(value = DATE_PARAMETER_NAME_01, pattern = "dd/MM/yyyy HH:mm"),
-										 @DateMessageParameter(value = DATE_PARAMETER_NAME_02, pattern = "yyyy-MM-dd HH-mm") })
-		DATE_PARAMETERS(SUCCESS);
+		@DateMessageParameter(value = DATE_PARAMETER_NAME_01, pattern = "yyyy-MM-dd")
+		DATE_PATTERN_PARAMETER(SUCCESS);
 		
 		private final MessageSeverity severity;
 		
@@ -347,4 +560,24 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 		}
 	}
 
+	private enum OthersAnnotationsMassageMapperEnum implements MessageMapperEnum {
+		
+		@NotNull
+		@MessageParameter(STRING_PARAMETER_NAME_01)
+		@MessageParameter(STRING_PARAMETER_NAME_02)
+		OTHER_ANNOTATION_MESSAGE_MAPPER_ENUM(SUCCESS);
+		
+		
+		private final MessageSeverity severity;
+		
+		private OthersAnnotationsMassageMapperEnum(final MessageSeverity severity) {
+			this.severity = severity;
+		}
+
+		@Override
+		public MessageSeverity getSeverity() {
+			return this.severity;
+		}
+		
+	}
 }

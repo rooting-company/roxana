@@ -28,27 +28,26 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 		List<Parameter> parameters = new ArrayList<>();
 		List<Field> fields = Arrays.asList(this.getObject().getClass().getDeclaredFields());
 		
-		fields.forEach(f -> {
-			if (!f.isAccessible()) {
-				f.setAccessible(true);
+		fields.forEach(filed -> {
+			if (!filed.isAccessible()) {
+				filed.setAccessible(true);
 			}
 			
 			try {
-				
-				if(f.isAnnotationPresent(br.com.rooting.roxana.business.parameter.Parameter.class)) {
-					br.com.rooting.roxana.business.parameter.Parameter parameterAnnotation = f
+				if(filed.isAnnotationPresent(br.com.rooting.roxana.business.parameter.Parameter.class)) {
+					br.com.rooting.roxana.business.parameter.Parameter parameterAnnotation = filed
 							.getDeclaredAnnotation(br.com.rooting.roxana.business.parameter.Parameter.class);
-					parameters.add(this.createParameterBaseOn(f, parameterAnnotation));
+					parameters.add(this.createParameterBaseOn(filed, parameterAnnotation));
 					
-				} else if(f.isAnnotationPresent(DateParameter.class)) {
-					parameters.add(this.createParameterBaseOn(f, f.getDeclaredAnnotation(DateParameter.class)));
+				} else if(filed.isAnnotationPresent(DateParameter.class)) {
+					parameters.add(this.createParameterBaseOn(filed, filed.getDeclaredAnnotation(DateParameter.class)));
 					
-				} else if(f.isAnnotationPresent(CurrencyParameter.class)) {
-					parameters.add(this.createParameterBaseOne(f, f.getDeclaredAnnotation(CurrencyParameter.class)));
+				} else if(filed.isAnnotationPresent(CurrencyParameter.class)) {
+					parameters.add(this.createParameterBaseOne(filed, filed.getDeclaredAnnotation(CurrencyParameter.class)));
 				}
 				
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				throw new FailToFindParameterException(this.getFailToFindParameterMessage(f), e);
+				throw new FailToFindParameterException(this.getFailToFindParameterMessage(filed), e);
 			}
 		});
 		return parameters;

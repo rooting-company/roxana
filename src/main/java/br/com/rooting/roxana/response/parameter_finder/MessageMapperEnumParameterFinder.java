@@ -60,16 +60,15 @@ public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy
 				if (isParameterMapper(a)) {
 					parametersMappers.add(a);
 				} else {
-					List<Annotation> parameterMapperExtracted = extractParameterMapperList(a);
-					if (parameterMapperExtracted != null) {
-						parametersMappers.addAll(extractParameterMapperList(a));
-					}
+					parametersMappers.addAll(extractParameterMapperList(a));
 				}
 			});
 			
 			return parametersMappers;
 		} catch (NoSuchFieldException | SecurityException e) {
-			throw new FailToFindParameterException(getFailToFindParameterMessage(messageMapperEnum.name()), e);
+			// Não devera entrar aqui, pois esta classe so aceita enuns como mapper 
+			// e o metodo name do enum nao pode ser sobreescrito.
+			throw new FailToFindParameterException(EXCETION_WHEN_PASSING_PARAMETER_OF_ENUM_MAPPER + messageMapperEnum.name(), e);
 		}
 	}
 	
@@ -90,11 +89,7 @@ public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy
 		} else if (annotation instanceof CurrencyMessageParameters) {
 			return Arrays.asList(((CurrencyMessageParameters) annotation).value());
 		}
-		return null;
-	}
-	
-	private static String getFailToFindParameterMessage(final String enumFieldName) {
-		return EXCETION_WHEN_PASSING_PARAMETER_OF_ENUM_MAPPER + enumFieldName;
+		return new ArrayList<>(0);
 	}
 	
 	@Override
