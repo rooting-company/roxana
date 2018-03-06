@@ -61,7 +61,7 @@ abstract class ResponseProcessor {
 	}
 	
 	private ResponseEntity<Response> formatResponse(final HttpStatus responseCode,
-													   final List<MessageResponseDTO> messagesResponseDTO) {
+													final List<MessageResponseDTO> messagesResponseDTO) {
 		
 		return ResponseEntity.status(responseCode).body(this.getResponse(messagesResponseDTO));
 	}
