@@ -4,7 +4,6 @@ import static br.com.rooting.roxana.message.MessageSeverity.ERROR;
 import static br.com.rooting.roxana.message.MessageSeverity.INFO;
 import static br.com.rooting.roxana.message.MessageSeverity.SUCCESS;
 import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -36,8 +35,8 @@ public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreato
 	private static final String KEY = "mocked.key";
 
 	@Test
-	public void testClassIsPublicTest() {
-		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
+	public void testClassIsPackagePrivateTest() {
+		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test

@@ -27,7 +27,6 @@ public final class MessageUnchanged extends Message {
 	public String getKey() {
 		return this.key;
 	}
-	
 
 	public List<Parameter> getParameters() {
 		return Collections.unmodifiableList(this.parameters);

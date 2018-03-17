@@ -61,7 +61,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePublicConstructorTest() {
+	public void testClassWasOnlyOnePublicConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
 		assertTrue(constructors.length == 1);
 		assertTrue(isPublic(constructors[0].getModifiers()));

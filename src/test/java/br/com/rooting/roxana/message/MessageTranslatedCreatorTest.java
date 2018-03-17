@@ -4,7 +4,6 @@ import static br.com.rooting.roxana.message.MessageSeverity.ERROR;
 import static br.com.rooting.roxana.message.MessageSeverity.INFO;
 import static br.com.rooting.roxana.message.MessageSeverity.SUCCESS;
 import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -38,8 +37,8 @@ public class MessageTranslatedCreatorTest extends UnitTest<MessageTranslatedCrea
 	private static final String KEY = "key";
 
 	@Test
-	public void testClassIsPublicTest() {
-		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
+	public void testClassIsPackagePrivateTest() {
+		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
@@ -66,7 +65,7 @@ public class MessageTranslatedCreatorTest extends UnitTest<MessageTranslatedCrea
 	
 	@Test
 	public void createTest() {
-		Translator translator = new MockedTranslator(true);
+		Translator translator = new MockedTranslator();
 		MessageTranslatedCreator creator = new MessageTranslatedCreator(translator);
 		
 		MessageMapper mapper = new MockedMessageMapper(KEY, INFO);
@@ -79,7 +78,7 @@ public class MessageTranslatedCreatorTest extends UnitTest<MessageTranslatedCrea
 	
 	@Test
 	public void createArgsTest() {
-		Translator translator = new MockedTranslator(true);
+		Translator translator = new MockedTranslator();
 		
 		MessageTranslatedCreator creator = new MessageTranslatedCreator(translator);
 		MessageMapper mapper = new MockedMessageMapper(KEY, INFO);
@@ -99,7 +98,7 @@ public class MessageTranslatedCreatorTest extends UnitTest<MessageTranslatedCrea
 		ParameterFinderStrategy parameterFinder = new MessageMapperEnumParameterFinder(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS, parametersValues);
 		List<Parameter> parameters = parameterFinder.findParameters();
 		
-		Translator translator = new MockedTranslator(true);
+		Translator translator = new MockedTranslator();
 		MessageTranslatedCreator creator = new MessageTranslatedCreator(translator);
 		
 		MessageTranslated message = creator.create(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS, parametersValues);
@@ -115,7 +114,7 @@ public class MessageTranslatedCreatorTest extends UnitTest<MessageTranslatedCrea
 		ParameterFinderStrategy parameterFinder = new MessageMapperEnumParameterFinder(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS, parametersValues);
 		List<Parameter> parameters = parameterFinder.findParameters();
 		
-		Translator translator = new MockedTranslator(true);
+		Translator translator = new MockedTranslator();
 		MessageTranslatedCreator creator = new MessageTranslatedCreator(translator);
 		
 		MessageTranslated message = creator.create(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS, 
@@ -128,7 +127,7 @@ public class MessageTranslatedCreatorTest extends UnitTest<MessageTranslatedCrea
 	
 	@Test
 	public void createBasedOnEnumMapWithNoParameterTest() {
-		Translator translator = new MockedTranslator(true);
+		Translator translator = new MockedTranslator();
 		MessageTranslatedCreator creator = new MessageTranslatedCreator(translator);
 		MessageTranslated message = creator.create(MapperEnumTest.MAPPER_WITH_NO_PARAMETERS);
 		

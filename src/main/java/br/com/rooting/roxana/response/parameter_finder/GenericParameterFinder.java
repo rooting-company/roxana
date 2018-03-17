@@ -28,26 +28,29 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 		List<Parameter> parameters = new ArrayList<>();
 		List<Field> fields = Arrays.asList(this.getObject().getClass().getDeclaredFields());
 		
-		fields.forEach(filed -> {
-			if (!filed.isAccessible()) {
-				filed.setAccessible(true);
+		fields.forEach(field -> {
+			if (!field.isAccessible()) {
+				field.setAccessible(true);
 			}
 			
 			try {
-				if(filed.isAnnotationPresent(br.com.rooting.roxana.business.parameter.Parameter.class)) {
-					br.com.rooting.roxana.business.parameter.Parameter parameterAnnotation = filed
-							.getDeclaredAnnotation(br.com.rooting.roxana.business.parameter.Parameter.class);
-					parameters.add(this.createParameterBaseOn(filed, parameterAnnotation));
+				if(field.isAnnotationPresent(br.com.rooting.roxana.business.parameter.Parameter.class)) {
+					br.com.rooting.roxana.business.parameter.Parameter parameterAnnotation = 
+					field.getDeclaredAnnotation(br.com.rooting.roxana.business.parameter.Parameter.class);
 					
-				} else if(filed.isAnnotationPresent(DateParameter.class)) {
-					parameters.add(this.createParameterBaseOn(filed, filed.getDeclaredAnnotation(DateParameter.class)));
+					parameters.add(this.createParameterBaseOn(field, parameterAnnotation));
 					
-				} else if(filed.isAnnotationPresent(CurrencyParameter.class)) {
-					parameters.add(this.createParameterBaseOne(filed, filed.getDeclaredAnnotation(CurrencyParameter.class)));
+				} else if(field.isAnnotationPresent(DateParameter.class)) {
+					parameters.add(this.createParameterBaseOn(field, field.getDeclaredAnnotation(DateParameter.class)));
+					
+				} else if(field.isAnnotationPresent(CurrencyParameter.class)) {
+					parameters.add(this.createParameterBaseOne(field, field.getDeclaredAnnotation(CurrencyParameter.class)));
 				}
 				
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				throw new FailToFindParameterException(this.getFailToFindParameterMessage(filed), e);
+				// Não devera entrar aqui, pois o field pertence ao objeto passado.
+				// e este metodo deixa o field acessivel atraves do setAccessible.
+				throw new FailToFindParameterException(this.getFailToFindParameterMessage(field), e);
 			}
 		});
 		return parameters;

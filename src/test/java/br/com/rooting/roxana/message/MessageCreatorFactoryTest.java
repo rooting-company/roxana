@@ -45,7 +45,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void roxanaPropertiesCanNotBeNull() {
+	public void roxanaPropertiesCanNotBeNullTest() {
 		new MessageCreatorFactory(null, 
 								  MOCKED_MESSAGE_FULLY_CREATOR, 
 								  MOCKED_MESSAGE_TRANSLATED_CREATOR, 
@@ -53,7 +53,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void messageFullyCreatorCanNotBeNull() {
+	public void messageFullyCreatorCanNotBeNullTest() {
 		new MessageCreatorFactory(this.getMockedRoxanaProperties(TRANSLATED), 
 								  null, 
 								  MOCKED_MESSAGE_TRANSLATED_CREATOR, 
@@ -61,7 +61,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void messageTranslatedCreatorCanNotBeNull() {
+	public void messageTranslatedCreatorCanNotBeNullTest() {
 		new MessageCreatorFactory(this.getMockedRoxanaProperties(TRANSLATED), 
 								  MOCKED_MESSAGE_FULLY_CREATOR, 
 								  null, 
@@ -69,7 +69,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void messageUnchangedCreatorCanNotBeNull() {
+	public void messageUnchangedCreatorCanNotBeNullTest() {
 		new MessageCreatorFactory(this.getMockedRoxanaProperties(TRANSLATED), 
 								  MOCKED_MESSAGE_FULLY_CREATOR, 
 								  MOCKED_MESSAGE_TRANSLATED_CREATOR, 
@@ -77,7 +77,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void responseStrategyCanNotBeNull() {
+	public void responseStrategyCanNotBeNullTest() {
 		new MessageCreatorFactory(this.getMockedRoxanaProperties(null), 
 								  MOCKED_MESSAGE_FULLY_CREATOR, 
 								  MOCKED_MESSAGE_TRANSLATED_CREATOR, 
@@ -85,7 +85,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	}
 	
 	@Test
-	public void getFullyMessageCreator() {
+	public void getFullyMessageCreatorTest() {
 		MessageCreatorFactory factory = new MessageCreatorFactory(this.getMockedRoxanaProperties(FULLY), 
 																  MOCKED_MESSAGE_FULLY_CREATOR, 
 																  MOCKED_MESSAGE_TRANSLATED_CREATOR, 
@@ -95,7 +95,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	}
 	
 	@Test
-	public void getTranslatedMessageCreator() {
+	public void getTranslatedMessageCreatorTest() {
 		MessageCreatorFactory factory = new MessageCreatorFactory(this.getMockedRoxanaProperties(TRANSLATED), 
 																  MOCKED_MESSAGE_FULLY_CREATOR, 
 																  MOCKED_MESSAGE_TRANSLATED_CREATOR, 
@@ -105,7 +105,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	}
 	
 	@Test
-	public void getUnchangedMessageCreator() {
+	public void getUnchangedMessageCreatorTest() {
 		MessageCreatorFactory factory = new MessageCreatorFactory(this.getMockedRoxanaProperties(UNCHANGED), 
 																  MOCKED_MESSAGE_FULLY_CREATOR, 
 																  MOCKED_MESSAGE_TRANSLATED_CREATOR, 
@@ -128,7 +128,7 @@ public class MessageCreatorFactoryTest extends UnitTest<MessageCreatorFactory> {
 	
 	private RoxanaProperties getMockedRoxanaProperties(final ResponseStrategy responseStrategy) {
 		RoxanaPropertiesMockBuilder builder = new RoxanaPropertiesMockBuilder();
-		builder.setResponseStrategy(responseStrategy);
+		builder.withResponseStrategy(responseStrategy);
 		return builder.build();
 	}
 	

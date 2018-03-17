@@ -42,7 +42,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePublicConstructorTest() {
+	public void testClassWasOnlyOnePublicConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
 		assertTrue(constructors.length == 1);
 		assertTrue(isPublic(constructors[0].getModifiers()));

@@ -58,7 +58,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePublicConstructorTest() {
+	public void testClassWasOnlyOnePublicConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
 		assertTrue(constructors.length == 1);
 		assertTrue(isPublic(constructors[0].getModifiers()));
@@ -71,8 +71,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 	
 	@Test
 	public void supportToConstraintValidationTest() {
-		ConstraintValidatorTest testClass = new ConstraintValidatorTest();
-		Set<ConstraintViolation<Object>> violations = VALIDATOR.validate(testClass);
+		Set<ConstraintViolation<ConstraintValidatorTest>> violations = VALIDATOR.validate(new ConstraintValidatorTest());
 		
 		violations.stream().forEach(violation -> {
 			ConstraintValidationParameterFinder finder = new ConstraintValidationParameterFinder(violation);

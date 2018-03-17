@@ -12,7 +12,7 @@ import br.com.rooting.roxana.parameter.Parameter;
 import br.com.rooting.roxana.translator.Translator;
 
 @Component
-public class MessageTranslatedCreator implements MessageCreator {
+class MessageTranslatedCreator implements MessageCreator {
 
 	private final Translator translator;
 	

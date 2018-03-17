@@ -9,7 +9,7 @@ import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
 import br.com.rooting.roxana.parameter.Parameter;
 
 @Component
-public class MessageUnchangedCreator implements MessageCreator {
+class MessageUnchangedCreator implements MessageCreator {
 	
 	MessageUnchangedCreator() {}
 

@@ -11,7 +11,7 @@ import br.com.rooting.roxana.UnitTest;
 public class RoxanaPackageMapperTest extends UnitTest<RoxanaPackageMapper> {
 
 	@Test
-	public void testClassIsPrivateTest() {
+	public void testClassIsPackagePrivateTest() {
 		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
 	}
 	

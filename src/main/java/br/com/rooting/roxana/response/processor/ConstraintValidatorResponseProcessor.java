@@ -6,10 +6,7 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.message.MessageCreatorFactory;
@@ -17,20 +14,17 @@ import br.com.rooting.roxana.message.MessageSeverity;
 import br.com.rooting.roxana.response.parameter_finder.ConstraintValidationParameterFinder;
 import br.com.rooting.roxana.response.parameter_finder.ParameterFinderStrategy;
 
-@Primary
-@Component
 class ConstraintValidatorResponseProcessor extends ResponseProcessor {
 
-	@Autowired
 	ConstraintValidatorResponseProcessor(final RoxanaProperties roxanaProperties,
 										 final MessageCreatorFactory messageCreatorFactory, 
-									   	 final ResponseProcessorManager responseCreatorFactory) {
+									   	 final ResponseProcessorManager responseCreatorManager) {
 		
-		super(roxanaProperties, messageCreatorFactory, responseCreatorFactory);
+		super(roxanaProperties, messageCreatorFactory, responseCreatorManager);
 	}
 
 	@Override
-	protected Boolean isAUnexpectedException(Exception e) {
+	protected Boolean isUnexpectedException(Exception e) {
 		return false;
 	}
 	
