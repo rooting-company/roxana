@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.UnitTest;
+import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
 import br.com.rooting.roxana.parameter.Parameter;
 
@@ -58,7 +59,7 @@ public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
 	public void translationTest() {
 		Stream.of(LocaleTagEnum.values()).forEach(locale -> {
 			RoxanaPropertiesMockBuilder propertiesBuilder = new RoxanaPropertiesMockBuilder();
-			propertiesBuilder.setLocale(locale.getTag());
+			propertiesBuilder.withLocale(locale.getTag());
 			
 			RoxanaTranslator translator = new RoxanaTranslator(propertiesBuilder.build());
 			
@@ -75,7 +76,7 @@ public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
 	public void compositeTranslationTest() {
 		Stream.of(LocaleTagEnum.values()).forEach(locale -> {
 			RoxanaPropertiesMockBuilder propertiesBuilder = new RoxanaPropertiesMockBuilder();
-			propertiesBuilder.setLocale(locale.getTag());
+			propertiesBuilder.withLocale(locale.getTag());
 			
 			RoxanaTranslator translator = new RoxanaTranslator(propertiesBuilder.build());
 			
@@ -100,13 +101,48 @@ public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
 		});
 	}
 	
+	@Test
+	public void onlyParameterInterpolationTest() {
+		RoxanaProperties roxanaProperties = new RoxanaPropertiesMockBuilder()
+														.withLocale("pt-BR")
+														.build();
+		
+		RoxanaTranslator translator = new RoxanaTranslator(roxanaProperties);
+		
+		String key = "These two parameters will be interpoled but de rest do not: [um], [dois]";
+		List<Parameter> parameters = new ArrayList<>();
+		parameters.add(Parameter.create("um", "The First Parameter"));
+		parameters.add(Parameter.create("dois", "The Second Parameter"));
+		
+		String translation = translator.translate(key, parameters);
+		assertEquals("These two parameters will be interpoled but de rest do not: The First Parameter, The Second Parameter", translation);
+	}
+	
+//	@Test
+//	public void scapeKeyCharactersTest() {
+//		RoxanaProperties roxanaProperties = new RoxanaPropertiesMockBuilder()
+//														.withLocale("pt-BR")
+//														.build();
+//		
+//		RoxanaTranslator translator = new RoxanaTranslator(roxanaProperties);
+//		
+//		String key = "/{i.am.not.will.be.interpoled/}";
+//		String translation = translator.translate(key);
+//		assertEquals("{i.am.not.will.be.interpoled}", translation);
+//	}
+//	
+//	@Test
+//	public void scapeParameterCharactersTest() {
+//		
+//	}
+	
 	// Testa se a falha ao traduzir é escondida.
 	// TODO Validar se o verdadeiro erro foi logado.
 	@Test
 	public void supressFailToTranslateTest() {
 		RoxanaPropertiesMockBuilder roxPropMockBuilder = new RoxanaPropertiesMockBuilder();
-		roxPropMockBuilder.setLocale(PT_BR.getTag());
-		roxPropMockBuilder.setSupressFailsTranslations(true);
+		roxPropMockBuilder.withLocale(PT_BR.getTag());
+		roxPropMockBuilder.withSupressFailsTranslations(true);
 		
 		RoxanaTranslator translator = new RoxanaTranslator(roxPropMockBuilder.build());
 		String failTranslation = NOT_FOUND_DELIMITER + NOT_DEFINED_KEY + NOT_FOUND_DELIMITER;
@@ -117,7 +153,7 @@ public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
 	@Test(expected = FailToTranslateException.class)
 	public void throwFailToTranslateTest() {
 		RoxanaPropertiesMockBuilder roxPropMockBuilder = new RoxanaPropertiesMockBuilder();
-		roxPropMockBuilder.setSupressFailsTranslations(false);
+		roxPropMockBuilder.withSupressFailsTranslations(false);
 		
 		RoxanaTranslator translator = new RoxanaTranslator(roxPropMockBuilder.build());
 		translator.translate(getInterpoledKeyOf(NOT_DEFINED_KEY));
@@ -127,7 +163,7 @@ public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
 	@Test(expected = MessageBundleBaseNameNotDefinedException.class)
 	public void throwMessageBundleBaseNameNotDefinedExceptionTest() {
 		RoxanaPropertiesMockBuilder roxPropMockBuilder = new RoxanaPropertiesMockBuilder();
-		roxPropMockBuilder.setBaseName(null);
+		roxPropMockBuilder.withBaseName(null);
 		new RoxanaTranslator(roxPropMockBuilder.build());
 	}
 	
@@ -135,7 +171,7 @@ public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
 	@Test(expected = FailToCreateRoxanaResourceBundleException.class)
 	public void throwFailToCreateRoxanaResourceBundleExceptionTest() {
 		RoxanaPropertiesMockBuilder roxPropMockBuilder = new RoxanaPropertiesMockBuilder();
-		roxPropMockBuilder.setBaseName(INVALID_MESSAGE_BUNDLE_BASE_NAME);
+		roxPropMockBuilder.withBaseName(INVALID_MESSAGE_BUNDLE_BASE_NAME);
 		new RoxanaTranslator(roxPropMockBuilder.build());
 	}
 	
@@ -143,7 +179,7 @@ public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
 	@Test
 	public void useDefaultLocaleTest() {
 		RoxanaPropertiesMockBuilder roxPropMockBuilder = new RoxanaPropertiesMockBuilder();
-		roxPropMockBuilder.setLocale(null);
+		roxPropMockBuilder.withLocale(null);
 		
 		RoxanaTranslator translator = new RoxanaTranslator(roxPropMockBuilder.build());
 		assertEquals(Locale.getDefault(), translator.getLocale());
@@ -153,7 +189,7 @@ public class RoxanaTranslatorTest extends UnitTest<RoxanaTranslator> {
 	@Test(expected = InvalidMessageBundleLocaleException.class)
 	public void throwInvalidMessageBundleLocaleExceptionTest() {
 		RoxanaPropertiesMockBuilder roxPropMockBuilder = new RoxanaPropertiesMockBuilder();
-		roxPropMockBuilder.setLocale(INVALID_LOCALE_TAG);
+		roxPropMockBuilder.withLocale(INVALID_LOCALE_TAG);
 		new RoxanaTranslator(roxPropMockBuilder.build());
 	}
 

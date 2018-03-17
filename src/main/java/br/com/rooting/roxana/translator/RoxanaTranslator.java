@@ -24,9 +24,15 @@ public class RoxanaTranslator implements Translator {
 
 	private static final String ERROR_FAIL_TO_TRANSLATE_A_MESSAGE = "Failed to translate the following message: ";
 	
-	private static final String INTERPOLATION_PREFIX_ESCAPED = "\\" + INTERPOLATION_PREFIX;
+	private static final String ESCAPED_CHARACTER = "\\";
 	
-	private static final String INTERPOLATION_SUFIX_ESCAPED = "\\" + INTERPOLATION_SUFIX;
+	private static final String INTERPOLATION_PREFIX_ESCAPED = ESCAPED_CHARACTER + INTERPOLATION_PREFIX;
+	
+	private static final String INTERPOLATION_SUFIX_ESCAPED = ESCAPED_CHARACTER + INTERPOLATION_SUFIX;
+	
+	private static final String PARAMATER_INTERPOLATION_PREFIX_SCAPED = ESCAPED_CHARACTER + PARAMATER_INTERPOLATION_PREFIX;
+	
+	private static final String PARAMATER_INTERPOLATION_SUFIX_SCAPED = ESCAPED_CHARACTER + PARAMATER_INTERPOLATION_SUFIX;
 	
 	// "^.*?\\{|\\}.*?\\{|\\}.*?$";
 	private static final String INTERPOLATION_REGEX = "^.*?" + INTERPOLATION_PREFIX_ESCAPED + 
@@ -89,15 +95,18 @@ public class RoxanaTranslator implements Translator {
 	}
 	
 	protected String interpolateKey(ResourceBundle resourceBundle, Locale locale, String key, List<Parameter> parameters) {
-		return Arrays.stream(key.split(INTERPOLATION_REGEX))
-						.distinct()
-						.filter(message -> !message.isEmpty())
-						.reduce(key, (k, message) -> {
-							String replaceRegex = this.getInterpolationReplaceRegex(message);
-							String messageInterpolated = this.interpolateMessage(resourceBundle, locale, message, parameters);
-							messageInterpolated = Matcher.quoteReplacement(messageInterpolated);
-							return k.replaceAll(replaceRegex, messageInterpolated);
-						});
+		String interpoled =  Arrays.stream(key.split(INTERPOLATION_REGEX))
+									.distinct()
+									.filter(message -> !message.isEmpty())
+									.reduce(key, (k, message) -> {
+										String replaceRegex = this.getInterpolationReplaceRegex(message);
+										String messageInterpolated = this.interpolateMessage(resourceBundle, locale, message, parameters);
+										messageInterpolated = Matcher.quoteReplacement(messageInterpolated);
+										return k.replaceAll(replaceRegex, messageInterpolated);
+									});
+		
+		//Caso tenha algum parametro diremente na key.
+		return this.interpolateParameters(locale, interpoled, parameters);
 	}
 
 	protected String interpolateMessage(ResourceBundle resourceBundle, Locale locale, String message, List<Parameter> parameters) {
@@ -121,8 +130,12 @@ public class RoxanaTranslator implements Translator {
 		return message;
 	}
 	
+	protected String getParameterInterpolationReplaceRegex(String s) {
+		return PARAMATER_INTERPOLATION_PREFIX_SCAPED + s + PARAMATER_INTERPOLATION_SUFIX_SCAPED;
+	}
+	
 	protected String interpolateParameter(final Locale locale, final String message, final Parameter parameter) {
-		String replaceRegex = this.getInterpolationReplaceRegex(parameter.getName());
+		String replaceRegex = this.getParameterInterpolationReplaceRegex(parameter.getName());
 		String formattedValue =  Matcher.quoteReplacement(parameter.getFormattedValue(locale));
 		return message.replaceAll(replaceRegex, formattedValue);
 	}
@@ -140,8 +153,7 @@ public class RoxanaTranslator implements Translator {
 		return this.resourceBundle;
 	}
 	
-	@Override
-	public Boolean getSuppressFailToTranslateException() {
+	private Boolean getSuppressFailToTranslateException() {
 		return this.suppressFailToTranslateException;
 	}
 	

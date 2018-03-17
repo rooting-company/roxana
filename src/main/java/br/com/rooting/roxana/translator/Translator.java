@@ -12,6 +12,10 @@ public interface Translator {
 	
 	public static final String INTERPOLATION_SUFIX = "}";
 	
+	public static final String PARAMATER_INTERPOLATION_PREFIX = "[";
+	
+	public static final String PARAMATER_INTERPOLATION_SUFIX = "]";
+	
 	public static final String NOT_FOUND_DELIMITER = "???";
 	
 	public static String getInterpoledKeyOf(String key) {
@@ -32,8 +36,6 @@ public interface Translator {
 		return this.translate(key, this.getLocale(), parameters);
 	}
 	
-	public Boolean getSuppressFailToTranslateException();
-
 	public Locale getLocale();
 	
 }

@@ -19,45 +19,61 @@ public class RoxanaPropertiesMockBuilder {
 	
 	private ResponseStrategy responseStrategy = TRANSLATED;
 	
+	private Boolean suppressOthersExceptions = Boolean.TRUE;
+	
 	public RoxanaProperties build() {
 		RoxanaProperties mock = mock(RoxanaProperties.class);
 		when(mock.getMessageBundleLocale()).thenReturn(this.getLocale());
 		when(mock.getMessageBundleSuppressFailsTranslations()).thenReturn(this.isSupressFailsTranslations());
 		when(mock.getMessageBundleBaseName()).thenReturn(this.getBaseName());
 		when(mock.getBusinessResponseStrategy()).thenReturn(this.getResponseStrategy());
+		when(mock.getBusinessExceptionHandlerSuppressOthersExceptions()).thenReturn(this.getSuppressOthersExceptions());
 		return mock;
 	}
 
-	public String getLocale() {
+	private String getLocale() {
 		return locale;
 	}
 
-	public void setLocale(String locale) {
+	public RoxanaPropertiesMockBuilder withLocale(String locale) {
 		this.locale = locale;
+		return this;
 	}
 
-	public boolean isSupressFailsTranslations() {
+	private boolean isSupressFailsTranslations() {
 		return supressFailsTranslations;
 	}
 
-	public void setSupressFailsTranslations(boolean supressFailsTranslations) {
+	public RoxanaPropertiesMockBuilder withSupressFailsTranslations(boolean supressFailsTranslations) {
 		this.supressFailsTranslations = supressFailsTranslations;
+		return this;
 	}
 
-	public String getBaseName() {
+	private String getBaseName() {
 		return baseName;
 	}
 
-	public void setBaseName(String baseName) {
+	public RoxanaPropertiesMockBuilder withBaseName(String baseName) {
 		this.baseName = baseName;
+		return this;
 	}
 
-	public ResponseStrategy getResponseStrategy() {
+	private ResponseStrategy getResponseStrategy() {
 		return responseStrategy;
 	}
 
-	public void setResponseStrategy(ResponseStrategy responseStrategy) {
+	public RoxanaPropertiesMockBuilder withResponseStrategy(ResponseStrategy responseStrategy) {
 		this.responseStrategy = responseStrategy;
+		return this;
+	}
+
+	private Boolean getSuppressOthersExceptions() {
+		return this.suppressOthersExceptions;
+	}
+
+	public RoxanaPropertiesMockBuilder withSuppressOthersExceptions(Boolean suppressOthersExceptions) {
+		this.suppressOthersExceptions = suppressOthersExceptions;
+		return this;
 	}
 	
 }
