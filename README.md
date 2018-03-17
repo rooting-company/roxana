@@ -28,7 +28,7 @@ For Maven users:
   <dependency>
     <groupId>br.com.rooting</groupId>
     <artifactId>roxana</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
   </dependency>
 </dependencies> 
 ```
@@ -60,7 +60,7 @@ public class InsufficientFundsException extends Exception {
   @CurrencyParameter
   private final BigDecimal funds;
 
-  public YourBusinessException(BigDecimal funds) {
+  public InsufficientFundsException(BigDecimal funds) {
     this.funds = funds;
   }
 
@@ -69,7 +69,7 @@ public class InsufficientFundsException extends Exception {
 #### Put the business exception in your i18n files, by add the folow line:
 
 ```properties
-br.com.roxana.example.InsufficientFundsException = Saldo Insuficiente: {funds}.
+br.com.roxana.example.InsufficientFundsException = Saldo Insuficiente: [funds].
 ```
 
 **Obs:** The translation above it is in brazilian portuguese.
@@ -148,7 +148,7 @@ Roxana has some configurations that changes the application behavior. The config
         "severity": "ERROR",
         "key": "{br.com.roxana.example.InsufficientFundsException}",
         "parameters": [
-        {
+          {
             "funds": 3000.00
           }
         ],
@@ -179,7 +179,12 @@ Roxana has some configurations that changes the application behavior. The config
     "messages": [
       {
         "severity": "ERROR",
-        "key": "{br.com.roxana.example.InsufficientFundsException}"
+        "key": "{br.com.roxana.example.InsufficientFundsException}",
+        "parameters": [
+          {
+            "funds": 3000.00
+          }
+        ],
       }
     ]
   }
@@ -193,7 +198,7 @@ Roxana has some configurations that changes the application behavior. The config
 
   This is useful when you want to avoid to compromise operations in production environment just because the programmer forgot to add a simple key in the i18n files. In the development environment, the programmer will notice missing keys more easily if the application rises exceptions. The default value is **"true"**.
 
-- **roxana.message-bundle.path:** Define a custom path to the i18n file. The default value is **"message"**, as well as, Spring framework.
+- **roxana.message-bundle.base-name:** Define a custom path to the i18n file. The default value is **"message"**, as well as, Spring framework.
 
 - **roxana.message-bundle.locale:** Define a custom locale that will be used to find the correct i18n file to translate the messages. When not defined, Roxana will look to **the locale of the system**.
 
