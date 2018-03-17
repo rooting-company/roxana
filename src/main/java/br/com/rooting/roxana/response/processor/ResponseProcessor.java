@@ -35,33 +35,43 @@ abstract class ResponseProcessor {
 					  final MessageCreatorFactory messageCreatorFactory,
 					  final ResponseProcessorManager responseProcessorManager) {
 		
-		this.log = LoggerFactory.getLogger(this.getClass());
-		this.errorInternHandledMessage = MessageFormat.format(ERROR_INTERN_EXCEPTION_HANDLED, this.getClass().getCanonicalName());
+		if (roxanaProperties == null || 
+			messageCreatorFactory == null ||
+			responseProcessorManager == null ||
+			roxanaProperties.getBusinessExceptionHandlerSuppressOthersExceptions() == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		this.suppressOthersExceptions = roxanaProperties.getBusinessExceptionHandlerSuppressOthersExceptions();
 		this.messageCreatorFactory = messageCreatorFactory;
 		this.responseProcessorManager = responseProcessorManager;
+		this.errorInternHandledMessage = MessageFormat.format(ERROR_INTERN_EXCEPTION_HANDLED, this.getClass().getCanonicalName());
+		this.log = LoggerFactory.getLogger(this.getClass());
 	}
 	
-	protected abstract Boolean isAUnexpectedException(Exception e);
+	protected abstract Boolean isUnexpectedException(Exception e);
 	
 	protected abstract HttpStatus getResponseCode(Exception e);
 	
 	protected abstract List<MessageResponseDTO> getMessagesResponseDTO(Exception e);
 	
 	ResponseEntity<Response> process(final Exception e) throws Exception {
-		if(!this.isAUnexpectedException(e)) {
-			return this.formatResponse(this.getResponseCode(e), this.getMessagesResponseDTO(e));
+		if(!this.isUnexpectedException(e)) {
+			List<MessageResponseDTO> messagesDTO = this.getMessagesResponseDTO(e);
+			messagesDTO.sort((m1, m2) -> m1.getKey().compareToIgnoreCase(m2.getKey()));
+			
+			return this.formatResponse(this.getResponseCode(e), messagesDTO);
 		} else if (!this.getSuppressOthersExceptions()) {
 			throw e;
 		}
 		
 		// Se não tem, loga o erro real e retorna um erro generico.
 		this.getLog().error(this.getErrorInternHandledMessage(), e);
-		return this.getResponseProcessorFactory().getProcessedResponse(new UnexpectedException());
+		return this.getResponseProcessorManager().getProcessedResponse(new UnexpectedException());
 	}
 	
 	private ResponseEntity<Response> formatResponse(final HttpStatus responseCode,
-													   final List<MessageResponseDTO> messagesResponseDTO) {
+													final List<MessageResponseDTO> messagesResponseDTO) {
 		
 		return ResponseEntity.status(responseCode).body(this.getResponse(messagesResponseDTO));
 	}
@@ -80,7 +90,7 @@ abstract class ResponseProcessor {
 		return this.log;
 	}
 	
-	protected String getErrorInternHandledMessage() {
+	private String getErrorInternHandledMessage() {
 		return this.errorInternHandledMessage;
 	}
 	
@@ -96,7 +106,7 @@ abstract class ResponseProcessor {
 		return this.messageCreatorFactory;
 	}
 	
-	private ResponseProcessorManager getResponseProcessorFactory() {
+	private ResponseProcessorManager getResponseProcessorManager() {
 		return this.responseProcessorManager;
 	}
 	

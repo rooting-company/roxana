@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.response.parameterFinder;
+package br.com.rooting.roxana.response.parameter_finder;
 
 public class FailToFindParameterException extends RuntimeException {
 

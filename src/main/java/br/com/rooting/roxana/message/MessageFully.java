@@ -1,7 +1,7 @@
 package br.com.rooting.roxana.message;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import br.com.rooting.roxana.parameter.Parameter;
 
@@ -9,17 +9,17 @@ public final class MessageFully extends Message {
 	
 	private final String key;
 
-	private final Collection<Parameter> parameters;
+	private final List<Parameter> parameters;
 
 	private final String language;
 
 	private final String translation;
 
-	MessageFully(final String key, 
-				 final MessageSeverity severity, 
+	MessageFully(final MessageSeverity severity,
+				 final String key, 
 				 final String language, 
-				 final String translation, 
-				 final Collection<Parameter> parameters) {
+				 final String translation,
+				 final List<Parameter> parameters) throws IllegalArgumentException {
 		super(severity);
 		
 		if (key == null || language == null || translation == null || parameters == null) {
@@ -36,8 +36,8 @@ public final class MessageFully extends Message {
 		return this.key;
 	}
 
-	public Collection<Parameter> getParameters() {
-		return Collections.unmodifiableCollection(this.parameters);
+	public List<Parameter> getParameters() {
+		return Collections.unmodifiableList(this.parameters);
 	}
 
 	public String getLanguage() {

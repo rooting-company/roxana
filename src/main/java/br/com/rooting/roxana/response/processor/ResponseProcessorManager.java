@@ -7,64 +7,63 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import br.com.rooting.roxana.business.BusinessConstraintValidator;
+import br.com.rooting.roxana.business.BusinessException;
 import br.com.rooting.roxana.business.MultiBusinessException;
+import br.com.rooting.roxana.config.RoxanaProperties;
+import br.com.rooting.roxana.message.MessageCreatorFactory;
 import br.com.rooting.roxana.response.Response;
 
 @Component
 public class ResponseProcessorManager {
 
-	@Autowired
-	private BusinessExceptionResponseProcessor businessExceptionRP;
+	private final BusinessExceptionResponseProcessor businessExceptionRP;
 
-	@Autowired
-	private ConstraintValidatorResponseProcessor constraintValidatorRP;
+	private final ConstraintValidatorResponseProcessor constraintValidatorRP;
 
-	@Autowired
-	private MultiBusinessExceptionResponseProcessor multiBusinessExceptionRP;
+	private final MultiBusinessExceptionResponseProcessor multiBusinessExceptionRP;
 	
 	@Autowired
-	private BusinessConstraintValidatorResponseProcessor businessConstraintValidatorRP;
-	
-	// Classe deve sempre ser injetada, pois pode causar injeção ciclica com a classe ResponseProcessor.
-	private ResponseProcessorManager() {
-		super();
-	}
-
-	public ResponseEntity<Response> getProcessedResponse(Exception e) throws Exception {
-		e = this.getRealException(e);
-		return this.getResponseProcessor(e).process(e);
-	}
-	
-	// Internal Factory Method
-	private ResponseProcessor getResponseProcessor(final Exception e) {
+	ResponseProcessorManager(final RoxanaProperties roxanaProperties,
+			 				 final MessageCreatorFactory messageCreatorFactory) {
 		
-		if (e instanceof ConstraintViolationException) {
-			if(AnnotationUtils.findAnnotation(e.getClass(), BusinessConstraintValidator.class) != null) {
-				return this.getBusinessConstraintValidatorRP();
-			}
-			
-			return this.getConstraintValidatorRP();
+		if(roxanaProperties == null || messageCreatorFactory == null) {
+			throw new IllegalArgumentException();
 		}
 		
-		if (AnnotationUtils.findAnnotation(e.getClass(), MultiBusinessException.class) != null) {
-			return this.getMultiBusinessExceptionRP();
+		businessExceptionRP = new BusinessExceptionResponseProcessor(roxanaProperties, messageCreatorFactory, this);
+		constraintValidatorRP = new ConstraintValidatorResponseProcessor(roxanaProperties, messageCreatorFactory, this);
+		multiBusinessExceptionRP = new MultiBusinessExceptionResponseProcessor(roxanaProperties, messageCreatorFactory, this);
+	}
+
+	// "Factory Method"
+	public ResponseEntity<Response> getProcessedResponse(final Exception exception) throws Exception {
+		
+		if (exception instanceof ConstraintViolationException) {
+			return this.getConstraintValidatorRP().process(exception);
+		}
+		
+		if (AnnotationUtils.findAnnotation(exception.getClass(), MultiBusinessException.class) != null) {
+			return this.getMultiBusinessExceptionRP().process(exception);
 		}
 
-		return this.getBusinessExceptionRP();
+		if (AnnotationUtils.findAnnotation(exception.getClass(), BusinessException.class) != null) {
+			return this.getBusinessExceptionRP().process(exception);
+		}
+		
+		return this.getBusinessExceptionRP().process(this.getRealException(exception));
 	}
 	
-	private Exception getRealException(final Exception e) {
+	private Exception getRealException(final Exception exception) {
 		
 		// Frameworks como hibernate utilizam de mascaramento de checked exception.
-		// Lambda não suporta checked exceptions, portanto mascamento de checked 
+		// Lambda não suporta checked exceptions, portanto mascaramento de checked 
 		// exceptions também é bastante usado.
-		if (e instanceof RuntimeException && e.getCause() != null) {
-			if (e.getCause() instanceof Exception) {
-				return (Exception) e.getCause();
+		if (exception instanceof RuntimeException && exception.getCause() != null) {
+			if (exception.getCause() instanceof Exception) {
+				return (Exception) exception.getCause();
 			}
 		}
-		return e;
+		return exception;
 	}
 
 	private BusinessExceptionResponseProcessor getBusinessExceptionRP() {
@@ -79,8 +78,4 @@ public class ResponseProcessorManager {
 		return this.multiBusinessExceptionRP;
 	}
 
-	private BusinessConstraintValidatorResponseProcessor getBusinessConstraintValidatorRP() {
-		return this.businessConstraintValidatorRP;
-	}
-	
 }

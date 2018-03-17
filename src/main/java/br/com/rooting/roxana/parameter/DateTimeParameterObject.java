@@ -5,19 +5,24 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Optional;
 
-import org.springframework.lang.Nullable;
+import br.com.rooting.roxana.business.parameter.DateParameter;
+import br.com.rooting.roxana.business.parameter.DateStyle;
 
 final class DateTimeParameterObject {
 	
 	private final LocalDateTime localDateTime;
 	
-	private final Optional<String> pattern;
-
+	private final DateStyle style;
+	
+	private final Boolean considerTime;
+	
+	private final String pattern;
+	
 	private final Integer dayOfMonth;
 	
 	private final Integer month;
@@ -32,9 +37,19 @@ final class DateTimeParameterObject {
 	
 	private final Long instant;
 	
-	DateTimeParameterObject(final LocalDateTime localDateTime, @Nullable final String pattern) {
+	private DateTimeParameterObject(final LocalDateTime localDateTime, 
+									final DateStyle style,
+									final Boolean considerTime, 
+									final String pattern) {
+		
+		if (localDateTime == null || style == null || considerTime == null || pattern == null) {
+			throw new IllegalArgumentException();
+		}
+
 		this.localDateTime = localDateTime;
-		this.pattern = Optional.ofNullable(pattern);
+		this.style = style;
+		this.considerTime = considerTime;
+		this.pattern = pattern;
 		this.dayOfMonth = localDateTime.getDayOfMonth();
 		this.month = localDateTime.getMonthValue();
 		this.year = localDateTime.getYear();
@@ -44,65 +59,101 @@ final class DateTimeParameterObject {
 		this.instant = localDateTime.atZone(ZoneId.systemDefault()).toEpochSecond();
 	}
 	
+	// TODO Tratar erros de formatação, pattern invalido e etc.
 	String getFormatterDate(final Locale locale) {
-		return this.getPattern()
-				.map(p -> this.getLocalDateTime().format(DateTimeFormatter.ofPattern(p, locale)))
-				.orElse(this.getLocalDateTime().format(DateTimeFormatter.ISO_DATE.withLocale(locale)));
+		if (this.getPattern().equals(DateParameter.NONE_PATTERN)) {
+			if(this.getConsiderTime()) {
+				DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(this.getFormatStyle());
+				return this.getLocalDateTime().format(formatter.withLocale(locale));
+			} else {
+				DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(this.getFormatStyle());
+				return this.getLocalDateTime().toLocalDate().format(formatter.withLocale(locale));
+			}
+		} 
+		return this.getLocalDateTime().format(DateTimeFormatter.ofPattern(this.getPattern(), locale));
 	}
 	
-	static DateTimeParameterObject create(final Date date, @Nullable final String pattern) {
+	static DateTimeParameterObject create(final Date date, 
+										  final DateStyle style, 
+										  final Boolean considerTime,
+										  final String pattern) {
+		
 		final LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		return new DateTimeParameterObject(localDateTime, pattern);
-	}
-	
-	static DateTimeParameterObject create(final Calendar calendar, @Nullable final String pattern) {
-		final LocalDateTime localDateTime = calendar.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		return new DateTimeParameterObject(localDateTime, pattern);
-	}
-	
-	static DateTimeParameterObject create(final LocalDate localDate, @Nullable final String pattern) {
-		final LocalDateTime localDateTime = localDate.atTime(LocalTime.MIN);
-		return new DateTimeParameterObject(localDateTime, pattern);
+		return new DateTimeParameterObject(localDateTime, style, considerTime, pattern);
 	}
 
-	static DateTimeParameterObject create(final LocalDateTime localDateTime, @Nullable final String pattern) {
-		return new DateTimeParameterObject(localDateTime, pattern);
+	static DateTimeParameterObject create(final Calendar calendar, 
+										  final DateStyle style, 
+										  final Boolean considerTime,
+										  final String pattern) {
+		
+		final LocalDateTime localDateTime = LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault());
+		return new DateTimeParameterObject(localDateTime, style, considerTime, pattern);
+	}
+
+	static DateTimeParameterObject create(final LocalDate localDate, 
+										  final DateStyle style, 
+										  final Boolean considerTime,
+										  final String pattern) {
+		
+		final LocalDateTime localDateTime = localDate.atTime(LocalTime.MIN);
+		return new DateTimeParameterObject(localDateTime, style, considerTime, pattern);
+	}
+
+	static DateTimeParameterObject create(final LocalDateTime localDateTime, 
+										  final DateStyle style,
+										  final Boolean considerTime, 
+										  final String pattern) {
+		
+		return new DateTimeParameterObject(localDateTime, style, considerTime, pattern);
 	}
 
 	private LocalDateTime getLocalDateTime() {
-		return localDateTime;
+		return this.localDateTime;
 	}
 	
-	private Optional<String> getPattern() {
-		return pattern;
+	private DateStyle getStyle() {
+		return this.style;
 	}
-
+	
+	private FormatStyle getFormatStyle() {
+		return this.getStyle().getFormatStyle();
+	}
+	
+	private Boolean getConsiderTime() {
+		return this.considerTime;
+	}
+	
+	private String getPattern() {
+		return this.pattern;
+	}
+	
 	public Integer getDayOfMonth() {
-		return dayOfMonth;
+		return this.dayOfMonth;
 	}
 
 	public Integer getMonth() {
-		return month;
+		return this.month;
 	}
 
 	public Integer getYear() {
-		return year;
+		return this.year;
 	}
 
 	public Integer getHour() {
-		return hour;
+		return this.hour;
 	}
 
 	public Integer getMinute() {
-		return minute;
+		return this.minute;
 	}
 
 	public Integer getSecond() {
-		return second;
+		return this.second;
 	}
 	
 	public Long getInstant() {
-		return instant;
+		return this.instant;
 	}
 	
 }

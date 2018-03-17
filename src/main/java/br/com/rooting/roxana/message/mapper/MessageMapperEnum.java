@@ -8,6 +8,7 @@ public interface MessageMapperEnum extends MessageMapper {
 	
 	@Override
 	default String getKey() {
-		return Translator.getInterpoledKeyOf(this.getClass().getCanonicalName() + "." + this.name());
+		return Translator.getInterpoledKeyOf(this.getClass().getName() + "." + this.name());
 	}
+	
 }

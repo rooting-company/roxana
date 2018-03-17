@@ -4,28 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.business.BusinessException;
 import br.com.rooting.roxana.business.MultiBusinessException;
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.message.MessageCreatorFactory;
 
-@Component
 class MultiBusinessExceptionResponseProcessor extends BusinessExceptionResponseProcessor {
 	
-	@Autowired
 	MultiBusinessExceptionResponseProcessor(final RoxanaProperties roxanaProperties,
 											final MessageCreatorFactory messageCreatorFactory, 
-											final ResponseProcessorManager responseCreatorFactory) {
-		super(roxanaProperties, messageCreatorFactory, responseCreatorFactory);
+											final ResponseProcessorManager responseCreatorManager) {
+		super(roxanaProperties, messageCreatorFactory, responseCreatorManager);
 	}
 
 	@Override
-	protected Boolean isAUnexpectedException(Exception e) {
+	protected Boolean isUnexpectedException(Exception e) {
 		return false;
 	}
 
@@ -43,8 +39,6 @@ class MultiBusinessExceptionResponseProcessor extends BusinessExceptionResponseP
 					messagesDTO.add(super.getMessageResponseDTO((Exception) s));
 				}
 			}
-			this.getLog().error(this.getErrorInternHandledMessage(), s);
-			
 		});
 		return messagesDTO;
 	}

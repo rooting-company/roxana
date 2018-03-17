@@ -18,10 +18,22 @@ public class MessageCreatorFactory {
 	private final MessageUnchangedCreator unchagedCreator;
 	
 	@Autowired
-	public MessageCreatorFactory(final RoxanaProperties roxanaProperties,
-							     final MessageFullyCreator fullyCreator,
-							     final MessageTranslatedCreator translatedCreator,
-							     final MessageUnchangedCreator unchagedCreator) {
+	MessageCreatorFactory(final RoxanaProperties roxanaProperties,
+					      final MessageFullyCreator fullyCreator,
+					      final MessageTranslatedCreator translatedCreator,
+					      final MessageUnchangedCreator unchagedCreator) throws IllegalArgumentException {
+		
+		if(roxanaProperties == null 
+			|| fullyCreator == null 
+			|| translatedCreator == null 
+			|| unchagedCreator == null) {
+			
+			throw new IllegalArgumentException();
+		}
+		
+		if(roxanaProperties.getBusinessResponseStrategy() == null) {
+			throw new IllegalArgumentException();
+		}
 		
 		this.responseStrategy = roxanaProperties.getBusinessResponseStrategy();
 		this.fullyCreator = fullyCreator;
@@ -41,7 +53,7 @@ public class MessageCreatorFactory {
 			return this.getUnchangedCreator();
 
 		default:
-			return this.getTranslatedCreator();
+			throw new UnsupportedOperationException();
 		}
 	}
 

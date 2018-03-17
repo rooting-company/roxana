@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import br.com.rooting.roxana.business.parameter.DateStyle;
+
 public final class Parameter {
 
 	private final ParameterType type;
@@ -21,7 +23,6 @@ public final class Parameter {
 	private final Object value;
 	
 	private Parameter(final ParameterType type, final String name, final Object value) {
-		super();
 		if(type == null || name == null || value == null) {
 			throw new IllegalArgumentException();
 		}
@@ -34,56 +35,62 @@ public final class Parameter {
 		return new Parameter(STRING, name, value);
 	}
 
-	// Verificar se tem como não deixa publico.
-	public static Parameter createDateParameter(final String name, final Object o, final String pattern) {
+	public static Parameter createDateParameter(final String name,
+												final Object o,
+												final DateStyle style,
+												final Boolean considerTime,
+												final String pattern)
+												throws UnsupportedParameterConversionException {
 		
 		if (o instanceof Date) {
-			return Parameter.createDateParameter(name, (Date) o, pattern);
+			return Parameter.createDateParameter(name, (Date) o, style, considerTime, pattern);
 		} else if (o instanceof Calendar) {
-			return Parameter.createDateParameter(name, (Calendar) o, pattern);
+			return Parameter.createDateParameter(name, (Calendar) o, style, considerTime, pattern);
 		} else if(o instanceof LocalDate) {
-			return Parameter.createDateParameter(name, (LocalDate) o, pattern);
+			return Parameter.createDateParameter(name, (LocalDate) o, style, considerTime, pattern);
 		} else if (o instanceof LocalDateTime) {
-			return Parameter.createDateParameter(name, (LocalDateTime) o, pattern);
+			return Parameter.createDateParameter(name, (LocalDateTime) o, style, considerTime, pattern);
 		}
-		throw new IllegalArgumentException();
+		throw new UnsupportedParameterConversionException(DATE, o);
 	}
 	
-	public static Parameter createDateParameter(final String name, final Date date) {
-		return new Parameter(DATE, name, DateTimeParameterObject.create(date, null));
-	}
-	
-	public static Parameter createDateParameter(final String name, final Date date, final String pattern) {
-		return new Parameter(DATE, name, DateTimeParameterObject.create(date, pattern));
-	}
-	
-	public static Parameter createDateParameter(final String name, final Calendar calendar) {
-		return new Parameter(DATE, name, DateTimeParameterObject.create(calendar, null));
-	}
-	
-	public static Parameter createDateParameter(final String name, final Calendar calendar, final String pattern) {
-		return new Parameter(DATE, name, DateTimeParameterObject.create(calendar, pattern));
-	}
-	
-	public static Parameter createDateParameter(final String name, final LocalDate localDate) {
-		return new Parameter(DATE, name, DateTimeParameterObject.create(localDate, null));
-	}
-	
-	public static Parameter createDateParameter(final String name, final LocalDate localDate, final String pattern) {
-		return new Parameter(DATE, name, DateTimeParameterObject.create(localDate, pattern));
-	}
-	
-	public static Parameter createDateParameter(final String name, final LocalDateTime localDateTime) {
-		return new Parameter(DATE, name, DateTimeParameterObject.create(localDateTime, null));
-	}
-	
-	public static Parameter createDateParameter(final String name, final LocalDateTime localDateTime, final String pattern) {
-		return new Parameter(DATE, name, DateTimeParameterObject.create(localDateTime, pattern));
-	}
-	
-	// Verificar se tem como não deixa publico.
-	public static Parameter createCurrencyParameter(final String name, final Object o) {
+	public static Parameter createDateParameter(final String name,
+												final Date date,
+												final DateStyle style,
+												final Boolean considerTime,
+												final String pattern) {
 		
+		return new Parameter(DATE, name, DateTimeParameterObject.create(date, style, considerTime, pattern));
+	}
+	
+	public static Parameter createDateParameter(final String name,
+												final Calendar calendar,
+												final DateStyle style,
+												final Boolean considerTime,
+												final String pattern) {
+		
+		return new Parameter(DATE, name, DateTimeParameterObject.create(calendar, style, considerTime, pattern));
+	}
+	
+	public static Parameter createDateParameter(final String name,
+												final LocalDate localDate,
+												final DateStyle style,
+												final Boolean considerTime,
+												final String pattern) {
+		
+		return new Parameter(DATE, name, DateTimeParameterObject.create(localDate, style, considerTime, pattern));
+	}
+	
+	public static Parameter createDateParameter(final String name,
+												final LocalDateTime localDateTime,
+												final DateStyle style,
+												final Boolean considerTime,
+												final String pattern) {
+		
+		return new Parameter(DATE, name, DateTimeParameterObject.create(localDateTime, style, considerTime, pattern));
+	}
+	
+	public static Parameter createCurrencyParameter(final String name, final Object o) throws UnsupportedParameterConversionException {
 		if (o instanceof BigDecimal) {
 			return Parameter.createCurrencyParameter(name, (BigDecimal) o);
 		} else if (o instanceof Double) {
@@ -91,24 +98,20 @@ public final class Parameter {
 		} else if (o instanceof Float) {
 			return Parameter.createCurrencyParameter(name, (Float) o);
 		}
-		throw new IllegalArgumentException();
+		throw new UnsupportedParameterConversionException(CURRENCY, o);
 	}
 	
-	public static Parameter createCurrencyParameter(final String name, final BigDecimal bigDecimal) {
-		Double moneyValue = Parameter.treatBigDecimal(bigDecimal).doubleValue();
+	public static Parameter createCurrencyParameter(final String name, final BigDecimal bigDecimalParam) {
+		Double moneyValue = Parameter.treatBigDecimal(bigDecimalParam).doubleValue();
 		return new Parameter(CURRENCY, name, moneyValue);
 	}
 	
-	// TODO Verificar se conversão é segura.
 	public static Parameter createCurrencyParameter(final String name, final Double doubleParam) {
-		Double moneyValue = Parameter.treatBigDecimal(new BigDecimal(doubleParam)).doubleValue();
-		return new Parameter(CURRENCY, name, moneyValue);
+		return Parameter.createCurrencyParameter(name,  BigDecimal.valueOf(doubleParam));
 	}
 	
-	// TODO Verificar se conversão é segura.
 	public static Parameter createCurrencyParameter(final String name, final Float floatParam) {
-		Double moneyValue = Parameter.treatBigDecimal(new BigDecimal(floatParam)).doubleValue();
-		return new Parameter(CURRENCY, name, moneyValue);
+		return Parameter.createCurrencyParameter(name, BigDecimal.valueOf(floatParam));
 	}
 	
 	private static BigDecimal treatBigDecimal(BigDecimal bigDecimal) {
@@ -133,7 +136,7 @@ public final class Parameter {
 		}
 	}
 	
-	private ParameterType getType() {
+	public ParameterType getType() {
 		return this.type;
 	}
 	
@@ -143,6 +146,28 @@ public final class Parameter {
 	
 	public Object getValue() {
 		return this.value;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null) {
+			return false;
+		} else if (!(object instanceof Parameter)) {
+			return false;
+		}
+		
+		Parameter parameter = (Parameter) object;
+		if(this.getType().equals(parameter.getType()) 
+				&& this.getName().equals(parameter.getName()) 
+				&& this.getValue().equals(parameter.getValue())) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 7 * (this.getType().hashCode() + this.getName().hashCode());
 	}
 	
 }
