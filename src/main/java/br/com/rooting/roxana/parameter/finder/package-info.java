@@ -7,4 +7,4 @@
  * @see ParameterFinderStrategy
  *
  */
-package br.com.rooting.roxana.response.parameter_finder;
+package br.com.rooting.roxana.parameter.finder;

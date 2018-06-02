@@ -10,4 +10,4 @@
  * @see br.com.rooting.roxana.parameter.Parameter
  *
  */
-package br.com.rooting.roxana.business.parameter;
+package br.com.rooting.roxana.parameter.mapper;

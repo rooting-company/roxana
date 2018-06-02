@@ -1,9 +1,9 @@
-package br.com.rooting.roxana.response.parameter_finder;
+package br.com.rooting.roxana.parameter.finder;
 
-import static br.com.rooting.roxana.business.parameter.DateStyle.MEDIUM;
 import static br.com.rooting.roxana.parameter.ParameterType.CURRENCY;
 import static br.com.rooting.roxana.parameter.ParameterType.DATE;
 import static br.com.rooting.roxana.parameter.ParameterType.STRING;
+import static br.com.rooting.roxana.parameter.mapper.DateStyle.MEDIUM;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Locale.US;
 import static org.junit.Assert.assertEquals;
@@ -24,10 +24,12 @@ import org.junit.Test;
 
 import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.business.BusinessException;
-import br.com.rooting.roxana.business.parameter.CurrencyParameter;
-import br.com.rooting.roxana.business.parameter.DateParameter;
-import br.com.rooting.roxana.business.parameter.Parameter;
 import br.com.rooting.roxana.parameter.UnsupportedParameterConversionException;
+import br.com.rooting.roxana.parameter.finder.GenericParameterFinder;
+import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParameter;
+import br.com.rooting.roxana.parameter.mapper.DateParameter;
+import br.com.rooting.roxana.parameter.mapper.Parameter;
 
 public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder> {
 	

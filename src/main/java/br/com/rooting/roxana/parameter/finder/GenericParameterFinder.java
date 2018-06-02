@@ -1,13 +1,13 @@
-package br.com.rooting.roxana.response.parameter_finder;
+package br.com.rooting.roxana.parameter.finder;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import br.com.rooting.roxana.business.parameter.CurrencyParameter;
-import br.com.rooting.roxana.business.parameter.DateParameter;
 import br.com.rooting.roxana.parameter.Parameter;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParameter;
+import br.com.rooting.roxana.parameter.mapper.DateParameter;
 
 public class GenericParameterFinder implements ParameterFinderStrategy {
 
@@ -34,9 +34,9 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 			}
 			
 			try {
-				if(field.isAnnotationPresent(br.com.rooting.roxana.business.parameter.Parameter.class)) {
-					br.com.rooting.roxana.business.parameter.Parameter parameterAnnotation = 
-					field.getDeclaredAnnotation(br.com.rooting.roxana.business.parameter.Parameter.class);
+				if(field.isAnnotationPresent(br.com.rooting.roxana.parameter.mapper.Parameter.class)) {
+					br.com.rooting.roxana.parameter.mapper.Parameter parameterAnnotation = 
+					field.getDeclaredAnnotation(br.com.rooting.roxana.parameter.mapper.Parameter.class);
 					
 					parameters.add(this.createParameterBaseOn(field, parameterAnnotation));
 					
@@ -57,10 +57,10 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 	}
 	
 	private Parameter createParameterBaseOn(final Field field,
-			final br.com.rooting.roxana.business.parameter.Parameter parameterAnnotation)
+			final br.com.rooting.roxana.parameter.mapper.Parameter parameterAnnotation)
 			throws IllegalArgumentException, IllegalAccessException {
 		
-		String defaultName = br.com.rooting.roxana.business.parameter.Parameter.DEFAULT_VALUE;
+		String defaultName = br.com.rooting.roxana.parameter.mapper.Parameter.DEFAULT_VALUE;
 		String name = parameterAnnotation.value().equals(defaultName) ? field.getName() : parameterAnnotation.value();
 		return Parameter.create(name, field.get(this.getObject()));
 	}

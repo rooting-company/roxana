@@ -1,10 +1,10 @@
-package br.com.rooting.roxana.response.parameter_finder;
+package br.com.rooting.roxana.parameter.finder;
 
-import static br.com.rooting.roxana.business.parameter.DateStyle.MEDIUM;
 import static br.com.rooting.roxana.message.MessageSeverity.SUCCESS;
 import static br.com.rooting.roxana.parameter.ParameterType.CURRENCY;
 import static br.com.rooting.roxana.parameter.ParameterType.DATE;
 import static br.com.rooting.roxana.parameter.ParameterType.STRING;
+import static br.com.rooting.roxana.parameter.mapper.DateStyle.MEDIUM;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Locale.US;
 import static org.junit.Assert.assertEquals;
@@ -38,6 +38,10 @@ import br.com.rooting.roxana.message.mapper.parameter.MessageParameter;
 import br.com.rooting.roxana.message.mapper.parameter.MessageParameters;
 import br.com.rooting.roxana.parameter.Parameter;
 import br.com.rooting.roxana.parameter.UnsupportedParameterConversionException;
+import br.com.rooting.roxana.parameter.finder.MessageMapperEnumParameterFinder;
+import br.com.rooting.roxana.parameter.finder.MissingParametersValuesException;
+import br.com.rooting.roxana.parameter.finder.OverflowingParametersValuesException;
+import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
 
 public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapperEnumParameterFinder> {
 	

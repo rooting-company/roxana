@@ -21,8 +21,8 @@ import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
 import br.com.rooting.roxana.message.mapper.MockedMessageMapper;
 import br.com.rooting.roxana.message.mapper.parameter.MessageParameter;
 import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.response.parameter_finder.MessageMapperEnumParameterFinder;
-import br.com.rooting.roxana.response.parameter_finder.ParameterFinderStrategy;
+import br.com.rooting.roxana.parameter.finder.MessageMapperEnumParameterFinder;
+import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
 import br.com.rooting.roxana.translator.MockedTranslator;
 import br.com.rooting.roxana.translator.Translator;
 

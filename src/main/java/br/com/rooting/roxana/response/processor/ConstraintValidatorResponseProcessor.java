@@ -11,8 +11,8 @@ import org.springframework.http.HttpStatus;
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.message.MessageCreatorFactory;
 import br.com.rooting.roxana.message.MessageSeverity;
-import br.com.rooting.roxana.response.parameter_finder.ConstraintValidationParameterFinder;
-import br.com.rooting.roxana.response.parameter_finder.ParameterFinderStrategy;
+import br.com.rooting.roxana.parameter.finder.ConstraintValidationParameterFinder;
+import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
 
 class ConstraintValidatorResponseProcessor extends ResponseProcessor {
 

@@ -7,8 +7,8 @@ import java.util.List;
 import br.com.rooting.roxana.message.mapper.MessageMapper;
 import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
 import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.response.parameter_finder.MessageMapperEnumParameterFinder;
-import br.com.rooting.roxana.response.parameter_finder.ParameterFinderStrategy;
+import br.com.rooting.roxana.parameter.finder.MessageMapperEnumParameterFinder;
+import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
 
 public interface MessageCreator {
 	

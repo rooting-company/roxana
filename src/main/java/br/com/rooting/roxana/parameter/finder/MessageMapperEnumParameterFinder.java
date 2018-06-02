@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.response.parameter_finder;
+package br.com.rooting.roxana.parameter.finder;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;

@@ -8,8 +8,8 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import br.com.rooting.roxana.business.parameter.DateParameter;
-import br.com.rooting.roxana.business.parameter.DateStyle;
+import br.com.rooting.roxana.parameter.mapper.DateParameter;
+import br.com.rooting.roxana.parameter.mapper.DateStyle;
 
 @Documented
 @Target(FIELD)

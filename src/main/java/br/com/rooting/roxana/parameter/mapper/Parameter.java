@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.business.parameter;
+package br.com.rooting.roxana.parameter.mapper;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 @Documented
 @Target(FIELD)
 @Retention(RUNTIME)
-public @interface CurrencyParameter {
-
+public @interface Parameter {
+	
 	public static final String DEFAULT_VALUE = "";
 	
 	public String value() default DEFAULT_VALUE;

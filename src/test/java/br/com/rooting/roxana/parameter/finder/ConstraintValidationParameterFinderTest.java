@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.response.parameter_finder;
+package br.com.rooting.roxana.parameter.finder;
 
 import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.Assert.assertEquals;
@@ -41,6 +41,8 @@ import org.junit.Test;
 import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.parameter.Parameter;
 import br.com.rooting.roxana.parameter.ParameterType;
+import br.com.rooting.roxana.parameter.finder.ConstraintValidationParameterFinder;
+import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
 
 public class ConstraintValidationParameterFinderTest extends UnitTest<ConstraintValidationParameterFinder> {
 

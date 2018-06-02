@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import br.com.rooting.roxana.RoxanaPackageMapper;
 import br.com.rooting.roxana.UnitTest;
 
 public class RoxanaPackageMapperTest extends UnitTest<RoxanaPackageMapper> {

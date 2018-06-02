@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.business.parameter;
+package br.com.rooting.roxana.parameter.mapper;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

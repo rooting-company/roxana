@@ -1,7 +1,7 @@
 package br.com.rooting.roxana.config;
 
-import static br.com.rooting.roxana.config.RoxanaPackageMapper.PROJECT_ROOT_PACKAGE_PATH;
-import static br.com.rooting.roxana.config.RoxanaPackageMapper.SWAGGER_CONFIG_PACKAGE_PATH;
+import static br.com.rooting.roxana.RoxanaPackageMapper.PROJECT_ROOT_PACKAGE_PATH;
+import static br.com.rooting.roxana.RoxanaPackageMapper.SWAGGER_CONFIG_PACKAGE_PATH;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

@@ -235,7 +235,7 @@ public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorMana
 		
 		private static final String PARAMETER_01_NAME = "parameter";
 		
-		@br.com.rooting.roxana.business.parameter.Parameter(PARAMETER_01_NAME)
+		@br.com.rooting.roxana.parameter.mapper.Parameter(PARAMETER_01_NAME)
 		private final String parameter;
 		
 		private MockedBusinessException(final String parameter) {

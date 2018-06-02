@@ -10,8 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import br.com.rooting.roxana.business.parameter.DateParameter;
-import br.com.rooting.roxana.business.parameter.DateStyle;
+import br.com.rooting.roxana.parameter.mapper.DateParameter;
+import br.com.rooting.roxana.parameter.mapper.DateStyle;
 
 final class DateTimeParameterObject {
 	

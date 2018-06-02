@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.response.parameter_finder;
+package br.com.rooting.roxana.parameter.finder;
 
 public class MissingParametersValuesException extends RuntimeException {
 	

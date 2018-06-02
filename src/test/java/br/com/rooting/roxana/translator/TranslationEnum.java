@@ -10,9 +10,9 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import br.com.rooting.roxana.business.parameter.DateParameter;
-import br.com.rooting.roxana.business.parameter.DateStyle;
 import br.com.rooting.roxana.parameter.Parameter;
+import br.com.rooting.roxana.parameter.mapper.DateParameter;
+import br.com.rooting.roxana.parameter.mapper.DateStyle;
 
 public enum TranslationEnum {
 	TRANSLATION_NONE_PARAMS("hello.world", new Parameter[0], 
