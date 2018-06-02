@@ -25,3 +25,8 @@ hs_err_pid*
 .settings
 .project
 .classpath
+
+# Ideia files
+*.ideia
+*.iml
+/.idea/
