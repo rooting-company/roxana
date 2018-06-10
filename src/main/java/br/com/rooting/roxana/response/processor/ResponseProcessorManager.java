@@ -7,9 +7,9 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import br.com.rooting.roxana.business.BusinessException;
-import br.com.rooting.roxana.business.MultiBusinessException;
 import br.com.rooting.roxana.config.RoxanaProperties;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
+import br.com.rooting.roxana.exception.mapper.MultiBusinessException;
 import br.com.rooting.roxana.message.MessageCreatorFactory;
 import br.com.rooting.roxana.response.Response;
 

@@ -26,11 +26,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.business.BusinessException;
-import br.com.rooting.roxana.business.MultiBusinessException;
-import br.com.rooting.roxana.business.exception.UnexpectedException;
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
+import br.com.rooting.roxana.exception.UnexpectedException;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
+import br.com.rooting.roxana.exception.mapper.MultiBusinessException;
 import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
 import br.com.rooting.roxana.message.Message;
 import br.com.rooting.roxana.message.MessageCreatorFactory;
@@ -235,7 +235,7 @@ public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorMana
 		
 		private static final String PARAMETER_01_NAME = "parameter";
 		
-		@br.com.rooting.roxana.parameter.mapper.Parameter(PARAMETER_01_NAME)
+		@br.com.rooting.roxana.parameter.mapper.Param(PARAMETER_01_NAME)
 		private final String parameter;
 		
 		private MockedBusinessException(final String parameter) {

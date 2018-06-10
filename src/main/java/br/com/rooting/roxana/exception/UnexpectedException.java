@@ -1,8 +1,8 @@
-package br.com.rooting.roxana.business.exception;
+package br.com.rooting.roxana.exception;
 
 import org.springframework.http.HttpStatus;
 
-import br.com.rooting.roxana.business.BusinessException;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
 import br.com.rooting.roxana.translator.Translator;
 
 @BusinessException(responseCode = HttpStatus.INTERNAL_SERVER_ERROR)

@@ -19,10 +19,10 @@ import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.message.mapper.MessageMapper;
 import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
 import br.com.rooting.roxana.message.mapper.MockedMessageMapper;
-import br.com.rooting.roxana.message.mapper.parameter.MessageParameter;
 import br.com.rooting.roxana.parameter.Parameter;
 import br.com.rooting.roxana.parameter.finder.MessageMapperEnumParameterFinder;
 import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
+import br.com.rooting.roxana.parameter.mapper.Param;
 
 public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreator> {
 	
@@ -134,8 +134,8 @@ public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreato
 	private enum MapperEnumTest implements MessageMapperEnum {
 		MAPPER_WITH_NO_PARAMETERS(ERROR),
 		
-		@MessageParameter(STRING_PARAMETER_NAME_01)
-		@MessageParameter(STRING_PARAMETER_NAME_02)
+		@Param(STRING_PARAMETER_NAME_01)
+		@Param(STRING_PARAMETER_NAME_02)
 		MAPPER_WITH_STRING_PARAMETERS(SUCCESS);
 
 		private final MessageSeverity severity;

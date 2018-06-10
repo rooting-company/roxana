@@ -30,18 +30,14 @@ import org.junit.Test;
 import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.message.MessageSeverity;
 import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
-import br.com.rooting.roxana.message.mapper.parameter.CurrencyMessageParameter;
-import br.com.rooting.roxana.message.mapper.parameter.CurrencyMessageParameters;
-import br.com.rooting.roxana.message.mapper.parameter.DateMessageParameter;
-import br.com.rooting.roxana.message.mapper.parameter.DateMessageParameters;
-import br.com.rooting.roxana.message.mapper.parameter.MessageParameter;
-import br.com.rooting.roxana.message.mapper.parameter.MessageParameters;
 import br.com.rooting.roxana.parameter.Parameter;
 import br.com.rooting.roxana.parameter.UnsupportedParameterConversionException;
-import br.com.rooting.roxana.parameter.finder.MessageMapperEnumParameterFinder;
-import br.com.rooting.roxana.parameter.finder.MissingParametersValuesException;
-import br.com.rooting.roxana.parameter.finder.OverflowingParametersValuesException;
-import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam.CurrencyParams;
+import br.com.rooting.roxana.parameter.mapper.DateParam;
+import br.com.rooting.roxana.parameter.mapper.DateParam.DateParams;
+import br.com.rooting.roxana.parameter.mapper.Param;
+import br.com.rooting.roxana.parameter.mapper.Param.Params;
 
 public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapperEnumParameterFinder> {
 	
@@ -476,6 +472,36 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 		assertEquals(DATE, dateParameter_01.getType());
 	}
 	
+	@Test
+	public void findParametersWithDefaultKeysTest() {
+		List<Object> parametersValues = new ArrayList<>();
+		String param = "test";
+		LocalDateTime date_param = LocalDateTime.of(1992, 12, 11, 0, 0);
+		BigDecimal currency_param = new BigDecimal("32084.65");
+		
+		parametersValues.add(param);
+		parametersValues.add(date_param);
+		parametersValues.add(currency_param);
+		
+		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.DEFAULT_KEY_PARAMETERS, parametersValues);
+		List<Parameter> parameters = finder.findParameters();
+		
+		Parameter parameter = parameters.get(0);
+		assertEquals("0", parameter.getName());
+		assertEquals(param, parameter.getFormattedValue(US));
+		assertEquals(STRING, parameter.getType());
+		
+		Parameter date_parameter = parameters.get(1);
+		assertEquals("1", date_parameter.getName());
+		assertEquals("12/11/92", date_parameter.getFormattedValue(US));
+		assertEquals(DATE, date_parameter.getType());
+		
+		Parameter currency_parameter = parameters.get(2);
+		assertEquals("2", currency_parameter.getName());
+		assertEquals("$32,084.65", currency_parameter.getFormattedValue(US));
+		assertEquals(CURRENCY, currency_parameter.getType());
+	}
+	
 	@Test(expected = MissingParametersValuesException.class)
 	public void missingParametersValuesTest() {
 		List<Object> parametersValues = new ArrayList<>();
@@ -519,38 +545,43 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	
 	private enum MapperEnumTest implements MessageMapperEnum {
 		
-		@MessageParameter(STRING_PARAMETER_NAME_01)
+		@Param(STRING_PARAMETER_NAME_01)
 		STRING_PARAMETER(SUCCESS),
 		
-		@MessageParameter(STRING_PARAMETER_NAME_01)
-		@MessageParameter(STRING_PARAMETER_NAME_02)
+		@Param(STRING_PARAMETER_NAME_01)
+		@Param(STRING_PARAMETER_NAME_02)
 		MULTI_STRING_PARAMETER(SUCCESS),
 		
-		@MessageParameters(value = { @MessageParameter(STRING_PARAMETER_NAME_01),
-									 @MessageParameter(STRING_PARAMETER_NAME_02) })
+		@Params(value = { @Param(STRING_PARAMETER_NAME_01),
+						  @Param(STRING_PARAMETER_NAME_02) })
 		STRING_PARAMETERS(SUCCESS),
 		
-		@CurrencyMessageParameter(CURRENCY_PARAMETER_NAME_01)
+		@CurrencyParam(CURRENCY_PARAMETER_NAME_01)
 		CURRENCY_PARAMETER(SUCCESS),
 		
-		@CurrencyMessageParameter(CURRENCY_PARAMETER_NAME_01)
-		@CurrencyMessageParameter(CURRENCY_PARAMETER_NAME_02)
+		@CurrencyParam(CURRENCY_PARAMETER_NAME_01)
+		@CurrencyParam(CURRENCY_PARAMETER_NAME_02)
 		MULTI_CURRENCY_PARAMETER(SUCCESS),
 		
-		@CurrencyMessageParameters(value = { @CurrencyMessageParameter(CURRENCY_PARAMETER_NAME_01),
-											 @CurrencyMessageParameter(CURRENCY_PARAMETER_NAME_02) })
+		@CurrencyParams(value = { @CurrencyParam(CURRENCY_PARAMETER_NAME_01),
+								  @CurrencyParam(CURRENCY_PARAMETER_NAME_02) })
 		CURRENCY_PARAMETERS(SUCCESS),
 		
-		@DateMessageParameter(value = DATE_PARAMETER_NAME_01)
-		@DateMessageParameter(value = DATE_PARAMETER_NAME_02, considerTime = true)
+		@DateParam(value = DATE_PARAMETER_NAME_01)
+		@DateParam(value = DATE_PARAMETER_NAME_02, considerTime = true)
 		MULTI_DATE_SHORT_PARAMETER(SUCCESS),
 		
-		@DateMessageParameters( value = { @DateMessageParameter(value = DATE_PARAMETER_NAME_01, style = MEDIUM),
-										  @DateMessageParameter(value = DATE_PARAMETER_NAME_02, style = MEDIUM, considerTime = true)})
+		@DateParams( value = { @DateParam(value = DATE_PARAMETER_NAME_01, style = MEDIUM),
+							   @DateParam(value = DATE_PARAMETER_NAME_02, style = MEDIUM, considerTime = true)})
 		DATE_MEDIUM_PARAMETERS(SUCCESS),
 		
-		@DateMessageParameter(value = DATE_PARAMETER_NAME_01, pattern = "yyyy-MM-dd")
-		DATE_PATTERN_PARAMETER(SUCCESS);
+		@DateParam(value = DATE_PARAMETER_NAME_01, pattern = "yyyy-MM-dd")
+		DATE_PATTERN_PARAMETER(SUCCESS),
+		
+		@Param
+		@DateParam
+		@CurrencyParam
+		DEFAULT_KEY_PARAMETERS(SUCCESS);
 		
 		private final MessageSeverity severity;
 		
@@ -567,8 +598,8 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	private enum OthersAnnotationsMassageMapperEnum implements MessageMapperEnum {
 		
 		@NotNull
-		@MessageParameter(STRING_PARAMETER_NAME_01)
-		@MessageParameter(STRING_PARAMETER_NAME_02)
+		@Param(STRING_PARAMETER_NAME_01)
+		@Param(STRING_PARAMETER_NAME_02)
 		OTHER_ANNOTATION_MESSAGE_MAPPER_ENUM(SUCCESS);
 		
 		

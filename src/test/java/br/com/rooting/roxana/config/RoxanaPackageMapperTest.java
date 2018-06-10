@@ -1,7 +1,7 @@
 package br.com.rooting.roxana.config;
 
-import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
 import static java.lang.reflect.Modifier.isFinal;
+import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -12,8 +12,8 @@ import br.com.rooting.roxana.UnitTest;
 public class RoxanaPackageMapperTest extends UnitTest<RoxanaPackageMapper> {
 
 	@Test
-	public void testClassIsPackagePrivateTest() {
-		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
+	public void testClassIsPackagePublicTest() {
+		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test

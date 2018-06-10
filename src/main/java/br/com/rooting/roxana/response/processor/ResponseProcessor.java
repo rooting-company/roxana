@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import br.com.rooting.roxana.business.exception.UnexpectedException;
 import br.com.rooting.roxana.config.RoxanaProperties;
+import br.com.rooting.roxana.exception.UnexpectedException;
 import br.com.rooting.roxana.message.Message;
 import br.com.rooting.roxana.message.MessageCreator;
 import br.com.rooting.roxana.message.MessageCreatorFactory;

@@ -23,13 +23,13 @@ import java.util.List;
 import org.junit.Test;
 
 import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.business.BusinessException;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
 import br.com.rooting.roxana.parameter.UnsupportedParameterConversionException;
 import br.com.rooting.roxana.parameter.finder.GenericParameterFinder;
 import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
-import br.com.rooting.roxana.parameter.mapper.CurrencyParameter;
-import br.com.rooting.roxana.parameter.mapper.DateParameter;
-import br.com.rooting.roxana.parameter.mapper.Parameter;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam;
+import br.com.rooting.roxana.parameter.mapper.DateParam;
+import br.com.rooting.roxana.parameter.mapper.Param;
 
 public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder> {
 	
@@ -71,13 +71,13 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 
 			private static final long serialVersionUID = 1L;
 
-			@Parameter(STRING_PARAMETER_NAME)
+			@Param(STRING_PARAMETER_NAME)
 			private final String stringParameter;
 			
-			@DateParameter(DATE_PARAMETER_NAME)
+			@DateParam(DATE_PARAMETER_NAME)
 			private final LocalDate dateParameter;
 
-			@CurrencyParameter(CURRENCY_PARAMETER_NAME)
+			@CurrencyParam(CURRENCY_PARAMETER_NAME)
 			private final BigDecimal currencyParameter;
 
 			public MockedBusinessException(final String stringParameter, 
@@ -121,10 +121,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String STRING_PARAMETER_NAME = "CustomNameStringParameter";
 			public static final String STRING_PARAMETER_DEFAULT_NAME = "defaultNameStringParameter";
 			
-			@Parameter(STRING_PARAMETER_NAME)
+			@Param(STRING_PARAMETER_NAME)
 			private final Object stringParameter;
 			
-			@Parameter
+			@Param
 			private final Object defaultNameStringParameter;
 			
 			public TestClass(final Object stringParameter, final Object defaultNameStringParameter) {
@@ -173,16 +173,16 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			private static final String PRIMITIVE_PARAMETER_DEFAULT_NAME = "defaultNameDoublePrimitive";
 			private static final String DEFAULT_NAME_PRIMITIVE_PARAMETER_VALUE = "$18.10";
 			
-			@CurrencyParameter(WRAPPER_PARAMETER_NAME)
+			@CurrencyParam(WRAPPER_PARAMETER_NAME)
 			private final Double doubleWrapper;
 			
-			@CurrencyParameter(PRIMITIVE_PARAMETER_NAME)
+			@CurrencyParam(PRIMITIVE_PARAMETER_NAME)
 			private final double doublePrimitive;
 			
-			@CurrencyParameter
+			@CurrencyParam
 			private final Double defaultNameDoubleWrapper;
 			
-			@CurrencyParameter
+			@CurrencyParam
 			private final double defaultNameDoublePrimitive;
 
 			public TestClass(final Double doubleWrapper, 
@@ -238,16 +238,16 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			private static final String PRIMITIVE_PARAMETER_DEFAULT_NAME = "defaultNameFloatPrimitive";
 			private static final String DEFAULT_NAME_PRIMITIVE_PARAMETER_VALUE = "$15.42";
 			
-			@CurrencyParameter(WRAPPER_PARAMETER_NAME)
+			@CurrencyParam(WRAPPER_PARAMETER_NAME)
 			private final Float floatWrapper;
 			
-			@CurrencyParameter(PRIMITIVE_PARAMETER_NAME)
+			@CurrencyParam(PRIMITIVE_PARAMETER_NAME)
 			private final float floatPrimitive;
 			
-			@CurrencyParameter
+			@CurrencyParam
 			private final Float defaultNameFloatWrapper;
 			
-			@CurrencyParameter
+			@CurrencyParam
 			private final float defaultNameFloatPrimitive;
 
 			public TestClass(final Float floatWrapper, 
@@ -297,10 +297,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			private static final String WRAPPER_PARAMETER_DEFAULT_NAME = "defaultNameBigDecimal";
 			private static final String DEFAULT_NAME_WRAPPER_PARAMETER_VALUE = "$3,653.76";
 			
-			@CurrencyParameter(WRAPPER_PARAMETER_NAME)
+			@CurrencyParam(WRAPPER_PARAMETER_NAME)
 			private final BigDecimal bigDecimal;
 			
-			@CurrencyParameter
+			@CurrencyParam
 			private final BigDecimal defaultNameBigDecimal;
 
 			public TestClass(final BigDecimal bigDecimal, final BigDecimal defaultNameBigDecimal) {
@@ -329,7 +329,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	@Test(expected = UnsupportedParameterConversionException.class)
 	public void unsupportedCurrencyParameterConversionTest() {
 		class TestClass {
-			@CurrencyParameter
+			@CurrencyParam
 			private final Object invalidCurrencyParameter;
 
 			public TestClass(final Object invalidCurrencyParameter) {
@@ -350,10 +350,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String LOCALDATE_SHORT_CONSIDERING_TIME_NAME = "CustomNameLocalDateShortConsideringTime";
 			public static final String LOCALDATE_SHORT_CONSIDERING_TIME_VALUE = "2/12/51 12:00 AM";
 			
-			@DateParameter
+			@DateParam
 			private final LocalDate localDateShort;
 			
-			@DateParameter(value = LOCALDATE_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
+			@DateParam(value = LOCALDATE_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
 			private final LocalDate localDateShortConsideringTime;
 			
 			public TestClass(final LocalDate localDateShort, final LocalDate localDateShortConsideringTime) {
@@ -387,10 +387,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String LOCALDATE_MEDIUM_NAME = "localDateMedium";
 			public static final String LOCALDATE_MEDIUM_VALUE = "Feb 12, 1951";
 			
-			@DateParameter(value = LOCALDATE_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
+			@DateParam(value = LOCALDATE_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
 			private final LocalDate localDateMediumConsideringTime;
 			
-			@DateParameter(style = MEDIUM)
+			@DateParam(style = MEDIUM)
 			private final LocalDate localDateMedium;
 			
 			public TestClass(final LocalDate localDateMediumConsideringTime, final LocalDate localDateMedium) {
@@ -426,10 +426,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String LOCALDATE_PATTERN_PATTERN = "dd/MM/yyyy";
 			public static final String LOCALDATE_PATTERN_VALUE = "05/02/1999";
 			
-			@DateParameter(pattern = LOCALDATE_PATTERN_DEFAULT_NAME_PATTERN)
+			@DateParam(pattern = LOCALDATE_PATTERN_DEFAULT_NAME_PATTERN)
 			private final LocalDate localDatePatternDefaultName;
 			
-			@DateParameter(value = LOCALDATE_PATTERN_NAME, pattern = LOCALDATE_PATTERN_PATTERN)
+			@DateParam(value = LOCALDATE_PATTERN_NAME, pattern = LOCALDATE_PATTERN_PATTERN)
 			private final LocalDate localDatePattern;
 
 			public TestClass(final LocalDate localDatePatternDefaultName, final LocalDate localDatePattern) {
@@ -463,10 +463,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String LOCALDATETIME_SHORT_CONSIDERING_TIME_NAME = "CustomNameLocalDateTimeShortConsideringTime";
 			public static final String LOCALDATETIME_SHORT_CONSIDERING_TIME_VALUE = "2/23/96 5:10 PM";
 			
-			@DateParameter
+			@DateParam
 			private final LocalDateTime localDateTimeShort;
 			
-			@DateParameter(value = LOCALDATETIME_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
+			@DateParam(value = LOCALDATETIME_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
 			private final LocalDateTime localDateTimeShortConsideringTime;
 			
 			public TestClass(final LocalDateTime localDateTimeShort, final LocalDateTime localDateTimeShortConsideringTime) {
@@ -502,10 +502,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String LOCALDATETIME_MEDIUM_NAME = "localDateTimeMedium";
 			public static final String LOCALDATETIME_MEDIUM_VALUE = "Dec 7, 1988";
 			
-			@DateParameter(value = LOCALDATETIME_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
+			@DateParam(value = LOCALDATETIME_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
 			private final LocalDateTime localDateTimeMediumConsideringTime;
 			
-			@DateParameter(style = MEDIUM)
+			@DateParam(style = MEDIUM)
 			private final LocalDateTime localDateTimeMedium;
 			
 			public TestClass(final LocalDateTime localDateTimeMediumConsideringTime, final LocalDateTime localDateTimeMedium) {
@@ -540,10 +540,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String LOCALDATETIME_PATTERN_PATTERN = "dd/MM/yyyy";
 			public static final String LOCALDATETIME_PATTERN_VALUE = "12/04/1973";
 			
-			@DateParameter(pattern = LOCALDATETIME_PATTERN_DEFAULT_NAME_PATTERN)
+			@DateParam(pattern = LOCALDATETIME_PATTERN_DEFAULT_NAME_PATTERN)
 			private final LocalDateTime localDateTimePatternDefaultName;
 			
-			@DateParameter(value = LOCALDATETIME_PATTERN_NAME, pattern = LOCALDATETIME_PATTERN_PATTERN)
+			@DateParam(value = LOCALDATETIME_PATTERN_NAME, pattern = LOCALDATETIME_PATTERN_PATTERN)
 			private final LocalDateTime localDateTimePattern;
 
 			public TestClass(final LocalDateTime localDateTimePatternDefaultName, final LocalDateTime localDateTimePattern) {
@@ -577,10 +577,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String DATE_SHORT_CONSIDERING_TIME_NAME = "CustomNameDateShortConsideringTime";
 			public static final String DATE_SHORT_CONSIDERING_TIME_VALUE = "5/9/13 12:01 AM";
 			
-			@DateParameter
+			@DateParam
 			private final Date dateShort;
 			
-			@DateParameter(value = DATE_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
+			@DateParam(value = DATE_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
 			private final Date dateShortConsideringTime;
 			
 			public TestClass(final Date dateShort, final Date dateShortConsideringTime) {
@@ -617,10 +617,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String DATE_MEDIUM_NAME = "dateMedium";
 			public static final String DATE_MEDIUM_VALUE = "Aug 24, 1990";
 			
-			@DateParameter(value = DATE_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
+			@DateParam(value = DATE_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
 			private final Date dateMediumConsideringTime;
 			
-			@DateParameter(style = MEDIUM)
+			@DateParam(style = MEDIUM)
 			private final Date dateMedium;
 			
 			public TestClass(final Date dateMediumConsideringTime, final Date dateMedium) {
@@ -659,10 +659,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String DATE_PATTERN_PATTERN = "dd/MM/yyyy";
 			public static final String DATE_PATTERN_VALUE = "25/12/2014";
 			
-			@DateParameter(pattern = DATE_PATTERN_DEFAULT_NAME_PATTERN)
+			@DateParam(pattern = DATE_PATTERN_DEFAULT_NAME_PATTERN)
 			private final Date datePatternDefaultName;
 			
-			@DateParameter(value = DATE_PATTERN_NAME, pattern = DATE_PATTERN_PATTERN)
+			@DateParam(value = DATE_PATTERN_NAME, pattern = DATE_PATTERN_PATTERN)
 			private final Date datePattern;
 
 			public TestClass(final Date datePatternDefaultName, final Date datePattern) {
@@ -699,10 +699,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String CALENDAR_SHORT_CONSIDERING_TIME_NAME = "CustomNameCalendarShortConsideringTime";
 			public static final String CALENDAR_SHORT_CONSIDERING_TIME_VALUE = "12/17/09 7:27 AM";
 			
-			@DateParameter
+			@DateParam
 			private final Calendar calendarShort;
 			
-			@DateParameter(value = CALENDAR_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
+			@DateParam(value = CALENDAR_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
 			private final Calendar calendarShortConsideringTime;
 			
 			public TestClass(final Calendar calendarShort, final Calendar calendarShortConsideringTime) {
@@ -742,10 +742,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String CALENDAR_MEDIUM_NAME = "calendarMedium";
 			public static final String CALENDAR_MEDIUM_VALUE = "Oct 12, 1999";
 			
-			@DateParameter(value = CALENDAR_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
+			@DateParam(value = CALENDAR_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
 			private final Calendar calendarMediumConsideringTime;
 			
-			@DateParameter(style = MEDIUM)
+			@DateParam(style = MEDIUM)
 			private final Calendar calendarMedium;
 			
 			public TestClass(final Calendar calendarMediumConsideringTime, final Calendar calendarMedium) {
@@ -787,10 +787,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			public static final String CALENDAR_PATTERN_PATTERN = "dd/MM/yyyy";
 			public static final String CALENDAR_PATTERN_VALUE = "24/07/2005";
 			
-			@DateParameter(pattern = CALENDAR_PATTERN_DEFAULT_NAME_PATTERN)
+			@DateParam(pattern = CALENDAR_PATTERN_DEFAULT_NAME_PATTERN)
 			private final Calendar calendarPatternDefaultName;
 			
-			@DateParameter(value = CALENDAR_PATTERN_NAME, pattern = CALENDAR_PATTERN_PATTERN)
+			@DateParam(value = CALENDAR_PATTERN_NAME, pattern = CALENDAR_PATTERN_PATTERN)
 			private final Calendar calendarPattern;
 
 			public TestClass(final Calendar calendarPatternDefaultName, final Calendar calendarPattern) {
@@ -824,7 +824,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	@Test(expected = UnsupportedParameterConversionException.class)
 	public void unsupportedDateParameterConversionTest() {
 		class TestClass {
-			@DateParameter
+			@DateParam
 			private final Object invalidDateParameter;
 
 			public TestClass(final Object invalidDateParameter) {

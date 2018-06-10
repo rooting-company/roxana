@@ -12,4 +12,4 @@
  * @see BusinessException
  *
  */
-package br.com.rooting.roxana.business;
+package br.com.rooting.roxana.exception.mapper;

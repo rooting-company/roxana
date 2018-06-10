@@ -1,4 +1,4 @@
-package br.com.rooting.roxana;
+package br.com.rooting.roxana.exception.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;

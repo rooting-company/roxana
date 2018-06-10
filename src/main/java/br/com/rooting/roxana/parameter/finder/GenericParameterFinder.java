@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.parameter.mapper.CurrencyParameter;
-import br.com.rooting.roxana.parameter.mapper.DateParameter;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam;
+import br.com.rooting.roxana.parameter.mapper.DateParam;
 
 public class GenericParameterFinder implements ParameterFinderStrategy {
 
@@ -34,17 +34,17 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 			}
 			
 			try {
-				if(field.isAnnotationPresent(br.com.rooting.roxana.parameter.mapper.Parameter.class)) {
-					br.com.rooting.roxana.parameter.mapper.Parameter parameterAnnotation = 
-					field.getDeclaredAnnotation(br.com.rooting.roxana.parameter.mapper.Parameter.class);
+				if(field.isAnnotationPresent(br.com.rooting.roxana.parameter.mapper.Param.class)) {
+					br.com.rooting.roxana.parameter.mapper.Param parameterAnnotation = 
+					field.getDeclaredAnnotation(br.com.rooting.roxana.parameter.mapper.Param.class);
 					
 					parameters.add(this.createParameterBaseOn(field, parameterAnnotation));
 					
-				} else if(field.isAnnotationPresent(DateParameter.class)) {
-					parameters.add(this.createParameterBaseOn(field, field.getDeclaredAnnotation(DateParameter.class)));
+				} else if(field.isAnnotationPresent(DateParam.class)) {
+					parameters.add(this.createParameterBaseOn(field, field.getDeclaredAnnotation(DateParam.class)));
 					
-				} else if(field.isAnnotationPresent(CurrencyParameter.class)) {
-					parameters.add(this.createParameterBaseOne(field, field.getDeclaredAnnotation(CurrencyParameter.class)));
+				} else if(field.isAnnotationPresent(CurrencyParam.class)) {
+					parameters.add(this.createParameterBaseOne(field, field.getDeclaredAnnotation(CurrencyParam.class)));
 				}
 				
 			} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -57,18 +57,18 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 	}
 	
 	private Parameter createParameterBaseOn(final Field field,
-			final br.com.rooting.roxana.parameter.mapper.Parameter parameterAnnotation)
+			final br.com.rooting.roxana.parameter.mapper.Param parameterAnnotation)
 			throws IllegalArgumentException, IllegalAccessException {
 		
-		String defaultName = br.com.rooting.roxana.parameter.mapper.Parameter.DEFAULT_VALUE;
+		String defaultName = br.com.rooting.roxana.parameter.mapper.Param.DEFAULT_VALUE;
 		String name = parameterAnnotation.value().equals(defaultName) ? field.getName() : parameterAnnotation.value();
 		return Parameter.create(name, field.get(this.getObject()));
 	}
 	
-	private Parameter createParameterBaseOn(final Field field, final DateParameter dateParameter)
+	private Parameter createParameterBaseOn(final Field field, final DateParam dateParameter)
 			throws IllegalArgumentException, IllegalAccessException {
 		
-		String name = dateParameter.value().equals(DateParameter.DEFAULT_VALUE) ? field.getName() : dateParameter.value();
+		String name = dateParameter.value().equals(DateParam.DEFAULT_VALUE) ? field.getName() : dateParameter.value();
 		return Parameter.createDateParameter(name, 
 											 field.get(this.getObject()), 
 											 dateParameter.style(), 
@@ -76,10 +76,10 @@ public class GenericParameterFinder implements ParameterFinderStrategy {
 											 dateParameter.pattern());
 	}
 	
-	private Parameter createParameterBaseOne(final Field field, final CurrencyParameter currencyParameter)
+	private Parameter createParameterBaseOne(final Field field, final CurrencyParam currencyParameter)
 			throws IllegalArgumentException, IllegalAccessException {
 		
-		String name = currencyParameter.value().equals(CurrencyParameter.DEFAULT_VALUE) ? field.getName() : currencyParameter.value();
+		String name = currencyParameter.value().equals(CurrencyParam.DEFAULT_VALUE) ? field.getName() : currencyParameter.value();
 		return Parameter.createCurrencyParameter(name, field.get(this.getObject()));
 	}
 	

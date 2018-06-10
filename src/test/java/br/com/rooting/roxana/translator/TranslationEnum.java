@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.parameter.mapper.DateParameter;
+import br.com.rooting.roxana.parameter.mapper.DateParam;
 import br.com.rooting.roxana.parameter.mapper.DateStyle;
 
 public enum TranslationEnum {
@@ -35,7 +35,7 @@ public enum TranslationEnum {
 																			LocalDate.of(1992, DECEMBER, 11), 
 																			DateStyle.SHORT,
 																			false,
-																			DateParameter.NONE_PATTERN)
+																			DateParam.NONE_PATTERN)
 													 }, 
 						"Eu nasci em 11/12/92.",
 						"I was born on 12/11/92.",
@@ -52,7 +52,7 @@ public enum TranslationEnum {
 																								LocalDate.of(2018, JANUARY, 27), 
 																								DateStyle.SHORT,
 																								false,
-																								DateParameter.NONE_PATTERN),
+																								DateParam.NONE_PATTERN),
 																			createCurrencyParameter("saldo", 3860.80)
 																		},
 						"Olá senhor Bruno Costa. Seu saldo é de R$ 3.860,80. Consulta realizada em 27/01/18.",

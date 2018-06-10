@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 
-import br.com.rooting.roxana.business.BusinessException;
-import br.com.rooting.roxana.business.MultiBusinessException;
 import br.com.rooting.roxana.config.RoxanaProperties;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
+import br.com.rooting.roxana.exception.mapper.MultiBusinessException;
 import br.com.rooting.roxana.message.MessageCreatorFactory;
 
 class MultiBusinessExceptionResponseProcessor extends BusinessExceptionResponseProcessor {

@@ -15,17 +15,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.business.BusinessException;
-import br.com.rooting.roxana.business.MultiBusinessException;
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
+import br.com.rooting.roxana.exception.mapper.MultiBusinessException;
 import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
 import br.com.rooting.roxana.message.Message;
 import br.com.rooting.roxana.message.MessageCreatorFactory;
 import br.com.rooting.roxana.message.MessageFully;
 import br.com.rooting.roxana.message.MessageSeverity;
 import br.com.rooting.roxana.message.MockedMessageCreatorFactory;
-import br.com.rooting.roxana.parameter.mapper.Parameter;
+import br.com.rooting.roxana.parameter.mapper.Param;
 import br.com.rooting.roxana.response.Response;
 import br.com.rooting.roxana.translator.MockedTranslator;
 import br.com.rooting.roxana.translator.Translator;
@@ -261,7 +261,7 @@ public class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiB
 		
 		private static final String KEY = "{br.com.rooting.roxana.response.processor.MultiBusinessExceptionResponseProcessorTest$NotCustomBusinessException}";
 		
-		@Parameter
+		@Param
 		private final String parameterString;
 		
 		private NotCustomBusinessException(final String parameterString) {
@@ -277,7 +277,7 @@ public class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiB
 		
 		private static final String KEY = "{br.com.rooting.roxana.response.processor.MultiBusinessExceptionResponseProcessorTest$CustomResponseCodeBusinessException}";
 		
-		@Parameter
+		@Param
 		private final String parameterString;
 		
 		private CustomResponseCodeBusinessException(final String parameterString) {
@@ -293,7 +293,7 @@ public class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiB
 		
 		private static final String KEY = "{br.com.rooting.roxana.response.processor.MultiBusinessExceptionResponseProcessorTest$CustomSeverityBusinessException}";
 		
-		@Parameter
+		@Param
 		private final String parameterString;
 		
 		private CustomSeverityBusinessException(final String parameterString) {
@@ -307,7 +307,7 @@ public class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiB
 		
 		private static final long serialVersionUID = 1L;
 		
-		@Parameter
+		@Param
 		private final String parameterString;
 		
 		private CustomMessageKeyExceptionTest(final String parameterString) {

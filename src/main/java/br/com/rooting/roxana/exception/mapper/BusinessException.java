@@ -1,4 +1,4 @@
-package br.com.rooting.roxana.business;
+package br.com.rooting.roxana.exception.mapper;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

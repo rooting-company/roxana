@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
-import br.com.rooting.roxana.message.mapper.parameter.CurrencyMessageParameter;
-import br.com.rooting.roxana.message.mapper.parameter.CurrencyMessageParameters;
-import br.com.rooting.roxana.message.mapper.parameter.DateMessageParameter;
-import br.com.rooting.roxana.message.mapper.parameter.DateMessageParameters;
-import br.com.rooting.roxana.message.mapper.parameter.MessageParameter;
-import br.com.rooting.roxana.message.mapper.parameter.MessageParameters;
 import br.com.rooting.roxana.parameter.Parameter;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam.CurrencyParams;
+import br.com.rooting.roxana.parameter.mapper.DateParam;
+import br.com.rooting.roxana.parameter.mapper.DateParam.DateParams;
+import br.com.rooting.roxana.parameter.mapper.Param;
+import br.com.rooting.roxana.parameter.mapper.Param.Params;
 
+// TODO Rewrite the class to avoid many swiches.
 public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy {
 
 	private static final String EXCETION_WHEN_PASSING_PARAMETER_OF_ENUM_MAPPER = "Exception when passing the parameters of the Enum message mapper: ";
@@ -73,21 +74,21 @@ public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy
 	}
 	
 	private static boolean isParameterMapper(final Annotation annotation) {
-		if(annotation instanceof MessageParameter 			|| 
-		   annotation instanceof DateMessageParameter 		|| 
-		   annotation instanceof CurrencyMessageParameter     ) {
+		if(annotation instanceof Param || 
+		   annotation instanceof DateParam || 
+		   annotation instanceof CurrencyParam) {
 			return true;
 		}
 		return false;
 	}
 	
 	private static List<Annotation> extractParameterMapperList(final Annotation annotation) {
-		if(annotation instanceof MessageParameters) {
-			return Arrays.asList(((MessageParameters) annotation).value());
-		} else if (annotation instanceof DateMessageParameters) {
-			return Arrays.asList(((DateMessageParameters) annotation).value());
-		} else if (annotation instanceof CurrencyMessageParameters) {
-			return Arrays.asList(((CurrencyMessageParameters) annotation).value());
+		if(annotation instanceof Params) {
+			return Arrays.asList(((Params) annotation).value());
+		} else if (annotation instanceof DateParams) {
+			return Arrays.asList(((DateParams) annotation).value());
+		} else if (annotation instanceof CurrencyParams) {
+			return Arrays.asList(((CurrencyParams) annotation).value());
 		}
 		return new ArrayList<>(0);
 	}
@@ -100,45 +101,41 @@ public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy
 		Iterator<Annotation> parametersMappersIterator = this.getParametersMappersIterator();
 		Iterator<Object> valuesIterator = this.getValuesIterator();
 		
+		Integer index = 0;
 		while(parametersMappersIterator.hasNext()) {
-			parameters.add(this.createParameter(parametersMappersIterator.next(), valuesIterator.next()));
+			parameters.add(this.createParameter(parametersMappersIterator.next(), valuesIterator.next(), index.toString()));
+			index++;
 		}
 		return parameters;
 	}
 	
-	private Parameter createParameter(final Annotation annotation, final Object value) {
-		if(annotation instanceof MessageParameter) {
-			MessageParameter messageParameter = (MessageParameter) annotation;
-			return this.createParameterBaseOn(messageParameter, value);
+	private Parameter createParameter(final Annotation annotation, final Object value, final String defautKey) {
+		if(annotation instanceof Param) {
+			return this.createParameterBaseOn((Param) annotation, value, defautKey);
 			
-		} else if(annotation instanceof DateMessageParameter) {
-			DateMessageParameter dateMessageParameter = (DateMessageParameter) annotation;
-			return this.createParameterBaseOn(dateMessageParameter, value);
+		} else if(annotation instanceof DateParam) {
+			DateParam dateParameter = (DateParam) annotation;
+			return this.createParameterBaseOn(dateParameter, value, defautKey);
 			
 		} else {
-			CurrencyMessageParameter currencyMessageParameter = (CurrencyMessageParameter) annotation;
-			return this.createParameterBaseOn(currencyMessageParameter, value);
+			CurrencyParam currencyParameter = (CurrencyParam) annotation;
+			return this.createParameterBaseOn(currencyParameter, value, defautKey);
 		}
 	}
 	
-	private Parameter createParameterBaseOn(final MessageParameter messageParameter, final Object values) {
-		return Parameter.create(messageParameter.value(), values);
+	private Parameter createParameterBaseOn(final Param param, final Object value, final String defautKey) {
+		String key = Param.DEFAULT_VALUE.equals(param.value()) ? defautKey : param.value(); 
+		return Parameter.create(key, value);
 	}
 	
-	private Parameter createParameterBaseOn(final DateMessageParameter dateMessageParameter, 
-											final Object value) {
-		
-		return Parameter.createDateParameter(dateMessageParameter.value(), 
-											 value,
-											 dateMessageParameter.style(),
-											 dateMessageParameter.considerTime(),
-											 dateMessageParameter.pattern());
+	private Parameter createParameterBaseOn(final DateParam dateParam, final Object value, final String defautKey) {
+		String key = DateParam.DEFAULT_VALUE.equals(dateParam.value()) ? defautKey : dateParam.value(); 
+		return Parameter.createDateParameter(key, value, dateParam.style(), dateParam.considerTime(), dateParam.pattern());
 	}
 	
-	private Parameter createParameterBaseOn(final CurrencyMessageParameter currencyMessageParameter, 
-											final Object value) {
-		
-		return Parameter.createCurrencyParameter(currencyMessageParameter.value(), value);
+	private Parameter createParameterBaseOn(final CurrencyParam currencyParam, final Object value, final String defautKey) {
+		String key = CurrencyParam.DEFAULT_VALUE.equals(currencyParam.value()) ? defautKey : currencyParam.value(); 
+		return Parameter.createCurrencyParameter(key, value);
 	}
 	
 	private List<Object> getValues() {

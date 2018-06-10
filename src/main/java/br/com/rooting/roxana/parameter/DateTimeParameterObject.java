@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import br.com.rooting.roxana.parameter.mapper.DateParameter;
+import br.com.rooting.roxana.parameter.mapper.DateParam;
 import br.com.rooting.roxana.parameter.mapper.DateStyle;
 
 final class DateTimeParameterObject {
@@ -61,7 +61,7 @@ final class DateTimeParameterObject {
 	
 	// TODO Tratar erros de formatação, pattern invalido e etc.
 	String getFormatterDate(final Locale locale) {
-		if (this.getPattern().equals(DateParameter.NONE_PATTERN)) {
+		if (this.getPattern().equals(DateParam.NONE_PATTERN)) {
 			if(this.getConsiderTime()) {
 				DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(this.getFormatStyle());
 				return this.getLocalDateTime().format(formatter.withLocale(locale));
