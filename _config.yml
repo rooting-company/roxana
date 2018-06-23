@@ -38,7 +38,7 @@ email: bruno.costa@gmail.com
 avatar: assets/images/roxana_logo.png
 
 # You'll want to customize url and baseurl for your own site:
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/roxana" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site
 
 # Social settings
