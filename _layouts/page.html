@@ -1,0 +1,29 @@
+---
+layout: default
+---
+
+{%- include header.html -%}
+<!-- Main -->
+<div id="main">
+	
+	<!-- Page -->
+	{%- if page.type == "article" -%}
+	<article class="shade-two">
+	{%- else -%}
+	<section class="shade-two">
+	{%- endif -%}
+
+	  <div class="container">
+			<header>
+				<h2>{{- page.title -}}</h2>
+				{%- if page.subtitle -%}<p>{{- page.subtitle -}}</p>{%- endif -%}
+			</header>
+	    {{- content -}}
+		</div>
+
+	{%- if page.type == "article" -%}
+	</article>
+	{%- else -%}
+	</section>
+	{%- endif -%}
+</div>

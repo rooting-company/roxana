@@ -1,0 +1,24 @@
+---
+layout: default
+---
+
+{%- include header.html -%}
+<!-- Main -->
+<div id="main">
+
+	{%- if page.content != "" -%}
+		
+		{%- include section.html 
+			title=site.title 
+			photo=page.cover-photo 
+			photo-alt=page.cover-photo-alt 
+			auto-header=page.auto-header 
+			subtitle=page.subtitle
+			button=page.button
+			button-icon=page.button-icon 
+			button-link=page.button-link
+			-%}
+
+			{{- content -}}
+	{%- endif -%}
+</div>

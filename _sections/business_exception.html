@@ -1,0 +1,99 @@
+---
+title: Business Exceptions
+icon: fa-exclamation-triangle
+order: 3
+---
+
+<main style="text-align: left; margin-top: 5%">
+
+    <p class="newspaper">
+        Roxana allow you to create and launch <b>Business Exceptions</b> freely in your application. 
+        You <b>don't need to worry</b> about convert them to <b>JSON responses</b> in the top layer, or even create custom Spring's <b>Controller Advice</b>. 
+        This is possible because Roxana does that for you in a <b>transparent way</b>.
+    </p>
+    
+    To create a business exception, you just need to map a Exception with Roxana's annotations like the snipped code below:
+    
+{% highlight java %}
+package br.com.roxana.example;
+...
+
+// Your can define the Http Response e internationalization key if you don't want the default ones.
+// If you don't want internationalization support put the plan massage 
+// in the "message" field of the annotation.
+@BusinessException
+public class InsufficientFundsException extends Exception {
+
+    // You can create different type of parameters,
+    // by using @Parameter, @DateParameter or @CurrencyParameter.
+    @CurrencyParameter
+    private final BigDecimal funds;
+
+    public InsufficientFundsException(BigDecimal funds) {
+        this.funds = funds;
+    }
+
+}
+{% endhighlight %}
+
+    If you define the following message in your <b>I18n properties file</b>:
+
+{% highlight properties %}
+br.com.roxana.example.InsufficientFundsException = Saldo Insuficiente: [funds].
+{% endhighlight %}
+
+    You will have the following JSON returned from your API:
+
+{% highlight json %}
+{
+    "messages": [
+    {
+        "severity": "ERROR",
+        "key": "{br.com.roxana.example.InsufficientFundsException}",
+        "parameters": [
+        {
+            "funds": 3000.00
+        }
+        ],
+        "language": "pt-BR",
+        "translation": "Saldo Insuficiente: R$ 3000,00."
+    }
+    ]
+}
+{% endhighlight %}
+
+    <p><b>OBS:</b> The json format depends of configuration.</p>
+
+    <h3>Here is a brief of the annotions used to map Business Exceptions: </h3>
+    <br>
+    <ul style="list-style: none; margin:0px;">
+        <li>
+            <p><b>@BusinessException:</b> Indicate that the exception will be formmater as <b>user's friendly massage</b> by the Roxana default controller advice.
+            It also allows you to define the <b>HttpStatus Response</b> that will be returned as response in your API.
+            <br><br>
+            You can define a custom interpolation key (by default it is the cannonical name of the class) used in I18n support.<br>
+            If you <b>don't want I18n</b> support just use put a <b>plan text</b> in the interpolation key instanted of put between "<b>{ }</b>".
+            </p>
+        </li>
+
+        <li>
+            <p><b>@Parameter:</b> Map a field to be formated as <b>string parameter</b> of the message returned to the user.</p>
+        </li>
+
+        <li>
+            <p><b>@CurrencyParameter:</b> Map a field to be formmated as a currency parameter (example: $ 10.00) of the message returned to the user.</p>
+        </li>
+        <li>
+            <p><b>@DateParameter:</b> Map a field to be formmated as a date parameter (example: 2018/11/12) of the message returned to the user.
+            It also provide flexibility in the way of format the dates.
+            </p> 
+        </li>
+    </ul>   
+
+    <div class="newspaper">
+        There are <b>others ways</b> for Business Exceptions mapping that you may like. 
+        You can even create <b>Multi Business Exception</b> when you need to return a <b>list of messages</b>.
+        Those features will be covered in the <b>complete documentation</b>.
+    </div>
+
+</main>

@@ -1,0 +1,47 @@
+---
+title: Installing
+icon: fa-plug
+order: 2
+---
+
+<main style="text-align: left; margin-top: 5%">
+
+  <h3>Install Roxana in your M2 repository:</h3>
+    
+{% highlight bash %}
+$ git clone https://github.com/rooting-company/roxana.git && ./roxana/mvnw.cmd install
+{% endhighlight %}
+
+  <p><b>Obs:</b> Infortunately you need to install Roxana manualy, because it is not in maven central repository yet. We are solving this problem. ; )</p>
+
+  <h3>Add Roxana as dependency of your project:</h3>
+
+  <b>For Maven users:</b>
+
+{% highlight xml %}
+<dependencies>
+  <dependency>
+    <groupId>br.com.rooting</groupId>
+    <artifactId>roxana</artifactId>
+    <version>0.0.5-SNAPSHOT</version>
+  </dependency>
+</dependencies> 
+{% endhighlight %}
+
+<b>For Gradle users:</b>
+
+{% highlight xml %}
+compile group: 'br.com.rooting', roxana: 'commons-lang3', version: '0.0.5-SNAPSHOT'
+{% endhighlight %}
+
+  <h3>Enable Roxana:</h3>
+  Just put <b>@EnableRoxana</b> in your Spring Rest API and that's it!
+
+{% highlight java %}
+@EnableRoxana
+@SpringBootApplication
+public class YourStringRestApplication {
+  ...
+}
+{% endhighlight %}
+</main>
