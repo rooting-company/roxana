@@ -1,6 +1,6 @@
-##A github-page for Roxana.
+## A github-page for Roxana.
 
 
-##Credits:
+## Credits:
 
 	Inital jekyll template https://github.com/chrisbobbe.
