@@ -1,11 +1,11 @@
 package br.com.rooting.roxana.parameter.finder;
 
-import java.util.List;
-
 import br.com.rooting.roxana.parameter.Parameter;
 
+import java.util.List;
+
 public interface ParameterFinderStrategy {
-	
-	public List<Parameter> findParameters();
-	
+
+    List<Parameter> findParameters();
+
 }

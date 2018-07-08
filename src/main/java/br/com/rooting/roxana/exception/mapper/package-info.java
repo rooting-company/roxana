@@ -1,15 +1,14 @@
 /**
  * This package contain the annotations to map classes as a Roxana's
- * {@link BusinessException}.
- * 
+ * {@link br.com.rooting.roxana.exception.mapper.BusinessException}.
+ *
  * <p>
- * {@link BusinessException} will be treated by Roxana, providing a standardize
+ * {@link br.com.rooting.roxana.exception.mapper.BusinessException} will be treated by Roxana, providing a standardize
  * user friendly message.
  * </p>
- * 
- * @author BrunoCosta
- * @since 1.0
- * @see BusinessException
  *
+ * @author BrunoCosta
+ * @see br.com.rooting.roxana.exception.mapper.BusinessException
+ * @since 1.0
  */
 package br.com.rooting.roxana.exception.mapper;

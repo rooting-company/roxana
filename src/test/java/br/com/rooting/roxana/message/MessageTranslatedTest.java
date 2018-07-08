@@ -12,50 +12,46 @@ import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MessageTranslatedTest extends UnitTest<MessageTranslated> {
-	
-	private static final String TRANSLATION = "translation";
-	
-	// Todos os tipos de mensagem devem ser publica,
-	// para que o programador possa usa-lo diretamente caso queira.
-	@Test
-	void testClassIsPublicTest() {
-		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
-	}
-	
-	// Testa se a classe é filha de Message.
-	void testClassExtendsMessageTest() {
-		assertTrue(Message.class.isAssignableFrom(this.getUnitTestClass()));
-	}
-	
-	@Test
-	void testClassIsFinalTest() {
-		assertTrue(isFinal(this.getUnitTestClass().getModifiers()));
-	}
-	
-	// Testa se a classe só tem um unico construtor
-	// e se esse é package private para que somente a classe Creator devida possa cria-lo.
-	@Test
-	void testClassWasOnlyOnePackagePrivateConstructorTest() {
-		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
+
+    private static final String TRANSLATION = "translation";
+
+    @Test
+    void testClassIsPublicTest() {
+        assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
+    }
+
+    @Test
+    void testClassExtendsMessageTest() {
+        assertTrue(Message.class.isAssignableFrom(this.getUnitTestClass()));
+    }
+
+    @Test
+    void testClassIsFinalTest() {
+        assertTrue(isFinal(this.getUnitTestClass().getModifiers()));
+    }
+
+    @Test
+    void testClassWasOnlyOnePackagePrivateConstructorTest() {
+        Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
         assertEquals(1, constructors.length);
-		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
-	}	
-	
-	@Test
-	void serverityCanNotBeNullTest() {
-		assertThrows(IllegalArgumentException.class, () -> new MessageTranslated(null, TRANSLATION));
-	}
-	
-	@Test
-	void translationCanNotBeNullTest() {
-		assertThrows(IllegalArgumentException.class, () -> new MessageTranslated(ERROR, null));
-	}
-	
-	@Test
-	void instancionTest() {
-		MessageTranslated message = new MessageTranslated(ERROR, TRANSLATION);
-		assertEquals(ERROR, message.getSeverity());
-		assertEquals(TRANSLATION, message.getTranslation());
-	}
-	
+        assertTrue(isPackagePrivate(constructors[0].getModifiers()));
+    }
+
+    @Test
+    void severityCanNotBeNullTest() {
+        assertThrows(IllegalArgumentException.class, () -> new MessageTranslated(null, TRANSLATION));
+    }
+
+    @Test
+    void translationCanNotBeNullTest() {
+        assertThrows(IllegalArgumentException.class, () -> new MessageTranslated(ERROR, null));
+    }
+
+    @Test
+    void instantiationTest() {
+        MessageTranslated message = new MessageTranslated(ERROR, TRANSLATION);
+        assertEquals(ERROR, message.getSeverity());
+        assertEquals(TRANSLATION, message.getTranslation());
+    }
+
 }

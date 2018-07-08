@@ -1,6 +1,6 @@
 # <img src="src/docs/images/roxana-logo.png">
 
-A [Spring](https://spring.io/projects) based framework created to guarantee a standardized RESTful services responses.
+A [Spring](https://spring.io/projects) based framework created to guarantee a standardized Restful services responses.
 
 Roxana provides an easy and organized way to create and keep your own **business exceptions**. It also offers support to **Constraint Validation** on Spring Rest projects.
 
@@ -40,7 +40,7 @@ For Maven users:
 @EnableRoxana
 @SpringBootApplication
 public class YourStringRestApplication {
-  ...
+  //...
 }
 ```
 ## How to use it:
@@ -49,7 +49,7 @@ Create your own business exception with @BusinessException annotation:
 
 ```java
 package br.com.roxana.example;
-...
+//...
 
 // Your can define the Http Response e internationalization key if you don't want the default ones.
 @BusinessException
@@ -66,7 +66,7 @@ public class InsufficientFundsException extends Exception {
 
 }
 ```
-#### Put the business exception in your i18n files, by add the folow line:
+#### Put the business exception in your i18n files, by add the follow line:
 
 ```properties
 br.com.roxana.example.InsufficientFundsException = Saldo Insuficiente: [funds].
@@ -79,7 +79,7 @@ br.com.roxana.example.InsufficientFundsException = Saldo Insuficiente: [funds].
 #### Throw your business exception in some point of your code and let Roxana handled it:
 
 ```java 
-...
+//...
 
 @ResponseStatus(code = OK)
 @RequestMapping(method = POST, path = "/{id}/cars/")
@@ -102,7 +102,7 @@ public @ResponseBody Response<Message> buyACar(@PathVariable("id") Long idPerson
     return GenericResponseBuilder.buildWith(response, sucessRegisterMessage);
 }
 
-...
+//...
 ```
 
 #### When the code above throw the InsufficientFundsException, the body of the rest response will be like this:
@@ -135,7 +135,7 @@ Roxana has some configurations that changes the application behavior. The config
 
 ### Properties:
 
-- **roxana.business.response-strategy:** Defines how the user's message will be formated in the rest responses. There are four options that you can use:
+- **roxana.business.response-strategy:** Defines how the user's message will be formatted in the rest responses. There are four options that you can use:
 
   * **FULLY:** It basically returns the translated message and everything used to compose it, such as language, parameters and key. 
     

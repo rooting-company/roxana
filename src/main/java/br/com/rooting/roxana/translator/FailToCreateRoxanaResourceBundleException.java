@@ -4,14 +4,14 @@ import static br.com.rooting.roxana.config.RoxanaProperties.MessageBundle.MESSAG
 
 public class FailToCreateRoxanaResourceBundleException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
-	
-	private static final String MESSAGE = "Can not create ResourceBundle. Please, "
-										+ "verify the property " + MESSAGE_BUNDLE_BASE_NAME_PROPERTY
-										+ " of your String property file.";
+    private static final long serialVersionUID = 1L;
 
-	FailToCreateRoxanaResourceBundleException(Exception cause) {
-		super(MESSAGE, cause);
-	}
-	
+    private static final String MESSAGE = "Can not create ResourceBundle. Please, "
+            + "verify the property " + MESSAGE_BUNDLE_BASE_NAME_PROPERTY
+            + " of your String property file.";
+
+    FailToCreateRoxanaResourceBundleException(Exception cause) {
+        super(MESSAGE, cause);
+    }
+
 }

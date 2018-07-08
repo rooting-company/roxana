@@ -1,51 +1,51 @@
 package br.com.rooting.roxana.message;
 
+import br.com.rooting.roxana.parameter.Parameter;
+
 import java.util.Collections;
 import java.util.List;
 
-import br.com.rooting.roxana.parameter.Parameter;
-
 public final class MessageFully extends Message {
-	
-	private final String key;
 
-	private final List<Parameter> parameters;
+    private final String key;
 
-	private final String language;
+    private final List<Parameter> parameters;
 
-	private final String translation;
+    private final String language;
 
-	MessageFully(final MessageSeverity severity,
-				 final String key, 
-				 final String language, 
-				 final String translation,
-				 final List<Parameter> parameters) throws IllegalArgumentException {
-		super(severity);
-		
-		if (key == null || language == null || translation == null || parameters == null) {
-			throw new IllegalArgumentException();
-		}
-		
-		this.key = key;
-		this.parameters = parameters;
-		this.language = language;
-		this.translation = translation;
-	}
+    private final String translation;
 
-	public String getKey() {
-		return this.key;
-	}
+    MessageFully(final MessageSeverity severity,
+                 final String key,
+                 final String language,
+                 final String translation,
+                 final List<Parameter> parameters) throws IllegalArgumentException {
+        super(severity);
 
-	public List<Parameter> getParameters() {
-		return Collections.unmodifiableList(this.parameters);
-	}
+        if (key == null || language == null || translation == null || parameters == null) {
+            throw new IllegalArgumentException();
+        }
 
-	public String getLanguage() {
-		return this.language;
-	}
+        this.key = key;
+        this.parameters = parameters;
+        this.language = language;
+        this.translation = translation;
+    }
 
-	public String getTranslation() {
-		return this.translation;
-	}
+    public String getKey() {
+        return this.key;
+    }
+
+    public List<Parameter> getParameters() {
+        return Collections.unmodifiableList(this.parameters);
+    }
+
+    public String getLanguage() {
+        return this.language;
+    }
+
+    public String getTranslation() {
+        return this.translation;
+    }
 
 }

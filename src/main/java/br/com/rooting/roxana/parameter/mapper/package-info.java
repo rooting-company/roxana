@@ -3,11 +3,10 @@
  * {@link br.com.rooting.roxana.exception.mapper.BusinessException} as a
  * {@link br.com.rooting.roxana.parameter.Parameter}, that will be used to
  * compose standardize user friendly messages.
- * 
+ *
  * @author BrunoCosta
- * @since 1.0
  * @see br.com.rooting.roxana.exception.mapper.BusinessException
  * @see br.com.rooting.roxana.parameter.Parameter
- *
+ * @since 1.0
  */
 package br.com.rooting.roxana.parameter.mapper;

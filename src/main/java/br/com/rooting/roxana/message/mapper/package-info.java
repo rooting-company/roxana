@@ -1,11 +1,11 @@
 /**
  * This package contain the annotations to map classes as a Roxana's {@link br.com.rooting.roxana.message.Message}.
- * 
- * {@link br.com.rooting.roxana.message.Message} are created using {@link MessageMapper}.
- * 
+ * <p>
+ * {@link br.com.rooting.roxana.message.Message} are created using {@link br.com.rooting.roxana.message.mapper.MessageMapper}.
+ *
  * @author BrunoCosta
- * @since 1.0
  * @see br.com.rooting.roxana.message.Message
- * @see MessageMapper
+ * @see br.com.rooting.roxana.message.mapper.MessageMapper
+ * @since 1.0
  */
 package br.com.rooting.roxana.message.mapper;
