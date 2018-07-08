@@ -28,7 +28,7 @@ For Maven users:
   <dependency>
     <groupId>br.com.rooting</groupId>
     <artifactId>roxana</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
   </dependency>
 </dependencies> 
 ```
