@@ -9,10 +9,11 @@ public class MockedTranslator implements Translator {
 	
 	@Override
 	public String translate(String key, Locale locale, List<Parameter> parameters) {
+		StringBuilder keyBuilder = new StringBuilder(key);
 		for (Parameter parameter : parameters) {
-			key += parameter.getFormattedValue(locale);
+			keyBuilder.append(parameter.getFormattedValue(locale));
 		}
-		return key;
+		return keyBuilder.toString();
 	}
 
 	@Override

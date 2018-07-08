@@ -1,81 +1,73 @@
 package br.com.rooting.roxana.response.processor;
 
-import static br.com.rooting.roxana.translator.Translator.getInterpoledKeyOf;
-import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static java.lang.reflect.Modifier.isPublic;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import br.com.rooting.roxana.UnitTest;
+import br.com.rooting.roxana.config.RoxanaProperties;
+import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
+import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
+import br.com.rooting.roxana.exception.UnexpectedException;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
+import br.com.rooting.roxana.exception.mapper.MultiBusinessException;
+import br.com.rooting.roxana.message.*;
+import br.com.rooting.roxana.parameter.Parameter;
+import br.com.rooting.roxana.response.Response;
+import br.com.rooting.roxana.translator.MockedTranslator;
+import br.com.rooting.roxana.translator.Translator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
+import javax.validation.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import static br.com.rooting.roxana.translator.Translator.getInterpoledKeyOf;
+import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
+import static java.lang.reflect.Modifier.isPublic;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-
-import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.config.RoxanaProperties;
-import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
-import br.com.rooting.roxana.exception.UnexpectedException;
-import br.com.rooting.roxana.exception.mapper.BusinessException;
-import br.com.rooting.roxana.exception.mapper.MultiBusinessException;
-import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
-import br.com.rooting.roxana.message.Message;
-import br.com.rooting.roxana.message.MessageCreatorFactory;
-import br.com.rooting.roxana.message.MessageFully;
-import br.com.rooting.roxana.message.MessageSeverity;
-import br.com.rooting.roxana.message.MockedMessageCreatorFactory;
-import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.response.Response;
-import br.com.rooting.roxana.translator.MockedTranslator;
-import br.com.rooting.roxana.translator.Translator;
-
-public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorManager> {
+class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorManager> {
 	
 	private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
 	private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
 
 	@Test
-	public void testClassIsPublicTest() {
+	void testClassIsPublicTest() {
 		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassIsASpringComponentTest() {
+	void testClassIsASpringComponentTest() {
 		assertTrue(this.getUnitTestClass().isAnnotationPresent(Component.class));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePrivateConstructorTest() {
+	void testClassWasOnlyOnePackagePrivateConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+        assertEquals(1, constructors.length);
 		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void roxanaPropertiesCanNotBeNullTest() {
-		new ResponseProcessorManager(null, mock(MessageCreatorFactory.class));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void messageCreatorFactoryCanNotBeNullTest() {
-		new ResponseProcessorManager(mock(RoxanaProperties.class), null);
+	@Test
+	void roxanaPropertiesCanNotBeNullTest() {
+		Executable executable = () -> new ResponseProcessorManager(null, mock(MessageCreatorFactory.class));
+		assertThrows(IllegalArgumentException.class, executable);
 	}
 	
 	@Test
-	public void processGenericExceptionTest() throws Exception {
+	void messageCreatorFactoryCanNotBeNullTest() {
+		Executable executable = () -> new ResponseProcessorManager(mock(RoxanaProperties.class), null);
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void processGenericExceptionTest() throws Exception {
 		String parameterValue = "test";
 		
 		ResponseProcessorManager manager = this.getResponseProcessorManagerForTest();
@@ -94,7 +86,7 @@ public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorMana
 	}
 	
 	@Test
-	public void processMultiBusinessExceptionTest() throws Exception {
+	void processMultiBusinessExceptionTest() throws Exception {
 		String parameterValue_01 = "test01";
 		String parameterValue_02 = "test02";
 		
@@ -126,7 +118,7 @@ public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorMana
 	}
 	
 	@Test
-	public void processConstraintValidationExceptionTest() throws Exception {
+	void processConstraintValidationExceptionTest() throws Exception {
 		Set<ConstraintViolation<ConstraintValidatorTest>> violations = VALIDATOR.validate(new ConstraintValidatorTest());
 		ConstraintViolationException constraintException = new ConstraintViolationException(violations);
 		
@@ -176,7 +168,7 @@ public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorMana
 	}
 	
 	@Test
-	public void processWrappedGenericExceptionTest() throws Exception {
+	void processWrappedGenericExceptionTest() throws Exception {
 		String parameterValue = "test";
 		RuntimeException runTimeException = new RuntimeException(new MockedBusinessException(parameterValue));
 		ResponseProcessorManager manager = this.getResponseProcessorManagerForTest();
@@ -194,9 +186,10 @@ public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorMana
 		assertEquals(MockedBusinessException.PARAMETER_01_NAME, parameter_01.getName());
 		assertEquals(parameterValue, parameter_01.getValue());
 	}
-	
+
+		// TODO test if the not business exeception was looged correctly.
 	@Test
-	public void processUnexpectedExceptionTest() throws Exception {
+	void processUnexpectedExceptionTest() throws Exception {
 		ResponseProcessorManager manager = this.getResponseProcessorManagerForTest();
 		ResponseEntity<Response> response = manager.getProcessedResponse(new NullPointerException());
 		List<Message> messages = response.getBody().getMessages();
@@ -218,8 +211,7 @@ public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorMana
 	}
 	
 	private MessageCreatorFactory getMessageCreatorFactory() {
-		MessageCreatorFactory factory = new MockedMessageCreatorFactory(this.getRoxanaProperties(), this.getTranslator());
-		return factory;
+        return new MockedMessageCreatorFactory(this.getRoxanaProperties(), this.getTranslator());
 	}
 	
 	private ResponseProcessorManager getResponseProcessorManagerForTest() {
@@ -265,10 +257,10 @@ public class ResponseProcessorManagerTest extends UnitTest<ResponseProcessorMana
 		private static final String NOT_BLANK_KEY = "{javax.validation.constraints.NotBlank.message}";
 		
 		@NotBlank
-		private String notBlank = "";
+		private final String notBlank = "";
 		
 		@Min(1)
-		private Integer positiveNumber = -1;
+		private final Integer positiveNumber = -1;
 		
 	}
 	

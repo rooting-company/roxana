@@ -1,20 +1,5 @@
 package br.com.rooting.roxana.message;
 
-import static br.com.rooting.roxana.message.MessageSeverity.ERROR;
-import static br.com.rooting.roxana.message.MessageSeverity.INFO;
-import static br.com.rooting.roxana.message.MessageSeverity.SUCCESS;
-import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-import org.springframework.stereotype.Component;
-
 import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.message.mapper.MessageMapper;
 import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
@@ -23,8 +8,20 @@ import br.com.rooting.roxana.parameter.Parameter;
 import br.com.rooting.roxana.parameter.finder.MessageMapperEnumParameterFinder;
 import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
 import br.com.rooting.roxana.parameter.mapper.Param;
+import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Component;
 
-public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreator> {
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+
+import static br.com.rooting.roxana.message.MessageSeverity.*;
+import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+
+class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreator> {
 	
 	private static final String STRING_PARAMETER_NAME_01 = "StringParameterName01";
 	private static final String STRING_PARAMETER_NAME_02 = "StringParameterName02";
@@ -35,29 +32,29 @@ public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreato
 	private static final String KEY = "mocked.key";
 
 	@Test
-	public void testClassIsPackagePrivateTest() {
+	void testClassIsPackagePrivateTest() {
 		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassExtendsMessageCreatorTest() {
+	void testClassExtendsMessageCreatorTest() {
 		assertTrue(MessageCreator.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassIsASpringComponentTest() {
+	void testClassIsASpringComponentTest() {
 		assertTrue(this.getUnitTestClass().isAnnotationPresent(Component.class));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePrivateConstructorTest() {
+	void testClassWasOnlyOnePackagePrivateConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+        assertEquals(1, constructors.length);
 		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
 	}
 	
 	@Test
-	public void createTest() {
+	void createTest() {
 		MessageUnchangedCreator creator = new MessageUnchangedCreator();
 		MessageMapper mapper = new MockedMessageMapper(KEY, INFO);
 		List<Parameter> parameters = new ArrayList<>();
@@ -65,12 +62,12 @@ public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreato
 		MessageUnchanged message = creator.create(mapper, parameters);
 		assertEquals(mapper.getSeverity(), message.getSeverity());
 		assertEquals(mapper.getKey(), message.getKey());
-		assertTrue(message.getParameters().size() == parameters.size());
+        assertEquals(message.getParameters().size(), parameters.size());
 		assertTrue(message.getParameters().containsAll(parameters));
 	}
 	
 	@Test
-	public void createArgsTest() {
+	void createArgsTest() {
 		MessageUnchangedCreator creator = new MessageUnchangedCreator();
 		MessageMapper mapper = new MockedMessageMapper(KEY, INFO);
 		Parameter parameter_01 = mock(Parameter.class);
@@ -79,13 +76,13 @@ public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreato
 		MessageUnchanged message = creator.create(mapper, parameter_01, parameter_02);
 		assertEquals(mapper.getSeverity(), message.getSeverity());
 		assertEquals(mapper.getKey(), message.getKey());
-		assertTrue(message.getParameters().size() == 2);
+        assertEquals(2, message.getParameters().size());
 		assertTrue(message.getParameters().contains(parameter_01));
 		assertTrue(message.getParameters().contains(parameter_02));
 	}
 	
 	@Test
-	public void createBasedOnEnumMapTest() {
+	void createBasedOnEnumMapTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		parametersValues.add(RANDOM_STRING_PARAMETER_VALUE_01);
 		parametersValues.add(RANDOM_STRING_PARAMETER_VALUE_02);
@@ -98,12 +95,12 @@ public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreato
 		MessageUnchanged message = creator.create(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS, parametersValues);
 		assertEquals(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS.getSeverity(), message.getSeverity());
 		assertEquals(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS.getKey(), message.getKey());
-		assertTrue(message.getParameters().size() == parameters.size());
+        assertEquals(message.getParameters().size(), parameters.size());
 		assertTrue(message.getParameters().containsAll(parameters));
 	}
 	
 	@Test
-	public void createBasedOnEnumMapArgsTest() {
+	void createBasedOnEnumMapArgsTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		parametersValues.add(RANDOM_STRING_PARAMETER_VALUE_01);
 		parametersValues.add(RANDOM_STRING_PARAMETER_VALUE_02);
@@ -111,18 +108,18 @@ public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreato
 		List<Parameter> parameters = parameterFinder.findParameters();
 		
 		MessageUnchangedCreator creator = new MessageUnchangedCreator();
-		MessageUnchanged message = creator.create(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS, 
-												  RANDOM_STRING_PARAMETER_VALUE_01, 
+		MessageUnchanged message = creator.create(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS,
+												  RANDOM_STRING_PARAMETER_VALUE_01,
 												  RANDOM_STRING_PARAMETER_VALUE_02);
-		
+
 		assertEquals(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS.getSeverity(), message.getSeverity());
 		assertEquals(MapperEnumTest.MAPPER_WITH_STRING_PARAMETERS.getKey(), message.getKey());
-		assertTrue(message.getParameters().size() == parameters.size());
+        assertEquals(message.getParameters().size(), parameters.size());
 		assertTrue(message.getParameters().containsAll(parameters));
 	}
 	
 	@Test
-	public void createBasedOnEnumMapWithNoParameterTest() {
+	void createBasedOnEnumMapWithNoParameterTest() {
 		MessageUnchangedCreator creator = new MessageUnchangedCreator();
 		MessageUnchanged message = creator.create(MapperEnumTest.MAPPER_WITH_NO_PARAMETERS);
 		
@@ -140,7 +137,7 @@ public class MessageUnchangedCreatorTest extends UnitTest<MessageUnchangedCreato
 
 		private final MessageSeverity severity;
 		
-		private MapperEnumTest(final MessageSeverity severity) {
+		MapperEnumTest(final MessageSeverity severity) {
 			this.severity = severity;
 		}
 		

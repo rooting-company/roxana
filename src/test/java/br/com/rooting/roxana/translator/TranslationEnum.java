@@ -14,7 +14,7 @@ import br.com.rooting.roxana.parameter.Parameter;
 import br.com.rooting.roxana.parameter.mapper.DateParam;
 import br.com.rooting.roxana.parameter.mapper.DateStyle;
 
-public enum TranslationEnum {
+enum TranslationEnum {
 	TRANSLATION_NONE_PARAMS("hello.world", new Parameter[0], 
 						"Olá Mundo.", 
 						"Hello World.", 

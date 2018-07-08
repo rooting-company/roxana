@@ -2,22 +2,21 @@ package br.com.rooting.roxana.config;
 
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isPublic;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import br.com.rooting.roxana.RoxanaPackageMapper;
 import br.com.rooting.roxana.UnitTest;
+import org.junit.jupiter.api.Test;
 
-public class RoxanaPackageMapperTest extends UnitTest<RoxanaPackageMapper> {
+class RoxanaPackageMapperTest extends UnitTest<RoxanaPackageMapper> {
 
 	@Test
-	public void testClassIsPackagePublicTest() {
+	void testClassIsPackagePublicTest() {
 		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassIsFinalTest() {
+	void testClassIsFinalTest() {
 		assertTrue(isFinal(this.getUnitTestClass().getModifiers()));
 	}
 	

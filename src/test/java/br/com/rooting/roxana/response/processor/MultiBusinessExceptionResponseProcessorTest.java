@@ -1,84 +1,82 @@
 package br.com.rooting.roxana.response.processor;
 
-import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import br.com.rooting.roxana.UnitTest;
+import br.com.rooting.roxana.config.RoxanaProperties;
+import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
+import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
+import br.com.rooting.roxana.exception.mapper.MultiBusinessException;
+import br.com.rooting.roxana.message.*;
+import br.com.rooting.roxana.parameter.mapper.Param;
+import br.com.rooting.roxana.response.Response;
+import br.com.rooting.roxana.translator.MockedTranslator;
+import br.com.rooting.roxana.translator.Translator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
-import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.config.RoxanaProperties;
-import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
-import br.com.rooting.roxana.exception.mapper.BusinessException;
-import br.com.rooting.roxana.exception.mapper.MultiBusinessException;
-import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
-import br.com.rooting.roxana.message.Message;
-import br.com.rooting.roxana.message.MessageCreatorFactory;
-import br.com.rooting.roxana.message.MessageFully;
-import br.com.rooting.roxana.message.MessageSeverity;
-import br.com.rooting.roxana.message.MockedMessageCreatorFactory;
-import br.com.rooting.roxana.parameter.mapper.Param;
-import br.com.rooting.roxana.response.Response;
-import br.com.rooting.roxana.translator.MockedTranslator;
-import br.com.rooting.roxana.translator.Translator;
-
-public class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiBusinessExceptionResponseProcessor> {
+class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiBusinessExceptionResponseProcessor> {
 
 	private static final String CUSTOM_KEY = "{custom.key}";
 	
 	@Test
-	public void testClassIsPackagePrivateTest() {
+	void testClassIsPackagePrivateTest() {
 		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassExtendsMessageCreatorTest() {
+	void testClassExtendsMessageCreatorTest() {
 		assertTrue(ResponseProcessor.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePrivateConstructorTest() {
+	void testClassWasOnlyOnePackagePrivateConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+        assertEquals(1, constructors.length);
 		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void roxanaPropertiesCanNotBeNullTest() {
-		new MultiBusinessExceptionResponseProcessor(null, mock(MessageCreatorFactory.class), mock(ResponseProcessorManager.class));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void messageCreatorFactoryCanNotBeNullTest() {
-		new MultiBusinessExceptionResponseProcessor(mock(RoxanaProperties.class), null, mock(ResponseProcessorManager.class));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void responseProcessorManagerCanNotBeNullTest() {
-		new MultiBusinessExceptionResponseProcessor(mock(RoxanaProperties.class), mock(MessageCreatorFactory.class), null);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void suppressOthersExceptionsCanNotBeNullTest() {
-		RoxanaProperties roxanaProperties = new RoxanaPropertiesMockBuilder()
-												.withSuppressOthersExceptions(null)
-												.build();
-		
-		new MultiBusinessExceptionResponseProcessor(roxanaProperties, 
-													mock(MessageCreatorFactory.class), 
-													mock(ResponseProcessorManager.class));
+	@Test
+	void roxanaPropertiesCanNotBeNullTest() {
+		Executable executable = () -> new MultiBusinessExceptionResponseProcessor(null, mock(MessageCreatorFactory.class), mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
 	}
 	
 	@Test
-	public void processNotCustomMultiBusinessExceptionTest() throws Exception {
+	void messageCreatorFactoryCanNotBeNullTest() {
+		Executable executable = () -> new MultiBusinessExceptionResponseProcessor(mock(RoxanaProperties.class), null, mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void responseProcessorManagerCanNotBeNullTest() {
+		Executable executable = () -> new MultiBusinessExceptionResponseProcessor(mock(RoxanaProperties.class), mock(MessageCreatorFactory.class), null);
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void suppressOthersExceptionsCanNotBeNullTest() {
+		RoxanaProperties roxanaProperties = new RoxanaPropertiesMockBuilder()
+												.withSuppressOthersExceptions(null)
+												.build();
+
+		Executable executable = () -> new MultiBusinessExceptionResponseProcessor(roxanaProperties,
+													mock(MessageCreatorFactory.class), 
+													mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void processNotCustomMultiBusinessExceptionTest() throws Exception {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		MultiBusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		
@@ -134,7 +132,7 @@ public class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiB
 	}
 	
 	@Test
-	public void processCustomResponseCodeMultiBusinessExceptionTest() throws Exception {
+	void processCustomResponseCodeMultiBusinessExceptionTest() throws Exception {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		MultiBusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		
@@ -190,7 +188,7 @@ public class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiB
 	}
 	
 	@Test
-	public void onlyBusinessExceptionAreConsideredTest() throws Exception {
+	void onlyBusinessExceptionAreConsideredTest() throws Exception {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		MultiBusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		
@@ -211,7 +209,7 @@ public class MultiBusinessExceptionResponseProcessorTest extends UnitTest<MultiB
 	}
 	
 	private MultiBusinessExceptionResponseProcessor getReponseProcessorForTest(final RoxanaProperties roxanaProperties, 
-																				final ResponseProcessorManager responseProcessorManager) {
+                                                                               final ResponseProcessorManager responseProcessorManager) {
 		
 		return new MultiBusinessExceptionResponseProcessor(roxanaProperties, 
 															this.getMessageCreatorFactory(roxanaProperties), 

@@ -1,78 +1,51 @@
 package br.com.rooting.roxana.parameter.finder;
 
-import static java.lang.reflect.Modifier.isPublic;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.lang.reflect.Constructor;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import br.com.rooting.roxana.UnitTest;
+import br.com.rooting.roxana.parameter.Parameter;
+import br.com.rooting.roxana.parameter.ParameterType;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import javax.validation.constraints.AssertFalse;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Negative;
-import javax.validation.constraints.NegativeOrZero;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import java.lang.reflect.Constructor;
+import java.time.LocalDate;
+import java.util.*;
 
-import org.junit.Test;
+import static java.lang.reflect.Modifier.isPublic;
+import static org.junit.jupiter.api.Assertions.*;
 
-import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.parameter.ParameterType;
-import br.com.rooting.roxana.parameter.finder.ConstraintValidationParameterFinder;
-import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
-
-public class ConstraintValidationParameterFinderTest extends UnitTest<ConstraintValidationParameterFinder> {
+class ConstraintValidationParameterFinderTest extends UnitTest<ConstraintValidationParameterFinder> {
 
 	private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
 	private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
 	
 	@Test
-	public void testClassIsPublicTest() {
+	void testClassIsPublicTest() {
 		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassExtendsMessageCreatorTest() {
+	void testClassExtendsMessageCreatorTest() {
 		assertTrue(ParameterFinderStrategy.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePublicConstructorTest() {
+	void testClassWasOnlyOnePublicConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+		assertEquals(1, constructors.length);
 		assertTrue(isPublic(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void constraintViolationCanNotBeNull() {
-		new ConstraintValidationParameterFinder(null);
+	@Test
+	void constraintViolationCanNotBeNull() {
+		assertThrows(IllegalArgumentException.class, () -> new ConstraintValidationParameterFinder(null));
 	}
 	
 	@Test
-	public void supportToConstraintValidationTest() {
+	void supportToConstraintValidationTest() {
 		Set<ConstraintViolation<ConstraintValidatorTest>> violations = VALIDATOR.validate(new ConstraintValidatorTest());
 		
 		violations.stream().forEach(violation -> {
@@ -80,64 +53,63 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 			List<Parameter> parameters = finder.findParameters();
 			
 			if (violationIsFrom(violation, NotBlank.class)) {
-				validateNotBlankViolation(violation, parameters);
+				validateNotBlankViolation(parameters);
 				
 			} else if (violationIsFrom(violation, NotNull.class)) {
-				validateNotNullViolation(violation, parameters);
+				validateNotNullViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Min.class)) {
-				validateMinViolation(violation, parameters);
+				validateMinViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Max.class))  {
-				validateMaxViolation(violation, parameters);
+				validateMaxViolation(parameters);
 				
 			} else if (violationIsFrom(violation, NotEmpty.class)) {
-				validateNotEmptyViolation(violation, parameters);
+				validateNotEmptyViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Size.class)) {
-				validateSizeViolation(violation, parameters);
+				validateSizeViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Future.class)) {
-				validateFutureViolation(violation, parameters);
+				validateFutureViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Past.class)) {
-				validatePastViolation(violation, parameters);
+				validatePastViolation(parameters);
 				
 			} else if (violationIsFrom(violation, FutureOrPresent.class)) {
-				validateFutureOrPresentViolation(violation, parameters);
+				validateFutureOrPresentViolation(parameters);
 				
 			} else if (violationIsFrom(violation, PastOrPresent.class)) {
-				validatePastOrPresentViolation(violation, parameters);
+				validatePastOrPresentViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Positive.class)) {
-				validatePositiveViolation(violation, parameters);
+				validatePositiveViolation(parameters);
 				
 			} else if (violationIsFrom(violation, PositiveOrZero.class)) {
-				validatePositiveOrZeroViolation(violation, parameters);
+				validatePositiveOrZeroViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Negative.class)) {
-				validateNegativeViolation(violation, parameters);
+				validateNegativeViolation(parameters);
 				
 			} else if (violationIsFrom(violation, NegativeOrZero.class)) {
-				validateNegativeOrZeroViolation(violation, parameters);
+				validateNegativeOrZeroViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Email.class)) {
-				validadteEmailViolation(violation, parameters);
+				validadteEmailViolation(parameters);
 				
 			} else if (violationIsFrom(violation, AssertTrue.class)) {
-				validateAssertTrueViolation(violation, parameters);
+				validateAssertTrueViolation(parameters);
 				
 			} else if (violationIsFrom(violation, AssertFalse.class)) {
-				validateAssertFalseViolation(violation, parameters);
+				validateAssertFalseViolation(parameters);
 				
 			} else if (violationIsFrom(violation, Pattern.class)) {
-				validatePatternViolation(violation, parameters);
+				validatePatternViolation(parameters);
 			}
 		});
 	}
 	
-	private static void validateNotBlankViolation(final ConstraintViolation<?> violation, 
-											      final List<Parameter> parameters) {
+	private static void validateNotBlankViolation(final List<Parameter> parameters) {
 		
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Not Blank"));
@@ -148,9 +120,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateNotNullViolation(final ConstraintViolation<?> violation, 
-			   								     final List<Parameter> parameters) {
-		
+	private static void validateNotNullViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Not Null"));
 		
@@ -160,8 +130,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateMinViolation(final ConstraintViolation<?> violation, 
-			     							 final List<Parameter> parameters) {
+	private static void validateMinViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Min 100"));
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.INVALID_VALUE_PARAMETER, 10));
@@ -170,8 +139,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateMaxViolation(final ConstraintViolation<?> violation, 
-			 								 final List<Parameter> parameters) {
+	private static void validateMaxViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Max 1000"));
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.INVALID_VALUE_PARAMETER, 10000));
@@ -180,8 +148,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateNotEmptyViolation(final ConstraintViolation<?> violation, 
-			 									  final List<Parameter> parameters) {
+	private static void validateNotEmptyViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Not Empty"));
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.INVALID_VALUE_PARAMETER, new ArrayList<>()));
@@ -189,8 +156,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateSizeViolation(final ConstraintViolation<?> violation, 
-			     							  final List<Parameter> parameters) {
+	private static void validateSizeViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, 
 													"Size Min 3 Max 100"));
@@ -204,9 +170,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateFutureViolation(final ConstraintViolation<?> violation, 
-			  									final List<Parameter> parameters) {
-		
+	private static void validateFutureViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, 
 													"Future Date"));
@@ -217,9 +181,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validatePastViolation(final ConstraintViolation<?> violation, 
-											  final List<Parameter> parameters) {
-
+	private static void validatePastViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, 
 													"Past Date"));
@@ -230,9 +192,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateFutureOrPresentViolation(final ConstraintViolation<?> violation, 
-											  			 final List<Parameter> parameters) {
-		
+	private static void validateFutureOrPresentViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, 
 													"Future Or Present Date"));
@@ -243,9 +203,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validatePastOrPresentViolation(final ConstraintViolation<?> violation, 
-											  		   final List<Parameter> parameters) {
-		
+	private static void validatePastOrPresentViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, 
 													"Past Or Present Date"));
@@ -256,9 +214,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validatePositiveViolation(final ConstraintViolation<?> violation, 
-	  		   									  final List<Parameter> parameters) {
-
+	private static void validatePositiveViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Positive Number"));
 		
@@ -267,9 +223,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validatePositiveOrZeroViolation(final ConstraintViolation<?> violation, 
-				  										final List<Parameter> parameters) {
-
+	private static void validatePositiveOrZeroViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Positive Or Zero Number"));
 		
@@ -278,9 +232,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateNegativeViolation(final ConstraintViolation<?> violation, 
-												  final List<Parameter> parameters) {
-
+	private static void validateNegativeViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Negative Number"));
 		
@@ -289,9 +241,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateNegativeOrZeroViolation(final ConstraintViolation<?> violation, 
-														final List<Parameter> parameters) {
-
+	private static void validateNegativeOrZeroViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Negative Or Zero Number"));
 		
@@ -300,8 +250,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validadteEmailViolation(final ConstraintViolation<?> violation, 
-												final List<Parameter> parameters) {
+	private static void validadteEmailViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Email"));
 		
@@ -310,8 +259,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateAssertTrueViolation(final ConstraintViolation<?> violation, 
-													final List<Parameter> parameters) {
+	private static void validateAssertTrueViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Assert True"));
 		
@@ -320,8 +268,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validateAssertFalseViolation(final ConstraintViolation<?> violation, 
-													 final List<Parameter> parameters) {
+	private static void validateAssertFalseViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Assert False"));
 
@@ -330,8 +277,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static void validatePatternViolation(final ConstraintViolation<?> violation, 
-			 									 final List<Parameter> parameters) {
+	private static void validatePatternViolation(final List<Parameter> parameters) {
 		List<ParameterTestValidation> validations = new ArrayList<>();
 		validations.add(new ParameterTestValidation(ConstraintValidatorTest.PROPERTY_NAME_PARAMETER, "Pattern Only Number"));
 
@@ -341,7 +287,7 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		validateViolation(validations, parameters);
 	}
 	
-	private static Boolean violationIsFrom(final ConstraintViolation<?> violation, 
+	private static Boolean violationIsFrom(final ConstraintViolation<?> violation,
 			   							   final Class<?> constraintClass) {
 
 		return violation.getConstraintDescriptor()
@@ -441,17 +387,17 @@ public class ConstraintValidationParameterFinderTest extends UnitTest<Constraint
 		
 		private final Object value;
 		
-		public ParameterTestValidation(String name, Object value) {
+		ParameterTestValidation(String name, Object value) {
 			super();
 			this.name = name;
 			this.value = value;
 		}
 
-		public String getName() {
+		String getName() {
 			return name;
 		}
 
-		public Object getValue() {
+		Object getValue() {
 			return value;
 		}
 	}

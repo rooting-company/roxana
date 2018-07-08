@@ -9,9 +9,8 @@ import java.util.stream.Stream;
 
 import javax.validation.ConstraintViolation;
 
-import org.apache.commons.lang.StringUtils;
-
 import br.com.rooting.roxana.parameter.Parameter;
+import org.apache.commons.lang3.StringUtils;
 
 public class ConstraintValidationParameterFinder implements ParameterFinderStrategy {
 	

@@ -74,12 +74,9 @@ public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy
 	}
 	
 	private static boolean isParameterMapper(final Annotation annotation) {
-		if(annotation instanceof Param || 
-		   annotation instanceof DateParam || 
-		   annotation instanceof CurrencyParam) {
-			return true;
-		}
-		return false;
+		return annotation instanceof Param ||
+				annotation instanceof DateParam ||
+				annotation instanceof CurrencyParam;
 	}
 	
 	private static List<Annotation> extractParameterMapperList(final Annotation annotation) {
@@ -94,8 +91,7 @@ public class MessageMapperEnumParameterFinder implements ParameterFinderStrategy
 	}
 	
 	@Override
-	public List<Parameter> findParameters() throws OverflowingParametersValuesException,
-												   MissingParametersValuesException {
+	public List<Parameter> findParameters() {
 		
 		List<Parameter> parameters = new ArrayList<>(this.getValues().size());
 		Iterator<Annotation> parametersMappersIterator = this.getParametersMappersIterator();

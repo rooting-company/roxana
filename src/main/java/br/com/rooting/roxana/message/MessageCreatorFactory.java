@@ -57,7 +57,7 @@ public class MessageCreatorFactory {
 		}
 	}
 
-	public ResponseStrategy getResponseStrategy() {
+	private ResponseStrategy getResponseStrategy() {
 		return this.responseStrategy;
 	}
 

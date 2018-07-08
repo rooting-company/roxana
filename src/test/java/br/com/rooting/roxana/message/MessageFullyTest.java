@@ -1,25 +1,26 @@
 package br.com.rooting.roxana.message;
 
-import static br.com.rooting.roxana.message.MessageSeverity.ERROR;
-import static br.com.rooting.roxana.translator.LocaleTagEnum.PT_BR;
-import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static java.lang.reflect.Modifier.isFinal;
-import static java.lang.reflect.Modifier.isPublic;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import br.com.rooting.roxana.UnitTest;
+import br.com.rooting.roxana.parameter.Parameter;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
-import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.parameter.Parameter;
+import static br.com.rooting.roxana.message.MessageSeverity.ERROR;
+import static br.com.rooting.roxana.translator.LocaleTagEnum.PT_BR;
+import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
+import static java.lang.reflect.Modifier.isFinal;
+import static java.lang.reflect.Modifier.isPublic;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 // TODO Avaliar como evitar duplicacao de testes para classes de Message.
-public class MessageFullyTest extends UnitTest<MessageFully> {
+class MessageFullyTest extends UnitTest<MessageFully> {
 	
 	private static final ArrayList<Parameter> EMPTY_PARAMETER_LIST = new ArrayList<Parameter>();
 	private static final String TRANSLATION = "translation";
@@ -28,57 +29,62 @@ public class MessageFullyTest extends UnitTest<MessageFully> {
 	// Todos os tipos de mensagem devem ser publica,
 	// para que o programador possa usa-lo diretamente caso queira.
 	@Test
-	public void testClassIsPublicTest() {
+	void testClassIsPublicTest() {
 		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
 	}
 	
 	// Testa se a classe é filha de Message.
 	@Test
-	public void testClassExtendsMessageTest() {
+	void testClassExtendsMessageTest() {
 		assertTrue(Message.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassIsFinalTest() {
+	void testClassIsFinalTest() {
 		assertTrue(isFinal(this.getUnitTestClass().getModifiers()));
 	}
 	
 	// Testa se a classe só tem um unico construtor
 	// e se esse é package private para que somente a classe Creator devida possa cria-lo.
 	@Test
-	public void testClassWasOnlyOnePackagePrivateConstructorTest() {
+	void testClassWasOnlyOnePackagePrivateConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
 		assertTrue(constructors.length == 1);
 		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void serverityCanNotBeNullTest() {
-		new MessageFully(null, PT_BR.getTag(), KEY, TRANSLATION, EMPTY_PARAMETER_LIST);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void keyCanNotBeNullTest() {
-		new MessageFully(ERROR, null, PT_BR.getTag(), TRANSLATION, EMPTY_PARAMETER_LIST);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void languageCanNotBeNullTest() {
-		new MessageFully(ERROR, KEY, null, TRANSLATION, EMPTY_PARAMETER_LIST);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void translationCanNotBeNullTest() {
-		new MessageFully(ERROR, KEY, PT_BR.getTag(), null, EMPTY_PARAMETER_LIST);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void parametersCanNotBeNullTest() {
-		new MessageFully(ERROR, KEY, PT_BR.getTag(), TRANSLATION, null);
+	@Test
+	void serverityCanNotBeNullTest() {
+		Executable executable = () -> new MessageFully(null, PT_BR.getTag(), KEY, TRANSLATION, EMPTY_PARAMETER_LIST);
+		assertThrows(IllegalArgumentException.class, executable);
 	}
 	
 	@Test
-	public void instancionTest() {
+	void keyCanNotBeNullTest() {
+		Executable executable = () -> new MessageFully(ERROR, null, PT_BR.getTag(), TRANSLATION, EMPTY_PARAMETER_LIST);
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void languageCanNotBeNullTest() {
+		Executable executable = () -> new MessageFully(ERROR, KEY, null, TRANSLATION, EMPTY_PARAMETER_LIST);
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void translationCanNotBeNullTest() {
+		Executable executable = () -> new MessageFully(ERROR, KEY, PT_BR.getTag(), null, EMPTY_PARAMETER_LIST);
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void parametersCanNotBeNullTest() {
+		Executable executable = () -> new MessageFully(ERROR, KEY, PT_BR.getTag(), TRANSLATION, null);
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void instancionTest() {
 		List<Parameter> parameters = new ArrayList<>();
 		parameters.add(mock(Parameter.class));
 		parameters.add(mock(Parameter.class));
@@ -93,10 +99,10 @@ public class MessageFullyTest extends UnitTest<MessageFully> {
 		assertTrue(message.getParameters().containsAll(parameters));
 	}
 	
-	@Test(expected = UnsupportedOperationException.class)
-	public void parametersAreUnmodifiableTest() {
+	@Test
+	void parametersAreUnmodifiableTest() {
 		MessageFully message = new MessageFully(ERROR, KEY, PT_BR.getTag(), TRANSLATION, EMPTY_PARAMETER_LIST);
-		message.getParameters().add(mock(Parameter.class));
+		assertThrows(UnsupportedOperationException.class, () -> message.getParameters().add(mock(Parameter.class)));
 	}
 	
 }

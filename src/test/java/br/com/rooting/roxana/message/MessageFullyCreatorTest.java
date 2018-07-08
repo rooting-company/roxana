@@ -1,20 +1,5 @@
 package br.com.rooting.roxana.message;
 
-import static br.com.rooting.roxana.message.MessageSeverity.ERROR;
-import static br.com.rooting.roxana.message.MessageSeverity.INFO;
-import static br.com.rooting.roxana.message.MessageSeverity.SUCCESS;
-import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-import org.springframework.stereotype.Component;
-
 import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.message.mapper.MessageMapper;
 import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
@@ -25,8 +10,19 @@ import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
 import br.com.rooting.roxana.parameter.mapper.Param;
 import br.com.rooting.roxana.translator.MockedTranslator;
 import br.com.rooting.roxana.translator.Translator;
+import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Component;
 
-public class MessageFullyCreatorTest extends UnitTest<MessageFullyCreator> {
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+
+import static br.com.rooting.roxana.message.MessageSeverity.*;
+import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+
+class MessageFullyCreatorTest extends UnitTest<MessageFullyCreator> {
 	
 	private static final String STRING_PARAMETER_NAME_01 = "StringParameterName01";
 	private static final String STRING_PARAMETER_NAME_02 = "StringParameterName02";
@@ -37,34 +33,34 @@ public class MessageFullyCreatorTest extends UnitTest<MessageFullyCreator> {
 	private static final String KEY = "key";
 
 	@Test
-	public void testClassIsPackagePrivateTest() {
+	void testClassIsPackagePrivateTest() {
 		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassExtendsMessageCreatorTest() {
+	void testClassExtendsMessageCreatorTest() {
 		assertTrue(MessageCreator.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassIsASpringComponentTest() {
+	void testClassIsASpringComponentTest() {
 		assertTrue(this.getUnitTestClass().isAnnotationPresent(Component.class));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePrivateConstructorTest() {
+	void testClassWasOnlyOnePackagePrivateConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
 		assertTrue(constructors.length == 1);
 		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void translatorCanNotBeNullTest() {
-		new MessageFullyCreator(null);
+	@Test
+	void translatorCanNotBeNullTest() {
+		assertThrows(IllegalArgumentException.class, () -> new MessageFullyCreator(null));
 	}
 	
 	@Test
-	public void createTest() {
+	void createTest() {
 		Translator translator = new MockedTranslator();
 		MessageFullyCreator creator = new MessageFullyCreator(translator);
 		
@@ -81,7 +77,7 @@ public class MessageFullyCreatorTest extends UnitTest<MessageFullyCreator> {
 	}
 	
 	@Test
-	public void createArgsTest() {
+	void createArgsTest() {
 		Translator translator = new MockedTranslator();
 		MessageFullyCreator creator = new MessageFullyCreator(translator);
 		
@@ -100,7 +96,7 @@ public class MessageFullyCreatorTest extends UnitTest<MessageFullyCreator> {
 	}
 	
 	@Test
-	public void createBasedOnEnumMapTest() {
+	void createBasedOnEnumMapTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		parametersValues.add(RANDOM_STRING_PARAMETER_VALUE_01);
 		parametersValues.add(RANDOM_STRING_PARAMETER_VALUE_02);
@@ -120,7 +116,7 @@ public class MessageFullyCreatorTest extends UnitTest<MessageFullyCreator> {
 	}
 	
 	@Test
-	public void createBasedOnEnumMapArgsTest() {
+	void createBasedOnEnumMapArgsTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		parametersValues.add(RANDOM_STRING_PARAMETER_VALUE_01);
 		parametersValues.add(RANDOM_STRING_PARAMETER_VALUE_02);
@@ -143,7 +139,7 @@ public class MessageFullyCreatorTest extends UnitTest<MessageFullyCreator> {
 	}
 	
 	@Test
-	public void createBasedOnEnumMapWithNoParameterTest() {
+	void createBasedOnEnumMapWithNoParameterTest() {
 		Translator translator = new MockedTranslator();
 		MessageFullyCreator creator = new MessageFullyCreator(translator);
 		MessageFully message = creator.create(MapperEnumTest.MAPPER_WITH_NO_PARAMETERS);
@@ -164,7 +160,7 @@ public class MessageFullyCreatorTest extends UnitTest<MessageFullyCreator> {
 
 		private final MessageSeverity severity;
 		
-		private MapperEnumTest(final MessageSeverity severity) {
+		MapperEnumTest(final MessageSeverity severity) {
 			this.severity = severity;
 		}
 		

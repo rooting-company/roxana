@@ -1,91 +1,84 @@
 package br.com.rooting.roxana.response.processor;
 
-import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.lang.reflect.Constructor;
-import java.util.List;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-
-import org.junit.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
 import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
-import br.com.rooting.roxana.message.Message;
-import br.com.rooting.roxana.message.MessageCreatorFactory;
-import br.com.rooting.roxana.message.MessageFully;
-import br.com.rooting.roxana.message.MessageSeverity;
-import br.com.rooting.roxana.message.MockedMessageCreatorFactory;
+import br.com.rooting.roxana.message.*;
 import br.com.rooting.roxana.parameter.Parameter;
 import br.com.rooting.roxana.response.Response;
 import br.com.rooting.roxana.translator.MockedTranslator;
 import br.com.rooting.roxana.translator.Translator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-public class ConstraintValidatorResponseProcessorTest extends UnitTest<ConstraintValidatorResponseProcessor> {
+import javax.validation.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import java.lang.reflect.Constructor;
+import java.util.List;
+import java.util.Set;
+
+import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+
+class ConstraintValidatorResponseProcessorTest extends UnitTest<ConstraintValidatorResponseProcessor> {
 
 	private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
 	private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
 	
 	@Test
-	public void testClassIsPackagePrivateTest() {
+	void testClassIsPackagePrivateTest() {
 		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassExtendsMessageCreatorTest() {
+	void testClassExtendsMessageCreatorTest() {
 		assertTrue(ResponseProcessor.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePrivateConstructorTest() {
+	void testClassWasOnlyOnePackagePrivateConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+        assertEquals(1, constructors.length);
 		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void roxanaPropertiesCanNotBeNullTest() {
-		new MultiBusinessExceptionResponseProcessor(null, mock(MessageCreatorFactory.class), mock(ResponseProcessorManager.class));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void messageCreatorFactoryCanNotBeNullTest() {
-		new MultiBusinessExceptionResponseProcessor(mock(RoxanaProperties.class), null, mock(ResponseProcessorManager.class));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void responseProcessorManagerCanNotBeNullTest() {
-		new MultiBusinessExceptionResponseProcessor(mock(RoxanaProperties.class), mock(MessageCreatorFactory.class), null);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void suppressOthersExceptionsCanNotBeNullTest() {
-		RoxanaProperties roxanaProperties = new RoxanaPropertiesMockBuilder()
-												.withSuppressOthersExceptions(null)
-												.build();
-		
-		new MultiBusinessExceptionResponseProcessor(roxanaProperties, 
-													mock(MessageCreatorFactory.class), 
-													mock(ResponseProcessorManager.class));
+	@Test
+	void roxanaPropertiesCanNotBeNullTest() {
+		Executable executable = () -> new MultiBusinessExceptionResponseProcessor(null, mock(MessageCreatorFactory.class), mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
 	}
 	
 	@Test
-	public void processConstraintValiolationExceptionTest() throws Exception {
+	void messageCreatorFactoryCanNotBeNullTest() {
+		Executable executable = () -> new MultiBusinessExceptionResponseProcessor(mock(RoxanaProperties.class), null, mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void responseProcessorManagerCanNotBeNullTest() {
+		Executable executable = () -> new MultiBusinessExceptionResponseProcessor(mock(RoxanaProperties.class), mock(MessageCreatorFactory.class), null);
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void suppressOthersExceptionsCanNotBeNullTest() {
+		RoxanaProperties roxanaProperties = new RoxanaPropertiesMockBuilder()
+												.withSuppressOthersExceptions(null)
+												.build();
+
+		Executable executable = () -> new MultiBusinessExceptionResponseProcessor(roxanaProperties,
+													mock(MessageCreatorFactory.class), 
+													mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void processConstraintValiolationExceptionTest() throws Exception {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		ConstraintValidatorResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		
@@ -175,10 +168,10 @@ public class ConstraintValidatorResponseProcessorTest extends UnitTest<Constrain
 		private static final String NOT_BLANK_KEY = "{javax.validation.constraints.NotBlank.message}";
 		
 		@NotBlank
-		private String notBlank = "";
+		private final String notBlank = "";
 		
 		@Min(1)
-		private Integer positiveNumber = -1;
+		private final Integer positiveNumber = -1;
 		
 	}
 	

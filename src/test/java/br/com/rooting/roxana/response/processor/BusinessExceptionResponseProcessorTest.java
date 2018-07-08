@@ -1,89 +1,87 @@
 package br.com.rooting.roxana.response.processor;
 
-import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.lang.reflect.Constructor;
-import java.util.List;
-
-import org.junit.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import br.com.rooting.roxana.UnitTest;
 import br.com.rooting.roxana.config.RoxanaProperties;
 import br.com.rooting.roxana.config.RoxanaProperties.Business.ResponseStrategy;
-import br.com.rooting.roxana.exception.mapper.BusinessException;
 import br.com.rooting.roxana.config.RoxanaPropertiesMockBuilder;
-import br.com.rooting.roxana.message.Message;
-import br.com.rooting.roxana.message.MessageCreatorFactory;
-import br.com.rooting.roxana.message.MessageFully;
-import br.com.rooting.roxana.message.MessageSeverity;
-import br.com.rooting.roxana.message.MockedMessageCreatorFactory;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
+import br.com.rooting.roxana.message.*;
 import br.com.rooting.roxana.parameter.mapper.Param;
 import br.com.rooting.roxana.response.Response;
 import br.com.rooting.roxana.translator.MockedTranslator;
 import br.com.rooting.roxana.translator.Translator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-public class BusinessExceptionResponseProcessorTest extends UnitTest<BusinessExceptionResponseProcessor> {
+import java.lang.reflect.Constructor;
+import java.util.List;
+
+import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+
+class BusinessExceptionResponseProcessorTest extends UnitTest<BusinessExceptionResponseProcessor> {
 
 	private static final String CUSTOM_KEY = "{custom.key}";
 	
 	@Test
-	public void testClassIsPackagePrivateTest() {
+	void testClassIsPackagePrivateTest() {
 		assertTrue(isPackagePrivate(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassExtendsMessageCreatorTest() {
+	void testClassExtendsMessageCreatorTest() {
 		assertTrue(ResponseProcessor.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePackagePrivateConstructorTest() {
+	void testClassWasOnlyOnePackagePrivateConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+        assertEquals(1, constructors.length);
 		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void roxanaPropertiesCanNotBeNullTest() {
-		new BusinessExceptionResponseProcessor(null, mock(MessageCreatorFactory.class), mock(ResponseProcessorManager.class));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void messageCreatorFactoryCanNotBeNullTest() {
-		new BusinessExceptionResponseProcessor(mock(RoxanaProperties.class), null, mock(ResponseProcessorManager.class));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void responseProcessorManagerCanNotBeNullTest() {
-		new BusinessExceptionResponseProcessor(mock(RoxanaProperties.class), mock(MessageCreatorFactory.class), null);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void suppressOthersExceptionsCanNotBeNullTest() {
-		RoxanaProperties roxanaProperties = new RoxanaPropertiesMockBuilder()
-												.withSuppressOthersExceptions(null)
-												.build();
-		
-		new BusinessExceptionResponseProcessor(roxanaProperties, 
-												mock(MessageCreatorFactory.class), 
-												mock(ResponseProcessorManager.class));
-	}
-	
-	@Test(expected = NullPointerException.class)
-	public void notSupressOthersExceptionTest() throws Exception {
-		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
-		BusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
-		processor.process(new NullPointerException());
+	@Test
+	void roxanaPropertiesCanNotBeNullTest() {
+		Executable executable = () -> new BusinessExceptionResponseProcessor(null, mock(MessageCreatorFactory.class), mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
 	}
 	
 	@Test
-	public void processNotCustomBusinessExceptionTest() throws Exception {
+	void messageCreatorFactoryCanNotBeNullTest() {
+		Executable executable = () -> new BusinessExceptionResponseProcessor(mock(RoxanaProperties.class), null, mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void responseProcessorManagerCanNotBeNullTest() {
+		Executable executable = () -> new BusinessExceptionResponseProcessor(mock(RoxanaProperties.class), mock(MessageCreatorFactory.class), null);
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void suppressOthersExceptionsCanNotBeNullTest() {
+		RoxanaProperties roxanaProperties = new RoxanaPropertiesMockBuilder()
+												.withSuppressOthersExceptions(null)
+												.build();
+
+		Executable executable = () -> new BusinessExceptionResponseProcessor(roxanaProperties,
+																			 mock(MessageCreatorFactory.class),
+																			 mock(ResponseProcessorManager.class));
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void notSupressOthersExceptionTest() {
+		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
+		BusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
+		assertThrows(NullPointerException.class, () -> processor.process(new NullPointerException()));
+	}
+	
+	@Test
+	void processNotCustomBusinessExceptionTest() throws Exception {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		BusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		ResponseEntity<Response> responseEntity = processor.process(new NotCustomBusinessException("test"));
@@ -107,7 +105,7 @@ public class BusinessExceptionResponseProcessorTest extends UnitTest<BusinessExc
 	}
 	
 	@Test
-	public void processCustomResponseCodeBusinessExceptionTest() throws Exception {
+	void processCustomResponseCodeBusinessExceptionTest() throws Exception {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		BusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		ResponseEntity<Response> responseEntity = processor.process(new CustomResponseCodeBusinessException("test"));
@@ -131,7 +129,7 @@ public class BusinessExceptionResponseProcessorTest extends UnitTest<BusinessExc
 	}
 	
 	@Test
-	public void processCustomSeverityBusinessExceptionTest() throws Exception {
+	void processCustomSeverityBusinessExceptionTest() throws Exception {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		BusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		ResponseEntity<Response> responseEntity = processor.process(new CustomSeverityBusinessException("test"));
@@ -155,7 +153,7 @@ public class BusinessExceptionResponseProcessorTest extends UnitTest<BusinessExc
 	}
 	
 	@Test
-	public void processCustomMessageBusinessExceptionTest() throws Exception {
+	void processCustomMessageBusinessExceptionTest() throws Exception {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		BusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		ResponseEntity<Response> responseEntity = processor.process(new CustomMessageKeyExceptionTest("test"));
@@ -179,15 +177,15 @@ public class BusinessExceptionResponseProcessorTest extends UnitTest<BusinessExc
 	}
 	
 	@Test
-	public void isAUnexpectedExceptionTest() {
+	void isAUnexpectedExceptionTest() {
 		RoxanaProperties roxanaProperties = this.getRoxanaProperties(false);
 		BusinessExceptionResponseProcessor processor = this.getReponseProcessorForTest(roxanaProperties, mock(ResponseProcessorManager.class));
 		boolean isUnexpected = processor.isUnexpectedException(new IllegalArgumentException());
-		assertEquals(true, isUnexpected);
+        assertTrue(isUnexpected);
 	}
 	
 	@Test
-	public void isNotUnexpectedExceptionTest() {
+	void isNotUnexpectedExceptionTest() {
 		
 		@BusinessException
 		class ExceptionTest extends RuntimeException {

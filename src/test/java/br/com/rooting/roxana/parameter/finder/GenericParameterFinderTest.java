@@ -1,13 +1,12 @@
 package br.com.rooting.roxana.parameter.finder;
 
-import static br.com.rooting.roxana.parameter.ParameterType.CURRENCY;
-import static br.com.rooting.roxana.parameter.ParameterType.DATE;
-import static br.com.rooting.roxana.parameter.ParameterType.STRING;
-import static br.com.rooting.roxana.parameter.mapper.DateStyle.MEDIUM;
-import static java.lang.reflect.Modifier.isPublic;
-import static java.util.Locale.US;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import br.com.rooting.roxana.UnitTest;
+import br.com.rooting.roxana.exception.mapper.BusinessException;
+import br.com.rooting.roxana.parameter.UnsupportedParameterConversionException;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam;
+import br.com.rooting.roxana.parameter.mapper.DateParam;
+import br.com.rooting.roxana.parameter.mapper.Param;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
@@ -20,43 +19,38 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import static br.com.rooting.roxana.parameter.ParameterType.*;
+import static br.com.rooting.roxana.parameter.mapper.DateStyle.MEDIUM;
+import static java.lang.reflect.Modifier.isPublic;
+import static java.util.Locale.US;
+import static org.junit.jupiter.api.Assertions.*;
 
-import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.exception.mapper.BusinessException;
-import br.com.rooting.roxana.parameter.UnsupportedParameterConversionException;
-import br.com.rooting.roxana.parameter.finder.GenericParameterFinder;
-import br.com.rooting.roxana.parameter.finder.ParameterFinderStrategy;
-import br.com.rooting.roxana.parameter.mapper.CurrencyParam;
-import br.com.rooting.roxana.parameter.mapper.DateParam;
-import br.com.rooting.roxana.parameter.mapper.Param;
-
-public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder> {
+class GenericParameterFinderTest extends UnitTest<GenericParameterFinder> {
 	
 	@Test
-	public void testClassIsPublicTest() {
+	void testClassIsPublicTest() {
 		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassExtendsMessageCreatorTest() {
+	void testClassExtendsMessageCreatorTest() {
 		assertTrue(ParameterFinderStrategy.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePublicConstructorTest() {
+	void testClassWasOnlyOnePublicConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+		assertEquals(1, constructors.length);
 		assertTrue(isPublic(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void objectCanNotBeNullTest() {
-		new GenericParameterFinder(null);
+	@Test
+	void objectCanNotBeNullTest() {
+		assertThrows(IllegalArgumentException.class, () -> new GenericParameterFinder(null));
 	}
 	
 	@Test
-	public void findBusinessExceptionParametersTest() {
+	void findBusinessExceptionParametersTest() {
 		@BusinessException
 		class MockedBusinessException extends Exception {
 			
@@ -80,9 +74,9 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@CurrencyParam(CURRENCY_PARAMETER_NAME)
 			private final BigDecimal currencyParameter;
 
-			public MockedBusinessException(final String stringParameter, 
-										   final LocalDate dateParameter, 
-										   final BigDecimal currencyParameter) {
+            private MockedBusinessException(final String stringParameter,
+									final LocalDate dateParameter,
+									final BigDecimal currencyParameter) {
 				super();
 				this.stringParameter = stringParameter;
 				this.dateParameter = dateParameter;
@@ -116,10 +110,10 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findStringParameterTest() {
+	void findStringParameterTest() {
 		class TestClass {
-			public static final String STRING_PARAMETER_NAME = "CustomNameStringParameter";
-			public static final String STRING_PARAMETER_DEFAULT_NAME = "defaultNameStringParameter";
+            private static final String STRING_PARAMETER_NAME = "CustomNameStringParameter";
+            private static final String STRING_PARAMETER_DEFAULT_NAME = "defaultNameStringParameter";
 			
 			@Param(STRING_PARAMETER_NAME)
 			private final Object stringParameter;
@@ -127,16 +121,16 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@Param
 			private final Object defaultNameStringParameter;
 			
-			public TestClass(final Object stringParameter, final Object defaultNameStringParameter) {
+			private TestClass(final Object stringParameter, final Object defaultNameStringParameter) {
 				this.stringParameter = stringParameter;
 				this.defaultNameStringParameter = defaultNameStringParameter;
 			}
 
-			public Object getStringParameter() {
+			private Object getStringParameter() {
 				return this.stringParameter;
 			}
-			
-			public Object getDefaultNameStringParameter() {
+
+            private Object getDefaultNameStringParameter() {
 				return this.defaultNameStringParameter;
 			}
 		}
@@ -159,7 +153,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findCurrencyAsDoubleParameterTest() {
+	void findCurrencyAsDoubleParameterTest() {
 		class TestClass {
 			private static final String WRAPPER_PARAMETER_NAME = "CustomNameDoubleWrapper";
 			private static final String WRAPPER_PARAMETER_VALUE = "$12.30";
@@ -185,7 +179,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@CurrencyParam
 			private final double defaultNameDoublePrimitive;
 
-			public TestClass(final Double doubleWrapper, 
+			private TestClass(final Double doubleWrapper,
 							 final double doublePrimitive,
 							 final Double defaultNameDoubleWrapper,
 							 final double defaultNameDoublePrimitive) {
@@ -197,7 +191,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			}
 		}
 		
-		TestClass testClass = new TestClass(new Double(12.3D), 0.01D, new Double(1.3D), 18.10D);
+		TestClass testClass = new TestClass(12.3D, 0.01D, 1.3D, 18.10D);
 		GenericParameterFinder finder = new GenericParameterFinder(testClass);
 		List<br.com.rooting.roxana.parameter.Parameter> parameters = finder.findParameters();
 		assertEquals(parameters.size(), 4);
@@ -224,7 +218,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findCurrencyParameterAsFloatTest() {
+	void findCurrencyParameterAsFloatTest() {
 		class TestClass {
 			private static final String WRAPPER_PARAMETER_NAME = "CustomNameFloatWrapper";
 			private static final String WRAPPER_PARAMETER_VALUE = "$26.18";
@@ -250,7 +244,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@CurrencyParam
 			private final float defaultNameFloatPrimitive;
 
-			public TestClass(final Float floatWrapper, 
+			private TestClass(final Float floatWrapper,
 							 final float floatPrimitive, 
 							 final Float defaultNameFloatWrapper, 
 							 final float defaultNameFloatPrimitive) {
@@ -262,7 +256,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			}
 		}
 		
-		TestClass testClass = new TestClass(new Float(26.18F), 2.98F, new Float(542.43F), 15.42F);
+		TestClass testClass = new TestClass(26.18F, 2.98F,542.43F, 15.42F);
 		GenericParameterFinder finder = new GenericParameterFinder(testClass);
 		List<br.com.rooting.roxana.parameter.Parameter> parameters = finder.findParameters();
 		assertEquals(parameters.size(), 4);
@@ -289,7 +283,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findCurrecyParameterAsBigDecimalTest() {
+	void findCurrecyParameterAsBigDecimalTest() {
 		class TestClass {
 			private static final String WRAPPER_PARAMETER_NAME = "CustomNameBigDecimal";
 			private static final String WRAPPER_PARAMETER_VALUE = "$1,789.76";
@@ -303,7 +297,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@CurrencyParam
 			private final BigDecimal defaultNameBigDecimal;
 
-			public TestClass(final BigDecimal bigDecimal, final BigDecimal defaultNameBigDecimal) {
+			private TestClass(final BigDecimal bigDecimal, final BigDecimal defaultNameBigDecimal) {
 				this.bigDecimal = bigDecimal;
 				this.defaultNameBigDecimal = defaultNameBigDecimal;
 			}
@@ -326,37 +320,37 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	// TODO Testa mensagem correta.
-	@Test(expected = UnsupportedParameterConversionException.class)
-	public void unsupportedCurrencyParameterConversionTest() {
+	@Test
+	void unsupportedCurrencyParameterConversionTest() {
 		class TestClass {
 			@CurrencyParam
 			private final Object invalidCurrencyParameter;
 
-			public TestClass(final Object invalidCurrencyParameter) {
+			private TestClass(final Object invalidCurrencyParameter) {
 				this.invalidCurrencyParameter = invalidCurrencyParameter;
 			}
 		}
 		
 		TestClass testClass = new TestClass(new Object());
-		new GenericParameterFinder(testClass).findParameters();
+		assertThrows(UnsupportedParameterConversionException.class, ()-> new GenericParameterFinder(testClass).findParameters());
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateWithShortStyleTest() {
+	void findDateParameterAsLocalDateWithShortStyleTest() {
 		class TestClass {
-			public static final String LOCALDATE_SHORT_NAME = "localDateShort";
-			public static final String LOCALDATE_SHORT_VALUE = "8/22/96";
-			
-			public static final String LOCALDATE_SHORT_CONSIDERING_TIME_NAME = "CustomNameLocalDateShortConsideringTime";
-			public static final String LOCALDATE_SHORT_CONSIDERING_TIME_VALUE = "2/12/51 12:00 AM";
+            private static final String LOCALDATE_SHORT_NAME = "localDateShort";
+            private static final String LOCALDATE_SHORT_VALUE = "8/22/96";
+
+            private static final String LOCALDATE_SHORT_CONSIDERING_TIME_NAME = "CustomNameLocalDateShortConsideringTime";
+            private static final String LOCALDATE_SHORT_CONSIDERING_TIME_VALUE = "2/12/51 12:00 AM";
 			
 			@DateParam
 			private final LocalDate localDateShort;
 			
 			@DateParam(value = LOCALDATE_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
 			private final LocalDate localDateShortConsideringTime;
-			
-			public TestClass(final LocalDate localDateShort, final LocalDate localDateShortConsideringTime) {
+
+			private TestClass(final LocalDate localDateShort, final LocalDate localDateShortConsideringTime) {
 				this.localDateShort = localDateShort;
 				this.localDateShortConsideringTime = localDateShortConsideringTime;
 			}
@@ -379,21 +373,21 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateWithMediumStyleTest() {
+	void findDateParameterAsLocalDateWithMediumStyleTest() {
 		class TestClass {
-			public static final String LOCALDATE_MEDIUM_CONSIDERING_TIME_NAME = "CustomNameLocalDateMediumConsideringTime";
-			public static final String LOCALDATE_MEDIUM_CONSIDERING_TIME_NAME_VALUE = "Sep 22, 1996 12:00:00 AM";
-			
-			public static final String LOCALDATE_MEDIUM_NAME = "localDateMedium";
-			public static final String LOCALDATE_MEDIUM_VALUE = "Feb 12, 1951";
+            private static final String LOCALDATE_MEDIUM_CONSIDERING_TIME_NAME = "CustomNameLocalDateMediumConsideringTime";
+            private static final String LOCALDATE_MEDIUM_CONSIDERING_TIME_NAME_VALUE = "Sep 22, 1996 12:00:00 AM";
+
+            private static final String LOCALDATE_MEDIUM_NAME = "localDateMedium";
+            private static final String LOCALDATE_MEDIUM_VALUE = "Feb 12, 1951";
 			
 			@DateParam(value = LOCALDATE_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
 			private final LocalDate localDateMediumConsideringTime;
 			
 			@DateParam(style = MEDIUM)
 			private final LocalDate localDateMedium;
-			
-			public TestClass(final LocalDate localDateMediumConsideringTime, final LocalDate localDateMedium) {
+
+			private TestClass(final LocalDate localDateMediumConsideringTime, final LocalDate localDateMedium) {
 				this.localDateMediumConsideringTime = localDateMediumConsideringTime;
 				this.localDateMedium = localDateMedium;
 			}
@@ -416,15 +410,15 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateWithPatternTest() {
+	void findDateParameterAsLocalDateWithPatternTest() {
 		class TestClass {
-			public static final String LOCALDATE_PATTERN_DEFAULT_NAME = "localDatePatternDefaultName";
-			public static final String LOCALDATE_PATTERN_DEFAULT_NAME_PATTERN = "yyyy-MM-dd";
-			public static final String LOCALDATE_PATTERN_DEFAULT_NAME_VALUE = "1983-02-24";
-			
-			public static final String LOCALDATE_PATTERN_NAME = "CustomLocalDatePatternName";
-			public static final String LOCALDATE_PATTERN_PATTERN = "dd/MM/yyyy";
-			public static final String LOCALDATE_PATTERN_VALUE = "05/02/1999";
+            private static final String LOCALDATE_PATTERN_DEFAULT_NAME = "localDatePatternDefaultName";
+            private static final String LOCALDATE_PATTERN_DEFAULT_NAME_PATTERN = "yyyy-MM-dd";
+            private static final String LOCALDATE_PATTERN_DEFAULT_NAME_VALUE = "1983-02-24";
+
+            private static final String LOCALDATE_PATTERN_NAME = "CustomLocalDatePatternName";
+            private static final String LOCALDATE_PATTERN_PATTERN = "dd/MM/yyyy";
+            private static final String LOCALDATE_PATTERN_VALUE = "05/02/1999";
 			
 			@DateParam(pattern = LOCALDATE_PATTERN_DEFAULT_NAME_PATTERN)
 			private final LocalDate localDatePatternDefaultName;
@@ -432,7 +426,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@DateParam(value = LOCALDATE_PATTERN_NAME, pattern = LOCALDATE_PATTERN_PATTERN)
 			private final LocalDate localDatePattern;
 
-			public TestClass(final LocalDate localDatePatternDefaultName, final LocalDate localDatePattern) {
+			private TestClass(final LocalDate localDatePatternDefaultName, final LocalDate localDatePattern) {
 				this.localDatePatternDefaultName = localDatePatternDefaultName;
 				this.localDatePattern = localDatePattern;
 			}
@@ -455,21 +449,21 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateTimeWithShortStyleTest() {
+	void findDateParameterAsLocalDateTimeWithShortStyleTest() {
 		class TestClass {
-			public static final String LOCALDATETIME_SHORT_NAME = "localDateTimeShort";
-			public static final String LOCALDATETIME_SHORT_VALUE = "11/11/70";
-			
-			public static final String LOCALDATETIME_SHORT_CONSIDERING_TIME_NAME = "CustomNameLocalDateTimeShortConsideringTime";
-			public static final String LOCALDATETIME_SHORT_CONSIDERING_TIME_VALUE = "2/23/96 5:10 PM";
+            private static final String LOCALDATETIME_SHORT_NAME = "localDateTimeShort";
+            private static final String LOCALDATETIME_SHORT_VALUE = "11/11/70";
+
+            private static final String LOCALDATETIME_SHORT_CONSIDERING_TIME_NAME = "CustomNameLocalDateTimeShortConsideringTime";
+            private static final String LOCALDATETIME_SHORT_CONSIDERING_TIME_VALUE = "2/23/96 5:10 PM";
 			
 			@DateParam
 			private final LocalDateTime localDateTimeShort;
 			
 			@DateParam(value = LOCALDATETIME_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
 			private final LocalDateTime localDateTimeShortConsideringTime;
-			
-			public TestClass(final LocalDateTime localDateTimeShort, final LocalDateTime localDateTimeShortConsideringTime) {
+
+			private TestClass(final LocalDateTime localDateTimeShort, final LocalDateTime localDateTimeShortConsideringTime) {
 				this.localDateTimeShort = localDateTimeShort;
 				this.localDateTimeShortConsideringTime = localDateTimeShortConsideringTime;
 			}
@@ -494,21 +488,21 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateTimeWithMediumStyleTest() {
+	void findDateParameterAsLocalDateTimeWithMediumStyleTest() {
 		class TestClass {
-			public static final String LOCALDATETIME_MEDIUM_CONSIDERING_TIME_NAME = "CustomNameLocalDateTimeMediumConsideringTime";
-			public static final String LOCALDATETIME_MEDIUM_CONSIDERING_TIME_NAME_VALUE = "Jan 18, 1993 10:49:00 PM";
-			
-			public static final String LOCALDATETIME_MEDIUM_NAME = "localDateTimeMedium";
-			public static final String LOCALDATETIME_MEDIUM_VALUE = "Dec 7, 1988";
+            private static final String LOCALDATETIME_MEDIUM_CONSIDERING_TIME_NAME = "CustomNameLocalDateTimeMediumConsideringTime";
+            private static final String LOCALDATETIME_MEDIUM_CONSIDERING_TIME_NAME_VALUE = "Jan 18, 1993 10:49:00 PM";
+
+            private static final String LOCALDATETIME_MEDIUM_NAME = "localDateTimeMedium";
+            private static final String LOCALDATETIME_MEDIUM_VALUE = "Dec 7, 1988";
 			
 			@DateParam(value = LOCALDATETIME_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
 			private final LocalDateTime localDateTimeMediumConsideringTime;
 			
 			@DateParam(style = MEDIUM)
 			private final LocalDateTime localDateTimeMedium;
-			
-			public TestClass(final LocalDateTime localDateTimeMediumConsideringTime, final LocalDateTime localDateTimeMedium) {
+
+			private TestClass(final LocalDateTime localDateTimeMediumConsideringTime, final LocalDateTime localDateTimeMedium) {
 				this.localDateTimeMediumConsideringTime = localDateTimeMediumConsideringTime;
 				this.localDateTimeMedium = localDateTimeMedium;
 			}
@@ -529,16 +523,17 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 		assertEquals(TestClass.LOCALDATETIME_MEDIUM_VALUE, defaultLocalDate.getFormattedValue(US));
 		assertEquals(DATE, defaultLocalDate.getType());
 	}
-	
-	public void findDateParameterAsLocalDateTimeWithPatternTest() {
+
+	@Test
+	void findDateParameterAsLocalDateTimeWithPatternTest() {
 		class TestClass {
-			public static final String LOCALDATETIME_PATTERN_DEFAULT_NAME = "localDateTimePatternDefaultName";
-			public static final String LOCALDATETIME_PATTERN_DEFAULT_NAME_PATTERN = "yyyy-MM-dd";
-			public static final String LOCALDATETIME_PATTERN_DEFAULT_NAME_VALUE = "1988-11-02";
-			
-			public static final String LOCALDATETIME_PATTERN_NAME = "CustomLocalDateTimePatternName";
-			public static final String LOCALDATETIME_PATTERN_PATTERN = "dd/MM/yyyy";
-			public static final String LOCALDATETIME_PATTERN_VALUE = "12/04/1973";
+            private static final String LOCALDATETIME_PATTERN_DEFAULT_NAME = "localDateTimePatternDefaultName";
+            private static final String LOCALDATETIME_PATTERN_DEFAULT_NAME_PATTERN = "yyyy-MM-dd";
+            private static final String LOCALDATETIME_PATTERN_DEFAULT_NAME_VALUE = "1988-11-02";
+
+            private static final String LOCALDATETIME_PATTERN_NAME = "CustomLocalDateTimePatternName";
+            private static final String LOCALDATETIME_PATTERN_PATTERN = "dd/MM/yyyy";
+            private static final String LOCALDATETIME_PATTERN_VALUE = "12/04/1973";
 			
 			@DateParam(pattern = LOCALDATETIME_PATTERN_DEFAULT_NAME_PATTERN)
 			private final LocalDateTime localDateTimePatternDefaultName;
@@ -546,7 +541,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@DateParam(value = LOCALDATETIME_PATTERN_NAME, pattern = LOCALDATETIME_PATTERN_PATTERN)
 			private final LocalDateTime localDateTimePattern;
 
-			public TestClass(final LocalDateTime localDateTimePatternDefaultName, final LocalDateTime localDateTimePattern) {
+			private TestClass(final LocalDateTime localDateTimePatternDefaultName, final LocalDateTime localDateTimePattern) {
 				this.localDateTimePatternDefaultName = localDateTimePatternDefaultName;
 				this.localDateTimePattern = localDateTimePattern;
 			}
@@ -569,21 +564,21 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsDateWithShortStyleTest() throws ParseException {
+	void findDateParameterAsDateWithShortStyleTest() throws ParseException {
 		class TestClass {
-			public static final String DATE_SHORT_NAME = "dateShort";
-			public static final String DATE_SHORT_VALUE = "2/18/18";
-			
-			public static final String DATE_SHORT_CONSIDERING_TIME_NAME = "CustomNameDateShortConsideringTime";
-			public static final String DATE_SHORT_CONSIDERING_TIME_VALUE = "5/9/13 12:01 AM";
+            private static final String DATE_SHORT_NAME = "dateShort";
+            private static final String DATE_SHORT_VALUE = "2/18/18";
+
+            private static final String DATE_SHORT_CONSIDERING_TIME_NAME = "CustomNameDateShortConsideringTime";
+            private static final String DATE_SHORT_CONSIDERING_TIME_VALUE = "5/9/13 12:01 AM";
 			
 			@DateParam
 			private final Date dateShort;
 			
 			@DateParam(value = DATE_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
 			private final Date dateShortConsideringTime;
-			
-			public TestClass(final Date dateShort, final Date dateShortConsideringTime) {
+
+			private TestClass(final Date dateShort, final Date dateShortConsideringTime) {
 				this.dateShort = dateShort;
 				this.dateShortConsideringTime = dateShortConsideringTime;
 			}
@@ -609,21 +604,21 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsDateWithMediumStyleTest() throws ParseException {
+	void findDateParameterAsDateWithMediumStyleTest() throws ParseException {
 		class TestClass {
-			public static final String DATE_MEDIUM_CONSIDERING_TIME_NAME = "CustomNameDateMediumConsideringTime";
-			public static final String DATE_MEDIUM_CONSIDERING_TIME_NAME_VALUE = "Apr 1, 1994 7:22:00 PM";
-			
-			public static final String DATE_MEDIUM_NAME = "dateMedium";
-			public static final String DATE_MEDIUM_VALUE = "Aug 24, 1990";
+            private static final String DATE_MEDIUM_CONSIDERING_TIME_NAME = "CustomNameDateMediumConsideringTime";
+            private static final String DATE_MEDIUM_CONSIDERING_TIME_NAME_VALUE = "Apr 1, 1994 7:22:00 PM";
+
+            private static final String DATE_MEDIUM_NAME = "dateMedium";
+            private static final String DATE_MEDIUM_VALUE = "Aug 24, 1990";
 			
 			@DateParam(value = DATE_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
 			private final Date dateMediumConsideringTime;
 			
 			@DateParam(style = MEDIUM)
 			private final Date dateMedium;
-			
-			public TestClass(final Date dateMediumConsideringTime, final Date dateMedium) {
+
+			private TestClass(final Date dateMediumConsideringTime, final Date dateMedium) {
 				this.dateMediumConsideringTime = dateMediumConsideringTime;
 				this.dateMedium = dateMedium;
 			}
@@ -649,15 +644,15 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsDateWithPatternTest() throws ParseException {
+	void findDateParameterAsDateWithPatternTest() throws ParseException {
 		class TestClass {
-			public static final String DATE_PATTERN_DEFAULT_NAME = "datePatternDefaultName";
-			public static final String DATE_PATTERN_DEFAULT_NAME_PATTERN = "yyyy-MM-dd";
-			public static final String DATE_PATTERN_DEFAULT_NAME_VALUE = "2005-09-27";
-			
-			public static final String DATE_PATTERN_NAME = "CustomDatePatternName";
-			public static final String DATE_PATTERN_PATTERN = "dd/MM/yyyy";
-			public static final String DATE_PATTERN_VALUE = "25/12/2014";
+            private static final String DATE_PATTERN_DEFAULT_NAME = "datePatternDefaultName";
+            private static final String DATE_PATTERN_DEFAULT_NAME_PATTERN = "yyyy-MM-dd";
+            private static final String DATE_PATTERN_DEFAULT_NAME_VALUE = "2005-09-27";
+
+            private static final String DATE_PATTERN_NAME = "CustomDatePatternName";
+            private static final String DATE_PATTERN_PATTERN = "dd/MM/yyyy";
+            private static final String DATE_PATTERN_VALUE = "25/12/2014";
 			
 			@DateParam(pattern = DATE_PATTERN_DEFAULT_NAME_PATTERN)
 			private final Date datePatternDefaultName;
@@ -665,7 +660,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@DateParam(value = DATE_PATTERN_NAME, pattern = DATE_PATTERN_PATTERN)
 			private final Date datePattern;
 
-			public TestClass(final Date datePatternDefaultName, final Date datePattern) {
+			private TestClass(final Date datePatternDefaultName, final Date datePattern) {
 				this.datePatternDefaultName = datePatternDefaultName;
 				this.datePattern = datePattern;
 			}
@@ -691,21 +686,21 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsCalendarWithShortStyleTest() {
+	void findDateParameterAsCalendarWithShortStyleTest() {
 		class TestClass {
-			public static final String CALENDAR_SHORT_NAME = "calendarShort";
-			public static final String CALENDAR_SHORT_VALUE = "10/17/06";
-			
-			public static final String CALENDAR_SHORT_CONSIDERING_TIME_NAME = "CustomNameCalendarShortConsideringTime";
-			public static final String CALENDAR_SHORT_CONSIDERING_TIME_VALUE = "12/17/09 7:27 AM";
+			private static final String CALENDAR_SHORT_NAME = "calendarShort";
+            private static final String CALENDAR_SHORT_VALUE = "10/17/06";
+
+            private static final String CALENDAR_SHORT_CONSIDERING_TIME_NAME = "CustomNameCalendarShortConsideringTime";
+            private static final String CALENDAR_SHORT_CONSIDERING_TIME_VALUE = "12/17/09 7:27 AM";
 			
 			@DateParam
 			private final Calendar calendarShort;
 			
 			@DateParam(value = CALENDAR_SHORT_CONSIDERING_TIME_NAME, considerTime = true)
 			private final Calendar calendarShortConsideringTime;
-			
-			public TestClass(final Calendar calendarShort, final Calendar calendarShortConsideringTime) {
+
+			private TestClass(final Calendar calendarShort, final Calendar calendarShortConsideringTime) {
 				this.calendarShort = calendarShort;
 				this.calendarShortConsideringTime = calendarShortConsideringTime;
 			}
@@ -734,21 +729,21 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterACalendarWithMediumStyleTest() {
+	void findDateParameterACalendarWithMediumStyleTest() {
 		class TestClass {
-			public static final String CALENDAR_MEDIUM_CONSIDERING_TIME_NAME = "CustomNameLocalDateTimeParameter";
-			public static final String CALENDAR_MEDIUM_CONSIDERING_TIME_NAME_VALUE = "Apr 28, 2001 5:23:00 PM";
-			
-			public static final String CALENDAR_MEDIUM_NAME = "calendarMedium";
-			public static final String CALENDAR_MEDIUM_VALUE = "Oct 12, 1999";
+			private static final String CALENDAR_MEDIUM_CONSIDERING_TIME_NAME = "CustomNameLocalDateTimeParameter";
+			private static final String CALENDAR_MEDIUM_CONSIDERING_TIME_NAME_VALUE = "Apr 28, 2001 5:23:00 PM";
+
+			private static final String CALENDAR_MEDIUM_NAME = "calendarMedium";
+			private static final String CALENDAR_MEDIUM_VALUE = "Oct 12, 1999";
 			
 			@DateParam(value = CALENDAR_MEDIUM_CONSIDERING_TIME_NAME, style = MEDIUM, considerTime = true)
 			private final Calendar calendarMediumConsideringTime;
 			
 			@DateParam(style = MEDIUM)
 			private final Calendar calendarMedium;
-			
-			public TestClass(final Calendar calendarMediumConsideringTime, final Calendar calendarMedium) {
+
+			private TestClass(final Calendar calendarMediumConsideringTime, final Calendar calendarMedium) {
 				this.calendarMediumConsideringTime = calendarMediumConsideringTime;
 				this.calendarMedium = calendarMedium;
 			}
@@ -777,15 +772,15 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 	}
 	
 	@Test
-	public void findDateParameterAsCalendarWithPatternTest() {
+	void findDateParameterAsCalendarWithPatternTest() {
 		class TestClass {
-			public static final String CALENDAR_PATTERN_DEFAULT_NAME = "calendarPatternDefaultName";
-			public static final String CALENDAR_PATTERN_DEFAULT_NAME_PATTERN = "yyyy-MM-dd";
-			public static final String CALENDAR_PATTERN_DEFAULT_NAME_VALUE = "1987-06-01";
-			
-			public static final String CALENDAR_PATTERN_NAME = "CustomDatePatternName";
-			public static final String CALENDAR_PATTERN_PATTERN = "dd/MM/yyyy";
-			public static final String CALENDAR_PATTERN_VALUE = "24/07/2005";
+			private static final String CALENDAR_PATTERN_DEFAULT_NAME = "calendarPatternDefaultName";
+			private static final String CALENDAR_PATTERN_DEFAULT_NAME_PATTERN = "yyyy-MM-dd";
+			private static final String CALENDAR_PATTERN_DEFAULT_NAME_VALUE = "1987-06-01";
+
+			private static final String CALENDAR_PATTERN_NAME = "CustomDatePatternName";
+			private static final String CALENDAR_PATTERN_PATTERN = "dd/MM/yyyy";
+			private static final String CALENDAR_PATTERN_VALUE = "24/07/2005";
 			
 			@DateParam(pattern = CALENDAR_PATTERN_DEFAULT_NAME_PATTERN)
 			private final Calendar calendarPatternDefaultName;
@@ -793,7 +788,7 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 			@DateParam(value = CALENDAR_PATTERN_NAME, pattern = CALENDAR_PATTERN_PATTERN)
 			private final Calendar calendarPattern;
 
-			public TestClass(final Calendar calendarPatternDefaultName, final Calendar calendarPattern) {
+			private TestClass(final Calendar calendarPatternDefaultName, final Calendar calendarPattern) {
 				this.calendarPatternDefaultName = calendarPatternDefaultName;
 				this.calendarPattern = calendarPattern;
 			}
@@ -821,19 +816,19 @@ public class GenericParameterFinderTest extends UnitTest<GenericParameterFinder>
 		assertEquals(DATE, defaultLocalDate.getType());
 	}
 	
-	@Test(expected = UnsupportedParameterConversionException.class)
-	public void unsupportedDateParameterConversionTest() {
+	@Test
+	void unsupportedDateParameterConversionTest() {
 		class TestClass {
 			@DateParam
 			private final Object invalidDateParameter;
 
-			public TestClass(final Object invalidDateParameter) {
+			private TestClass(final Object invalidDateParameter) {
 				this.invalidDateParameter = invalidDateParameter;
 			}
 		}
 		
 		TestClass testClass = new TestClass(new Object());
-		new GenericParameterFinder(testClass).findParameters();
+		assertThrows(UnsupportedParameterConversionException.class, () -> new GenericParameterFinder(testClass).findParameters());
 	}
 	
 }

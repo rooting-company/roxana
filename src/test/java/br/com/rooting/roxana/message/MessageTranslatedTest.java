@@ -1,60 +1,58 @@
 package br.com.rooting.roxana.message;
 
+import br.com.rooting.roxana.UnitTest;
+import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Constructor;
+
 import static br.com.rooting.roxana.message.MessageSeverity.ERROR;
 import static br.com.rooting.roxana.utils.ReflectionUtils.isPackagePrivate;
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isPublic;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.lang.reflect.Constructor;
-
-import org.junit.Test;
-
-import br.com.rooting.roxana.UnitTest;
-
-public class MessageTranslatedTest extends UnitTest<MessageTranslated> {
+class MessageTranslatedTest extends UnitTest<MessageTranslated> {
 	
 	private static final String TRANSLATION = "translation";
 	
 	// Todos os tipos de mensagem devem ser publica,
 	// para que o programador possa usa-lo diretamente caso queira.
 	@Test
-	public void testClassIsPublicTest() {
+	void testClassIsPublicTest() {
 		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
 	}
 	
 	// Testa se a classe é filha de Message.
-	public void testClassExtendsMessageTest() {
+	void testClassExtendsMessageTest() {
 		assertTrue(Message.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassIsFinalTest() {
+	void testClassIsFinalTest() {
 		assertTrue(isFinal(this.getUnitTestClass().getModifiers()));
 	}
 	
 	// Testa se a classe só tem um unico construtor
 	// e se esse é package private para que somente a classe Creator devida possa cria-lo.
 	@Test
-	public void testClassWasOnlyOnePackagePrivateConstructorTest() {
+	void testClassWasOnlyOnePackagePrivateConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+        assertEquals(1, constructors.length);
 		assertTrue(isPackagePrivate(constructors[0].getModifiers()));
 	}	
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void serverityCanNotBeNullTest() {
-		new MessageTranslated(null, TRANSLATION);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void translationCanNotBeNullTest() {
-		new MessageTranslated(ERROR, null);
+	@Test
+	void serverityCanNotBeNullTest() {
+		assertThrows(IllegalArgumentException.class, () -> new MessageTranslated(null, TRANSLATION));
 	}
 	
 	@Test
-	public void instancionTest() {
+	void translationCanNotBeNullTest() {
+		assertThrows(IllegalArgumentException.class, () -> new MessageTranslated(ERROR, null));
+	}
+	
+	@Test
+	void instancionTest() {
 		MessageTranslated message = new MessageTranslated(ERROR, TRANSLATION);
 		assertEquals(ERROR, message.getSeverity());
 		assertEquals(TRANSLATION, message.getTranslation());

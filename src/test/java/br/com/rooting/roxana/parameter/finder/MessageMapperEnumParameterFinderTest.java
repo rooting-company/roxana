@@ -1,16 +1,20 @@
 package br.com.rooting.roxana.parameter.finder;
 
-import static br.com.rooting.roxana.message.MessageSeverity.SUCCESS;
-import static br.com.rooting.roxana.parameter.ParameterType.CURRENCY;
-import static br.com.rooting.roxana.parameter.ParameterType.DATE;
-import static br.com.rooting.roxana.parameter.ParameterType.STRING;
-import static br.com.rooting.roxana.parameter.mapper.DateStyle.MEDIUM;
-import static java.lang.reflect.Modifier.isPublic;
-import static java.util.Locale.US;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import br.com.rooting.roxana.UnitTest;
+import br.com.rooting.roxana.message.MessageSeverity;
+import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
+import br.com.rooting.roxana.parameter.Parameter;
+import br.com.rooting.roxana.parameter.UnsupportedParameterConversionException;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam;
+import br.com.rooting.roxana.parameter.mapper.CurrencyParam.CurrencyParams;
+import br.com.rooting.roxana.parameter.mapper.DateParam;
+import br.com.rooting.roxana.parameter.mapper.DateParam.DateParams;
+import br.com.rooting.roxana.parameter.mapper.Param;
+import br.com.rooting.roxana.parameter.mapper.Param.Params;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -23,23 +27,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
+import static br.com.rooting.roxana.message.MessageSeverity.SUCCESS;
+import static br.com.rooting.roxana.parameter.ParameterType.*;
+import static br.com.rooting.roxana.parameter.mapper.DateStyle.MEDIUM;
+import static java.lang.reflect.Modifier.isPublic;
+import static java.util.Locale.US;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
-
-import br.com.rooting.roxana.UnitTest;
-import br.com.rooting.roxana.message.MessageSeverity;
-import br.com.rooting.roxana.message.mapper.MessageMapperEnum;
-import br.com.rooting.roxana.parameter.Parameter;
-import br.com.rooting.roxana.parameter.UnsupportedParameterConversionException;
-import br.com.rooting.roxana.parameter.mapper.CurrencyParam;
-import br.com.rooting.roxana.parameter.mapper.CurrencyParam.CurrencyParams;
-import br.com.rooting.roxana.parameter.mapper.DateParam;
-import br.com.rooting.roxana.parameter.mapper.DateParam.DateParams;
-import br.com.rooting.roxana.parameter.mapper.Param;
-import br.com.rooting.roxana.parameter.mapper.Param.Params;
-
-public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapperEnumParameterFinder> {
+class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapperEnumParameterFinder> {
 	
 	private static final String STRING_PARAMETER_NAME_01 = "StringParameterName01";
 	private static final String STRING_PARAMETER_NAME_02 = "StringParameterName02";
@@ -51,44 +47,42 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	private static final String DATE_PARAMETER_NAME_02 = "DateParameterName02";
 	
 	@Test
-	public void testClassIsPublicTest() {
+	void testClassIsPublicTest() {
 		assertTrue(isPublic(this.getUnitTestClass().getModifiers()));
 	}
 	
 	@Test
-	public void testClassExtendsMessageCreatorTest() {
+	void testClassExtendsMessageCreatorTest() {
 		assertTrue(ParameterFinderStrategy.class.isAssignableFrom(this.getUnitTestClass()));
 	}
 	
 	@Test
-	public void testClassWasOnlyOnePublicConstructorTest() {
+	void testClassWasOnlyOnePublicConstructorTest() {
 		Constructor<?>[] constructors = this.getUnitTestClass().getDeclaredConstructors();
-		assertTrue(constructors.length == 1);
+		assertEquals(1, constructors.length);
 		assertTrue(isPublic(constructors[0].getModifiers()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void enumMapperCanNotBeNullTest() {
-		new MessageMapperEnumParameterFinder(null, new ArrayList<Object>());
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void valuesListCanNotBeNullTest() {
-		new MessageMapperEnumParameterFinder(mock(MessageMapperEnum.class), null);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void enumMapperMustBeEnumTest() {
-		new MessageMapperEnumParameterFinder(mock(MessageMapperEnum.class), new ArrayList<Object>());
+	@Test
+	void enumMapperCanNotBeNullTest() {
+		Executable executable = () -> new MessageMapperEnumParameterFinder(null, new ArrayList<>());
+		assertThrows(IllegalArgumentException.class, executable);
 	}
 	
 	@Test
-	public void invalidEnumMapperTest() {
-		
+	void valuesListCanNotBeNullTest() {
+		Executable executable = () -> new MessageMapperEnumParameterFinder(mock(MessageMapperEnum.class), null);
+		assertThrows(IllegalArgumentException.class, executable);
 	}
 	
 	@Test
-	public void findStringParamaterTest() {
+	void enumMapperMustBeEnumTest() {
+		Executable executable = () -> new MessageMapperEnumParameterFinder(mock(MessageMapperEnum.class), new ArrayList<>());
+		assertThrows(IllegalArgumentException.class, executable);
+	}
+	
+	@Test
+	void findStringParamaterTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		Object parameter_01 = new Object();
 		parametersValues.add(parameter_01);
@@ -104,7 +98,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findMultiStringParameterTest() {
+	void findMultiStringParameterTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		Object parameter_01 = new Object();
 		Object parameter_02 = new Object();
@@ -127,7 +121,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findStringParametersTest() {
+	void findStringParametersTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		Object parameter_01 = new Object();
 		Object parameter_02 = new Object();
@@ -150,7 +144,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findCurrencyParameterAsBigDecimalTest() {
+	void findCurrencyParameterAsBigDecimalTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		BigDecimal parameter_01 = new BigDecimal("32084.65");
 		parametersValues.add(parameter_01);
@@ -166,9 +160,9 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findMultiCurrencyParameterAsDoubleTest() {
+	void findMultiCurrencyParameterAsDoubleTest() {
 		List<Object> parametersValues = new ArrayList<>();
-		Double parameter_01 = new Double(0.32D);
+		Double parameter_01 = 0.32D;
 		double parameter_02 = 49834.98D;
 		parametersValues.add(parameter_01);
 		parametersValues.add(parameter_02);
@@ -189,9 +183,9 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findCurrencyParametersAsFloatTest() {
+	void findCurrencyParametersAsFloatTest() {
 		List<Object> parametersValues = new ArrayList<>();
-		Float parameter_01 = new Float(-847.4F);
+		Float parameter_01 = -847.4F;
 		float parameter_02 = 0.842F;
 		parametersValues.add(parameter_01);
 		parametersValues.add(parameter_02);
@@ -211,18 +205,18 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 		assertEquals(CURRENCY, stringParameter_02.getType());
 	}
 	
-	@Test(expected = UnsupportedParameterConversionException.class)
-	public void unsupportedCurrencyParameterConversionTest () {
+	@Test
+	void unsupportedCurrencyParameterConversionTest () {
 		List<Object> parametersValues = new ArrayList<>();
 		Object invalidCurrencyParameter = new Object();
 		parametersValues.add(invalidCurrencyParameter);
 		
 		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.CURRENCY_PARAMETER, parametersValues);
-		finder.findParameters();
+		assertThrows(UnsupportedParameterConversionException.class, () -> finder.findParameters());
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateWithShortStyleTest() {
+	void findDateParameterAsLocalDateWithShortStyleTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		LocalDate parameter_01 = LocalDate.of(2018, Month.FEBRUARY, 12);
 		LocalDate parameter_02 = LocalDate.of(2009, Month.MAY, 1);
@@ -245,7 +239,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateWithMediumStyleTest() {
+	void findDateParameterAsLocalDateWithMediumStyleTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		LocalDate parameter_01 = LocalDate.of(1967, Month.DECEMBER, 3);
 		LocalDate parameter_02 = LocalDate.of(2016, Month.AUGUST, 7);
@@ -268,7 +262,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateWithPatternTest() {
+	void findDateParameterAsLocalDateWithPatternTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		LocalDate parameter_01 = LocalDate.of(1945, Month.JANUARY, 1);
 		parametersValues.add(parameter_01);
@@ -283,7 +277,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateTimeWithShortStyleTest() {
+	void findDateParameterAsLocalDateTimeWithShortStyleTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		LocalDateTime parameter_01 = LocalDateTime.of(2015, Month.OCTOBER, 28, 10, 30);
 		LocalDateTime parameter_02 = LocalDateTime.of(2009, Month.NOVEMBER, 11, 16, 30);
@@ -306,7 +300,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateTimeWithMediumStyleTest() {
+	void findDateParameterAsLocalDateTimeWithMediumStyleTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		LocalDateTime parameter_01 = LocalDateTime.of(2007, Month.MAY, 18, 18, 0);
 		LocalDateTime parameter_02 = LocalDateTime.of(1997, Month.JANUARY, 23, 14, 59);
@@ -329,7 +323,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsLocalDateTimeWithPatternTest() {
+	void findDateParameterAsLocalDateTimeWithPatternTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		LocalDateTime parameter_01 = LocalDateTime.of(1937, Month.MARCH, 19, 10, 8);
 		parametersValues.add(parameter_01);
@@ -344,7 +338,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsDateWithShortStyleTest() throws ParseException {
+	void findDateParameterAsDateWithShortStyleTest() throws ParseException {
 		List<Object> parametersValues = new ArrayList<>();
 		Date parameter_01 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("25/07/1978 04:20");
 		Date parameter_02 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("09/01/2010 23:01");
@@ -367,7 +361,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsDateWithMediumStyleTest() throws ParseException {
+	void findDateParameterAsDateWithMediumStyleTest() throws ParseException {
 		List<Object> parametersValues = new ArrayList<>();
 		Date parameter_01 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("16/05/2006 08:29");
 		Date parameter_02 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("04/06/1999 10:12");
@@ -390,7 +384,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsDateWithPatternTest() throws ParseException {
+	void findDateParameterAsDateWithPatternTest() throws ParseException {
 		List<Object> parametersValues = new ArrayList<>();
 		Date parameter_01 = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("31/10/2017 18:30");
 		parametersValues.add(parameter_01);
@@ -405,7 +399,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsCalendarWithShortStyleTest() {
+	void findDateParameterAsCalendarWithShortStyleTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		Calendar parameter_01 = Calendar.getInstance();
 		parameter_01.set(2003, Calendar.APRIL, 13, 23, 20, 0);
@@ -431,7 +425,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsCalendarWithMediumStyleTest() {
+	void findDateParameterAsCalendarWithMediumStyleTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		Calendar parameter_01 = Calendar.getInstance();
 		parameter_01.set(1893, Calendar.JANUARY, 22, 20, 20, 0);
@@ -457,7 +451,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findDateParameterAsCalendarWithPatternTest() throws ParseException {
+	void findDateParameterAsCalendarWithPatternTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		Calendar parameter_01 = Calendar.getInstance();
 		parameter_01.set(2017, Calendar.NOVEMBER, 30, 19, 48, 0);
@@ -473,7 +467,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 	}
 	
 	@Test
-	public void findParametersWithDefaultKeysTest() {
+	void findParametersWithDefaultKeysTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		String param = "test";
 		LocalDateTime date_param = LocalDateTime.of(1992, 12, 11, 0, 0);
@@ -502,25 +496,25 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 		assertEquals(CURRENCY, currency_parameter.getType());
 	}
 	
-	@Test(expected = MissingParametersValuesException.class)
-	public void missingParametersValuesTest() {
+	@Test
+	void missingParametersValuesTest() {
 		List<Object> parametersValues = new ArrayList<>();
-		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.STRING_PARAMETER, parametersValues);
-		finder.findParameters();
+		Executable executable = () -> new MessageMapperEnumParameterFinder(MapperEnumTest.STRING_PARAMETER, parametersValues);
+		assertThrows(MissingParametersValuesException.class, executable);
 	}
 	
-	@Test(expected = OverflowingParametersValuesException.class)
-	public void overflowingParametersValuesTest() {
+	@Test
+	void overflowingParametersValuesTest() {
 		List<Object> parametersValues = new ArrayList<>();
 		parametersValues.add(new Object());
 		parametersValues.add(new Object());
 		
-		MessageMapperEnumParameterFinder finder = new MessageMapperEnumParameterFinder(MapperEnumTest.STRING_PARAMETER, parametersValues);
-		finder.findParameters();
+		Executable executable = () -> new MessageMapperEnumParameterFinder(MapperEnumTest.STRING_PARAMETER, parametersValues);
+		assertThrows(OverflowingParametersValuesException.class, executable);
 	}
 	
 	@Test
-	public void ignoresIfMessageMapperHasOtherAnnotation() {
+	void ignoresIfMessageMapperHasOtherAnnotation() {
 		List<Object> parametersValues = new ArrayList<>();
 		Object parameter_01 = new Object();
 		Object parameter_02 = new Object();
@@ -585,7 +579,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 		
 		private final MessageSeverity severity;
 		
-		private MapperEnumTest(final MessageSeverity severity) {
+		MapperEnumTest(final MessageSeverity severity) {
 			this.severity = severity;
 		}
 
@@ -605,7 +599,7 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 		
 		private final MessageSeverity severity;
 		
-		private OthersAnnotationsMassageMapperEnum(final MessageSeverity severity) {
+		OthersAnnotationsMassageMapperEnum(final MessageSeverity severity) {
 			this.severity = severity;
 		}
 
@@ -613,6 +607,6 @@ public class MessageMapperEnumParameterFinderTest extends UnitTest<MessageMapper
 		public MessageSeverity getSeverity() {
 			return this.severity;
 		}
-		
+
 	}
 }
